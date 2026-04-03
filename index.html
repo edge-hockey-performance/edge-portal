@@ -607,6 +607,222 @@
     .dot-yellow { background:var(--yellow); box-shadow:0 0 6px var(--yellow); }
     .dot-red    { background:var(--red);    box-shadow:0 0 6px var(--red); }
 
+
+    /* ── EDGE STATUS module ── */
+    .edge-status-module {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; padding: 18px 22px;
+      border-radius: var(--radius-lg); margin-bottom: 24px;
+      border: 1px solid var(--border); position: relative; overflow: hidden;
+    }
+    .edge-status-module::before {
+      content: ''; position: absolute; inset: 0; opacity: 0.04;
+      background: var(--esm-color, var(--green));
+      pointer-events: none;
+    }
+    .edge-status-module { border-color: var(--esm-border, rgba(61,214,140,0.25)); }
+    .esm-left { display: flex; align-items: center; gap: 14px; }
+    .esm-dot {
+      width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+      background: var(--esm-color, var(--green));
+      box-shadow: 0 0 10px var(--esm-color, var(--green));
+      animation: esm-pulse 2s ease-in-out infinite;
+    }
+    @keyframes esm-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.15); }
+    }
+    .esm-text {}
+    .esm-label {
+      font-family: var(--fh); font-weight: 900; font-style: italic;
+      font-size: 20px; text-transform: uppercase; letter-spacing: 0.02em;
+      color: var(--esm-color, var(--green)); line-height: 1;
+    }
+    .esm-sub {
+      font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 300;
+    }
+    .esm-badge {
+      font-family: var(--fh); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 20px; flex-shrink: 0;
+      background: rgba(255,255,255,0.06); color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Next Sharpen Recommendation banner ── */
+    .sharpen-rec-banner {
+      background: rgba(245,200,66,0.06); border: 1px solid rgba(245,200,66,0.2);
+      border-radius: var(--radius-lg); padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px; margin-bottom: 24px;
+    }
+    .srb-icon { font-size: 22px; flex-shrink: 0; }
+    .srb-text {}
+    .srb-title { font-size: 13px; font-weight: 700; color: var(--yellow); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px; }
+    .srb-body  { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.5; }
+    .srb-action { font-size: 12px; color: var(--yellow); font-weight: 600; margin-top: 4px; cursor: pointer; text-decoration: underline; }
+
+    /* ── Pilot welcome banner (no-service state) ── */
+    .pilot-welcome-banner {
+      background: rgba(96,165,250,0.06); border: 1px solid rgba(96,165,250,0.18);
+      border-radius: var(--radius-lg); padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px; margin-bottom: 24px;
+    }
+    .pwb-icon { font-size: 22px; flex-shrink: 0; }
+    .pwb-text {}
+    .pwb-title { font-size: 13px; font-weight: 700; color: var(--blue); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px; }
+    .pwb-body  { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.5; }
+
+    /* ── Pilot member badge (profile) ── */
+    .pilot-member-badge {
+      display: flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, rgba(184,190,200,0.08) 0%, rgba(236,238,242,0.04) 100%);
+      border: 1px solid rgba(200,205,216,0.25); border-radius: var(--radius);
+      padding: 12px 16px; margin-bottom: 16px;
+    }
+    .pmb-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--chrome-bright);
+      box-shadow: 0 0 8px rgba(236,238,242,0.6); flex-shrink: 0;
+    }
+    .pmb-text { font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--chrome-bright); }
+    .pmb-sub { font-size: 11px; color: var(--muted); font-weight: 300; margin-top: 1px; }
+
+
+    /* ══════════════════════════════════════════════════
+       QUICK SERVICE / STAFF OPS
+    ══════════════════════════════════════════════════ */
+    .service-filters {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;
+    }
+    .service-filters select,
+    .service-filters input {
+      padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius); color: #fff; font-family: var(--fb); font-size: 13px;
+      outline: none; transition: border-color .2s;
+    }
+    .service-filters select:focus,
+    .service-filters input:focus { border-color: var(--border-hi); }
+    .service-filters select { cursor: pointer; min-width: 130px; }
+    .service-filters input  { flex: 1; min-width: 180px; }
+    .service-filter-clear   {
+      font-size: 12px; color: var(--muted); cursor: pointer; padding: 4px 8px;
+      border: 1px solid var(--border); border-radius: var(--radius); background: transparent;
+      transition: color .2s, border-color .2s;
+    }
+    .service-filter-clear:hover { color: #fff; border-color: var(--border-hi); }
+
+    /* Player list */
+    .service-player-list {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px;
+    }
+    @media(max-width: 600px) { .service-player-list { grid-template-columns: 1fr; } }
+    .service-player-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 16px 18px;
+      cursor: pointer; transition: border-color .15s, background .15s;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .service-player-card:hover { border-color: var(--border-hi); background: #1C1C1C; }
+    .spc-name   { font-family: var(--fh); font-weight: 800; font-style: italic; font-size: 18px; text-transform: uppercase; color: var(--chrome-bright); line-height: 1.1; }
+    .spc-team   { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .spc-meta   { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+    .spc-pill   {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 20px;
+      background: rgba(255,255,255,0.06); color: var(--silver); border: 1px solid var(--border);
+    }
+    .spc-pill.hollow { background: rgba(96,165,250,0.08); color: var(--blue); border-color: rgba(96,165,250,0.2); }
+    .spc-sharpen { font-size: 11px; color: var(--dim); margin-top: 6px; }
+    .service-empty { text-align:center; padding:40px; color:var(--muted); font-size:13px; }
+
+    /* Player detail panel (replaces list) */
+    .service-detail-panel { display: none; }
+    .service-detail-panel.active { display: block; }
+    .sdp-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); cursor: pointer; margin-bottom: 20px;
+      padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+      background: transparent; transition: color .2s, border-color .2s;
+    }
+    .sdp-back:hover { color: #fff; border-color: var(--border-hi); }
+    .sdp-name   { font-family: var(--fh); font-weight: 900; font-style: italic; font-size: 32px; text-transform: uppercase; color: var(--chrome-bright); line-height: 1; margin-bottom: 4px; }
+    .sdp-sub    { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+    .sdp-stats  { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+    .sdp-stat   { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; min-width: 120px; }
+    .sdp-stat-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .sdp-stat-val   { font-family: var(--fh); font-size: 20px; font-weight: 800; font-style: italic; color: var(--chrome-bright); }
+
+    /* Sharpening modal */
+    .sharpen-modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.75); display: none;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .sharpen-modal-overlay.open { display: flex; }
+    .sharpen-modal {
+      background: var(--bg-2); border: 1px solid var(--border-hi);
+      border-radius: var(--radius-lg); padding: 28px 24px;
+      width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto;
+    }
+    .sm-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+    .sm-title  { font-family: var(--fh); font-size: 22px; font-weight: 900; font-style: italic; text-transform: uppercase; color: var(--chrome-bright); }
+    .sm-player { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .sm-close  {
+      width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border); color: var(--muted); font-size: 16px; line-height: 1;
+      cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .sm-close:hover { background: rgba(255,255,255,0.14); }
+    .sm-section       { margin-bottom: 20px; }
+    .sm-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+
+    /* Condition tap buttons */
+    .condition-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .condition-btn {
+      padding: 12px 10px; text-align: center; border-radius: var(--radius);
+      border: 2px solid var(--border); background: var(--bg-card);
+      cursor: pointer; font-size: 13px; font-weight: 600; color: var(--silver);
+      transition: all .15s; line-height: 1.3;
+    }
+    .condition-btn:hover { border-color: var(--border-hi); color: #fff; }
+    .condition-btn.selected { border-color: var(--green); color: var(--green); background: rgba(61,214,140,0.07); }
+    .condition-btn.selected.warn { border-color: var(--yellow); color: var(--yellow); background: rgba(245,200,66,0.07); }
+    .condition-btn.selected.bad  { border-color: var(--red);    color: var(--red);    background: rgba(240,82,82,0.07); }
+
+    /* Quick tag chips */
+    .tag-btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag-btn {
+      font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.04);
+      cursor: pointer; color: var(--muted); transition: all .15s;
+    }
+    .tag-btn:hover  { border-color: var(--border-hi); color: var(--silver); }
+    .tag-btn.active { border-color: var(--blue); color: var(--blue); background: rgba(96,165,250,0.08); }
+
+    /* Hollow quick-select */
+    .hollow-btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .hollow-btn {
+      min-width: 56px; padding: 10px 12px; text-align: center;
+      border-radius: var(--radius); border: 2px solid var(--border);
+      background: var(--bg-card); cursor: pointer;
+      font-family: var(--fh); font-size: 16px; font-weight: 700; color: var(--silver);
+      transition: all .15s;
+    }
+    .hollow-btn:hover  { border-color: var(--border-hi); color: #fff; }
+    .hollow-btn.active { border-color: var(--blue); color: var(--blue); background: rgba(96,165,250,0.08); }
+
+    .sm-notes-input {
+      width: 100%; padding: 10px 14px;
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius); color: #fff; font-size: 13px;
+      font-family: var(--fb); resize: vertical; outline: none;
+      box-sizing: border-box; transition: border-color .2s;
+    }
+    .sm-notes-input:focus { border-color: var(--border-hi); }
+    .sm-submit { width: 100%; margin-top: 8px; }
+
     /* ── Timeline history ── */
     .timeline { display:flex; flex-direction:column; }
     .timeline-item { display:flex; gap:20px; padding:18px 0; border-bottom:1px solid var(--border); }
@@ -953,6 +1169,37 @@
          <div class="page-sub" id="dash-team"></div>
        </div>
 
+       <!-- EDGE STATUS module (hidden until JS populates) -->
+       <div class="edge-status-module" id="edge-status-module" style="display:none;">
+         <div class="esm-left">
+           <div class="esm-dot" id="esm-dot"></div>
+           <div class="esm-text">
+             <div class="esm-label" id="esm-label">Optimal</div>
+             <div class="esm-sub"  id="esm-sub">Edges are sharp and ready.</div>
+           </div>
+         </div>
+         <div class="esm-badge" id="esm-badge">EDGE STATUS</div>
+       </div>
+
+       <!-- Pilot welcome banner (shown when no service yet) -->
+       <div class="pilot-welcome-banner" id="pilot-welcome-banner" style="display:none;">
+         <div class="pwb-icon">🏒</div>
+         <div class="pwb-text">
+           <div class="pwb-title">Founding Team Pilot — Active</div>
+           <div class="pwb-body">Your profile is set up and ready. EDGE will pick up your blades at your next team skate — no action needed until then.</div>
+         </div>
+       </div>
+
+       <!-- Next Sharpen Recommendation banner (shown when approaching/overdue) -->
+       <div class="sharpen-rec-banner" id="sharpen-rec-banner" style="display:none;">
+         <div class="srb-icon">⚡</div>
+         <div class="srb-text">
+           <div class="srb-title" id="srb-title">Next Sharpen Recommended</div>
+           <div class="srb-body" id="srb-body">Based on your logged ice time, a sharpening is coming up soon.</div>
+           <div class="srb-action" onclick="playerNav('icetime')">View your sharpening window →</div>
+         </div>
+       </div>
+
        <!-- 4 stat cards -->
        <div class="dash-status-grid">
          <div class="dash-status-card">
@@ -1147,7 +1394,13 @@
               <div class="dash-status-indicator status-yellow" style="margin-bottom:6px;">
                 <div class="dash-status-dot dot-yellow"></div>Approaching Recommended Service Window
               </div>
-              <div style="font-size:12px;color:var(--muted);font-weight:300;">Consider booking a sharpening soon.</div>
+              <div style="font-size:12px;color:var(--muted);font-weight:300;line-height:1.6;">Your blades are getting close to the 8–10 hr mark. EDGE will pick up at your next team skate — no action needed.</div>
+            </div>
+            <div id="ice-window-alert-needs" style="display:none;margin-top:16px;padding:14px 16px;background:rgba(240,82,82,0.07);border:1px solid rgba(240,82,82,0.25);border-radius:var(--radius);">
+              <div class="dash-status-indicator" style="margin-bottom:6px;">
+                <div class="dash-status-dot dot-red"></div>Sharpening Recommended
+              </div>
+              <div style="font-size:12px;color:var(--muted);font-weight:300;line-height:1.6;">You've hit or passed the recommended service window. EDGE will prioritize your blades at the next team pickup.</div>
             </div>
           </div>
         </div>
@@ -1247,6 +1500,7 @@
               <div id="profile-details"></div>
               <div class="divider"></div>
               <div class="section-header" style="margin-bottom:12px;"><div class="section-title">Membership</div></div>
+              <div id="pilot-member-badge-wrap"></div>
               <div id="profile-membership"></div>
             </div>
           </div>
@@ -1305,12 +1559,12 @@
       </div>
     </div>
 
-    <!-- Blade Condition Log sub-view -->
+    <!-- Report Blade Issue sub-view -->
     <div class="page" id="psub-conditionlog" style="display:none;">
       <div class="page-header">
         <div class="page-eyebrow">Blade Care</div>
         <div class="page-title">Blade <span class="chrome">Condition Log</span></div>
-        <div class="page-sub">Submit a photo and description of any edge issue so your sharpener can prepare before you come in.</div>
+        <div class="page-sub">Noticed a chip, nick, or dull edge? Let us know before your next skate so we can prep your blades.</div>
       </div>
 
       <!-- Submit form -->
@@ -1373,7 +1627,8 @@
         <small>Staff Dashboard</small>
       </div>
       <div class="topnav-nav">
-        <button class="nav-btn active" id="anav-queue" onclick="adminNav('queue')">Blade Queue</button>
+        <button class="nav-btn active" id="anav-service" onclick="adminNav('service')">⚡ Quick Service</button>
+        <button class="nav-btn" id="anav-queue" onclick="adminNav('queue')">Blade Queue</button>
         <button class="nav-btn" id="anav-players" onclick="adminNav('players')">All Players</button>
         <button class="nav-btn" id="anav-reports" onclick="adminNav('reports')">Condition Reports <span id="admin-reports-badge" style="display:none;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:20px;padding:1px 6px;margin-left:4px;vertical-align:middle;"></span></button>
       </div>
@@ -1383,6 +1638,119 @@
         <button class="nav-btn logout" onclick="logout()">Sign Out</button>
       </div>
     </nav>
+
+    <!-- ── Quick Service sub-view ── -->
+    <div class="page" id="asub-service">
+      <div class="page-header">
+        <div class="page-eyebrow">Staff Operations</div>
+        <div class="page-title">Quick <span class="chrome">Service</span></div>
+        <div class="page-sub">Find a player, log a sharpening. Designed to be done in under 20 seconds.</div>
+      </div>
+
+      <!-- Filters + Search -->
+      <div class="service-filters" id="service-filters">
+        <select id="sf-program" onchange="filterServicePlayers()">
+          <option value="">All Programs</option>
+          <option>Mission</option>
+          <option>Reapers</option>
+          <option>St. Viator</option>
+          <option>Other / Independent</option>
+        </select>
+        <select id="sf-team" onchange="filterServicePlayers()">
+          <option value="">All Teams</option>
+          <option>Bantam (13U &amp; 14U) — 2012 &amp; 2013</option>
+          <option>15U Midget — 2011</option>
+          <option>16U Midget Minor — 2010</option>
+          <option>18U Midget Major — 2008 &amp; 2009</option>
+        </select>
+        <select id="sf-hollow" onchange="filterServicePlayers()">
+          <option value="">All Hollows</option>
+          <option>3/8"</option><option>7/16"</option>
+          <option>1/2"</option><option>9/16"</option>
+          <option>5/8"</option><option>3/4"</option><option>1"</option>
+        </select>
+        <input type="text" id="sf-search" placeholder="🔍  Search player name…" oninput="filterServicePlayers()"/>
+        <button class="service-filter-clear" onclick="clearServiceFilters()">Clear</button>
+      </div>
+
+      <!-- Player list (shown by default) -->
+      <div id="service-list-wrap">
+        <div class="service-player-list" id="service-player-list">
+          <div class="service-empty">Loading players…</div>
+        </div>
+      </div>
+
+      <!-- Player detail panel (hidden until a player is selected) -->
+      <div class="service-detail-panel" id="service-detail-panel">
+        <button class="sdp-back" onclick="closeServiceDetail()">← Back to Players</button>
+        <div class="sdp-name" id="sdp-name"></div>
+        <div class="sdp-sub"  id="sdp-sub"></div>
+        <div class="sdp-stats" id="sdp-stats"></div>
+        <button class="btn btn-chrome" style="max-width:260px;font-size:16px;padding:14px 24px;" onclick="openSharpenModal()">
+          Log Sharpening
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Sharpening Quick-Entry Modal ── -->
+    <div class="sharpen-modal-overlay" id="sharpen-modal-overlay">
+      <div class="sharpen-modal">
+        <div class="sm-header">
+          <div>
+            <div class="sm-title">Log Sharpening</div>
+            <div class="sm-player" id="sm-player-name"></div>
+          </div>
+          <button class="sm-close" onclick="closeSharpenModal()">✕</button>
+        </div>
+
+        <!-- Hollow -->
+        <div class="sm-section">
+          <div class="sm-section-label">Hollow</div>
+          <div class="hollow-btn-group" id="sm-hollow-group">
+            <button class="hollow-btn" data-hollow="1/2&quot;"  onclick="selectHollow(this)">1/2"</button>
+            <button class="hollow-btn" data-hollow="5/8&quot;"  onclick="selectHollow(this)">5/8"</button>
+            <button class="hollow-btn" data-hollow="3/4&quot;"  onclick="selectHollow(this)">3/4"</button>
+            <button class="hollow-btn" data-hollow="9/16&quot;" onclick="selectHollow(this)">9/16"</button>
+            <button class="hollow-btn" data-hollow="custom"    onclick="selectHollow(this)">Custom</button>
+          </div>
+          <input type="text" id="sm-hollow-custom" class="sm-notes-input" style="display:none;margin-top:8px;width:auto;" placeholder='Custom hollow e.g. "7/16"'/>
+        </div>
+
+        <!-- Edge Condition -->
+        <div class="sm-section">
+          <div class="sm-section-label">Edge Condition</div>
+          <div class="condition-btn-group">
+            <button class="condition-btn selected" data-cond="clean" onclick="selectCondition(this)">✓ Clean<br><span style="font-size:11px;font-weight:400;opacity:0.7;">No issues</span></button>
+            <button class="condition-btn" data-cond="minor" onclick="selectCondition(this)">Minor Wear<br><span style="font-size:11px;font-weight:400;opacity:0.7;">Light use marks</span></button>
+            <button class="condition-btn" data-cond="adjustment" onclick="selectCondition(this)">Needed Adjustment<br><span style="font-size:11px;font-weight:400;opacity:0.7;">Hollow changed</span></button>
+            <button class="condition-btn" data-cond="damaged" onclick="selectCondition(this)">Damaged Edge<br><span style="font-size:11px;font-weight:400;opacity:0.7;">Chip or nick</span></button>
+          </div>
+        </div>
+
+        <!-- Quick Tags -->
+        <div class="sm-section" id="sm-tags-section">
+          <div class="sm-section-label">Quick Tags <span style="font-weight:300;color:var(--dim);">(optional)</span></div>
+          <div class="tag-btn-group">
+            <button class="tag-btn" data-tag="Uneven edges"          onclick="toggleTag(this)">Uneven edges</button>
+            <button class="tag-btn" data-tag="Chipped steel"         onclick="toggleTag(this)">Chipped steel</button>
+            <button class="tag-btn" data-tag="Player requested change" onclick="toggleTag(this)">Player requested change</button>
+            <button class="tag-btn" data-tag="Hollow adjusted"       onclick="toggleTag(this)">Hollow adjusted</button>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="sm-section">
+          <div class="sm-section-label">Notes <span style="font-weight:300;color:var(--dim);">(optional)</span></div>
+          <textarea class="sm-notes-input" id="sm-notes" rows="2" placeholder="Any additional notes…"></textarea>
+        </div>
+
+        <div class="alert alert-error"   id="sm-error"   style="margin-bottom:8px;"></div>
+        <div class="alert alert-success" id="sm-success" style="margin-bottom:8px;"></div>
+        <button class="btn btn-chrome sm-submit" id="sm-submit-btn" onclick="submitSharpening()">
+          Complete Sharpening
+        </button>
+      </div>
+    </div>
 
     <!-- Queue sub-view -->
     <div class="page" id="asub-queue">
@@ -1679,13 +2047,10 @@ const ORG_TEAMS = {
     'Midget Minor (16U)', 'Midget Major (18U)'
   ],
   'Reapers': [
-  'Peewee Minor (12U)', 
-  'Peewee Major (12U)',
-  'Bantam Minor (13U)', 
-  'Bantam Major (14U)',
-  '15U Midget',
-  '16U Midget Minor',
-  '18U Midget Major'
+    'Mite (8U)', 'Squirt Minor (10U)', 'Squirt Major (10U)',
+    'Peewee Minor (12U)', 'Peewee Major (12U)',
+    'Bantam Minor (14U)', 'Bantam Major (14U)',
+    'Midget Minor (16U)', 'Midget Major (18U)'
   ],
   'St. Viator': ['Freshman', 'JV', 'Varsity'],
   'Other': ['Independent / Not listed']
@@ -1848,7 +2213,7 @@ async function loadPlayerDashboard() {
     set('dash-last-loc',  last.location || 'EDGE Service');
   } else {
     set('dash-last-date', '—');
-    set('dash-last-loc',  'No service yet');
+    set('dash-last-loc',  'Ready for first service');
   }
 
   // ── Stat card 2: Skates Since Sharpen (from skate_log) ──
@@ -1862,6 +2227,80 @@ async function loadPlayerDashboard() {
     } catch(e) { skatesSince = '—'; }
   }
   set('dash-skates-since', skatesSince);
+
+  // ── EDGE STATUS module ──
+  const esmModule = document.getElementById('edge-status-module');
+  const esmLabel  = document.getElementById('esm-label');
+  const esmSub    = document.getElementById('esm-sub');
+  const esmDot    = document.getElementById('esm-dot');
+  const pilotBanner  = document.getElementById('pilot-welcome-banner');
+  const sharpenBanner = document.getElementById('sharpen-rec-banner');
+  const srbTitle  = document.getElementById('srb-title');
+  const srbBody   = document.getElementById('srb-body');
+
+  if (!mySharps.length) {
+    // No service yet — show pilot welcome banner
+    if (pilotBanner) pilotBanner.style.display = '';
+    if (esmModule)   esmModule.style.display = 'none';
+    if (sharpenBanner) sharpenBanner.style.display = 'none';
+  } else {
+    // Calculate hours on current edges from skate_log durations
+    let iceHrsOnEdges = 0;
+    try {
+      const lastSDate = mySharps[0].date;
+      const { data: recentSkates = [] } = await sb.from('skate_log').select('duration').eq('player_id', currentProfile.id).gt('date', lastSDate);
+      iceHrsOnEdges = recentSkates.reduce((sum, s) => sum + (s.duration || 60), 0) / 60;
+    } catch(e) {}
+
+    // Determine status
+    let esmState; // 'optimal' | 'approaching' | 'recommended'
+    if (iceHrsOnEdges < 7) {
+      esmState = 'optimal';
+    } else if (iceHrsOnEdges < 10) {
+      esmState = 'approaching';
+    } else {
+      esmState = 'recommended';
+    }
+
+    if (esmModule) {
+      esmModule.style.display = '';
+      if (esmState === 'optimal') {
+        esmModule.style.setProperty('--esm-color', 'var(--green)');
+        esmModule.style.setProperty('--esm-border', 'rgba(61,214,140,0.25)');
+        if (esmLabel) esmLabel.textContent = 'Optimal';
+        if (esmSub)   esmSub.textContent   = 'Edges are sharp and ready. Keep logging ice time.';
+        if (esmDot)   { esmDot.style.background = 'var(--green)'; esmDot.style.boxShadow = '0 0 10px var(--green)'; }
+      } else if (esmState === 'approaching') {
+        esmModule.style.setProperty('--esm-color', 'var(--yellow)');
+        esmModule.style.setProperty('--esm-border', 'rgba(245,200,66,0.25)');
+        if (esmLabel) esmLabel.textContent = 'Approaching';
+        if (esmSub)   esmSub.textContent   = 'You\'re nearing your recommended service window (8–10 hrs).';
+        if (esmDot)   { esmDot.style.background = 'var(--yellow)'; esmDot.style.boxShadow = '0 0 10px var(--yellow)'; }
+      } else {
+        esmModule.style.setProperty('--esm-color', 'var(--red)');
+        esmModule.style.setProperty('--esm-border', 'rgba(240,82,82,0.25)');
+        if (esmLabel) esmLabel.textContent = 'Sharpen Recommended';
+        if (esmSub)   esmSub.textContent   = 'Based on your ice time, a sharpening is due. EDGE will handle it at your next team skate.';
+        if (esmDot)   { esmDot.style.background = 'var(--red)'; esmDot.style.boxShadow = '0 0 10px var(--red)'; }
+      }
+    }
+
+    // Show/hide sharpen recommendation banner
+    if (sharpenBanner) {
+      if (esmState === 'approaching') {
+        sharpenBanner.style.display = '';
+        if (srbTitle) srbTitle.textContent = 'Sharpen Coming Up';
+        if (srbBody)  srbBody.textContent  = 'You\'re at ' + iceHrsOnEdges.toFixed(1) + ' hrs on your current edges. EDGE recommends sharpening at 8–10 hrs — we\'ll take care of it at your next team skate.';
+      } else if (esmState === 'recommended') {
+        sharpenBanner.style.display = '';
+        if (srbTitle) srbTitle.textContent = 'Sharpen Recommended Now';
+        if (srbBody)  srbBody.textContent  = 'You\'ve logged ' + iceHrsOnEdges.toFixed(1) + ' hrs on your current edges. EDGE will prioritize your blades at the next team pickup.';
+      } else {
+        sharpenBanner.style.display = 'none';
+      }
+    }
+    if (pilotBanner) pilotBanner.style.display = 'none';
+  }
 
   // ── Stat card 3: Blade Condition (from last sharpening) ──
   const condEl  = document.getElementById('dash-condition-val');
@@ -1938,9 +2377,23 @@ async function loadPlayerDashboard() {
   if (memEl) memEl.innerHTML = [
     ['Plan',         currentProfile.plan === 'spring_pilot' ? 'Founding Team Pilot' : currentProfile.plan === 'member' ? 'EDGE Membership' : 'Single Visits'],
     ['Rate',         currentProfile.plan === 'spring_pilot' ? 'Complimentary' : currentProfile.plan === 'member' ? '$40 / month' : '$25 / visit'],
-    ['Sharpenings',  currentProfile.plan === 'member' ? used + ' used of ' + allowed + ' this month' : 'Pay per visit'],
+    ['Sharpenings',  currentProfile.plan === 'member' ? used + ' used of ' + allowed + ' this month' : 'Included in pilot'],
     ['Status',       '<span class="badge badge-green"><span class="badge-dot"></span>Active</span>']
   ].map(([k, v]) => `<div class="profile-item"><div class="profile-key">${k}</div><div class="profile-val">${v}</div></div>`).join('');
+
+  // Pilot member badge
+  const pilotBadgeWrap = document.getElementById('pilot-member-badge-wrap');
+  if (pilotBadgeWrap && currentProfile.plan === 'spring_pilot') {
+    pilotBadgeWrap.innerHTML = `<div class="pilot-member-badge">
+      <div>
+        <div class="pmb-dot"></div>
+      </div>
+      <div>
+        <div class="pmb-text">Founding Team Pilot Member</div>
+        <div class="pmb-sub">Spring 2025 · Complimentary access</div>
+      </div>
+    </div>`;
+  }
 
   // Hollow visualizer
   document.getElementById('profile-hollow-label').textContent = currentProfile.hollow;
@@ -2135,16 +2588,19 @@ async function loadAdminDashboard() {
   try { await renderQueue('pending');  } catch (e) { console.error('[EDGE] renderQueue error:', e); }
   try { await renderAdminPlayers();   } catch (e) { console.error('[EDGE] renderAdminPlayers error:', e); }
   try { await refreshReportsBadge();  } catch (e) { /* non-fatal */ }
+  // Default to Quick Service tab
+  adminNav('service');
 }
 
 function adminNav(sub) {
-  ['queue', 'players', 'reports'].forEach(s => {
+  ['service', 'queue', 'players', 'reports'].forEach(s => {
     const el = document.getElementById('asub-' + s);
     if (el) el.style.display = s === sub ? '' : 'none';
     const btn = document.getElementById('anav-' + s);
     if (btn) btn.classList.toggle('active', s === sub);
   });
   if (sub === 'reports') loadAdminReports('pending');
+  if (sub === 'service') loadServicePlayers();
 }
 
 let currentReportsTab = 'pending';
@@ -2313,13 +2769,15 @@ async function loadIceTime() {
   const cycleHrs      = cycleMins / 60;
 
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  set('ice-window-last',   lastSharpen ? fmtDateShort(lastSharpen.date) : 'No service yet');
+  set('ice-window-last',   lastSharpen ? fmtDateShort(lastSharpen.date) : 'First service upcoming');
   set('ice-window-skates', cycleSessions.length + (cycleSessions.length === 1 ? ' Session' : ' Sessions'));
   set('ice-window-hrs',    cycleMins ? cycleHrs.toFixed(1) + ' hrs' : '—');
 
   // Service alert if approaching recommended window (>= 7 hrs)
   const alertEl = document.getElementById('ice-window-alert');
-  if (alertEl) alertEl.style.display = cycleHrs >= 7 ? '' : 'none';
+  const needsAlertEl = document.getElementById('ice-window-alert-needs');
+  if (alertEl)      alertEl.style.display      = (cycleHrs >= 7 && cycleHrs < 10) ? '' : 'none';
+  if (needsAlertEl) needsAlertEl.style.display = cycleHrs >= 10 ? '' : 'none';
 
   // Load the skate log list
   await initSkateLog();
@@ -3016,6 +3474,256 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
+
+
+// ══════════════════════════════════════════════════════════
+//  QUICK SERVICE — Staff Operations
+// ══════════════════════════════════════════════════════════
+
+let _serviceAllPlayers  = [];
+let _serviceSharpenings = {};
+let _selectedPlayer     = null;
+let _selectedCondition  = 'clean';
+let _selectedHollow     = '';
+let _activeTags         = new Set();
+
+async function loadServicePlayers() {
+  const listEl = document.getElementById('service-player-list');
+  if (listEl) listEl.innerHTML = '<div class="service-empty">Loading…</div>';
+  try {
+    const { data: players = [], error: pErr } = await sb
+      .from('profiles').select('id, fname, lname, organization, team, hollow, plan, position')
+      .neq('role', 'admin').order('lname', { ascending: true });
+    if (pErr) throw pErr;
+    const { data: sharps = [] } = await sb.from('sharpenings')
+      .select('player_id, date, hollow').order('date', { ascending: false });
+    const sharpenMap = {};
+    for (const s of sharps) {
+      if (!sharpenMap[s.player_id]) sharpenMap[s.player_id] = s;
+    }
+    _serviceAllPlayers  = players;
+    _serviceSharpenings = sharpenMap;
+    renderServiceList(_serviceAllPlayers);
+  } catch (e) {
+    console.error('[EDGE] loadServicePlayers:', e);
+    if (listEl) listEl.innerHTML = '<div class="service-empty">Error loading players.</div>';
+  }
+}
+
+function filterServicePlayers() {
+  const program = document.getElementById('sf-program')?.value || '';
+  const team    = document.getElementById('sf-team')?.value    || '';
+  const hollow  = document.getElementById('sf-hollow')?.value  || '';
+  const search  = (document.getElementById('sf-search')?.value || '').toLowerCase().trim();
+  const filtered = _serviceAllPlayers.filter(p => {
+    if (program && (p.organization || '') !== program) return false;
+    if (team    && (p.team || '') !== team)            return false;
+    if (hollow  && (p.hollow || '') !== hollow)        return false;
+    if (search) {
+      const full = ((p.fname || '') + ' ' + (p.lname || '')).toLowerCase();
+      if (!full.includes(search)) return false;
+    }
+    return true;
+  });
+  renderServiceList(filtered);
+}
+
+function clearServiceFilters() {
+  ['sf-program','sf-team','sf-hollow','sf-search'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  renderServiceList(_serviceAllPlayers);
+}
+
+function renderServiceList(players) {
+  const el = document.getElementById('service-player-list');
+  if (!el) return;
+  if (!players.length) { el.innerHTML = '<div class="service-empty">No players match your filters.</div>'; return; }
+  el.innerHTML = players.map(p => {
+    const name     = (p.fname || '') + ' ' + (p.lname || '');
+    const team     = [p.organization, p.team].filter(Boolean).join(' · ') || '—';
+    const hollow   = p.hollow || '—';
+    const lastS    = _serviceSharpenings[p.id];
+    const lastDate = lastS ? fmtDateShort(lastS.date) : 'No service yet';
+    const pid      = p.id;
+    return `<div class="service-player-card" onclick="selectServicePlayer('${pid}')">
+      <div class="spc-name">${escHtmlSvc(name)}</div>
+      <div class="spc-team">${escHtmlSvc(team)}</div>
+      <div class="spc-meta">
+        <span class="spc-pill hollow">${escHtmlSvc(hollow)}</span>
+        ${p.position ? `<span class="spc-pill">${escHtmlSvc(p.position)}</span>` : ''}
+      </div>
+      <div class="spc-sharpen">Last sharpen: ${lastDate}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectServicePlayer(playerId) {
+  const p = _serviceAllPlayers.find(x => x.id === playerId);
+  if (!p) return;
+  _selectedPlayer = p;
+  document.getElementById('service-list-wrap').style.display  = 'none';
+  document.getElementById('service-filters').style.display    = 'none';
+  const panel = document.getElementById('service-detail-panel');
+  panel.classList.add('active');
+  const name  = (p.fname || '') + ' ' + (p.lname || '');
+  const team  = [p.organization, p.team].filter(Boolean).join(' · ') || '—';
+  const lastS = _serviceSharpenings[p.id];
+  document.getElementById('sdp-name').textContent = name;
+  document.getElementById('sdp-sub').textContent  = team;
+  document.getElementById('sdp-stats').innerHTML  = [
+    ['Hollow',      p.hollow || '—'],
+    ['Last Sharpen',lastS ? fmtDateShort(lastS.date) : '—'],
+    ['Plan',        p.plan === 'spring_pilot' ? 'Pilot' : (p.plan || '—')],
+  ].map(([l,v]) => `<div class="sdp-stat"><div class="sdp-stat-label">${l}</div><div class="sdp-stat-val">${escHtmlSvc(String(v))}</div></div>`).join('');
+}
+
+function closeServiceDetail() {
+  _selectedPlayer = null;
+  document.getElementById('service-detail-panel').classList.remove('active');
+  document.getElementById('service-list-wrap').style.display = '';
+  document.getElementById('service-filters').style.display   = '';
+}
+
+function openSharpenModal() {
+  if (!_selectedPlayer) return;
+  _selectedCondition = 'clean';
+  _activeTags        = new Set();
+  _selectedHollow    = _selectedPlayer.hollow || '5/8"';
+  document.querySelectorAll('.condition-btn').forEach(b => b.classList.remove('selected','warn','bad'));
+  const cleanBtn = document.querySelector('.condition-btn[data-cond="clean"]');
+  if (cleanBtn) cleanBtn.classList.add('selected');
+  document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sm-notes').value = '';
+  const errEl = document.getElementById('sm-error');
+  const okEl  = document.getElementById('sm-success');
+  if (errEl) errEl.classList.remove('show');
+  if (okEl)  okEl.classList.remove('show');
+  const submitBtn = document.getElementById('sm-submit-btn');
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Complete Sharpening'; }
+  const name = (_selectedPlayer.fname || '') + ' ' + (_selectedPlayer.lname || '');
+  document.getElementById('sm-player-name').textContent = name + ' · ' + (_selectedPlayer.hollow || '5/8"') + ' hollow';
+  const playerHollow = _selectedPlayer.hollow || '5/8"';
+  document.getElementById('sm-hollow-custom').style.display = 'none';
+  document.querySelectorAll('.hollow-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.hollow === playerHollow);
+  });
+  const hollowBtns = Array.from(document.querySelectorAll('.hollow-btn[data-hollow]'));
+  const matched = hollowBtns.find(b => b.dataset.hollow === playerHollow && b.dataset.hollow !== 'custom');
+  if (!matched) {
+    const customBtn = document.querySelector('.hollow-btn[data-hollow="custom"]');
+    if (customBtn) { customBtn.classList.add('active'); }
+    const customInput = document.getElementById('sm-hollow-custom');
+    customInput.style.display = '';
+    customInput.value = playerHollow;
+  }
+  document.getElementById('sharpen-modal-overlay').classList.add('open');
+}
+
+function closeSharpenModal() {
+  document.getElementById('sharpen-modal-overlay').classList.remove('open');
+}
+
+function selectHollow(btn) {
+  document.querySelectorAll('.hollow-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _selectedHollow = btn.dataset.hollow;
+  const customInput = document.getElementById('sm-hollow-custom');
+  if (btn.dataset.hollow === 'custom') {
+    customInput.style.display = '';
+    customInput.focus();
+  } else {
+    customInput.style.display = 'none';
+    customInput.value = '';
+  }
+}
+
+function selectCondition(btn) {
+  document.querySelectorAll('.condition-btn').forEach(b => b.classList.remove('selected','warn','bad'));
+  _selectedCondition = btn.dataset.cond;
+  btn.classList.add('selected');
+  if (_selectedCondition === 'minor')      btn.classList.add('warn');
+  if (_selectedCondition === 'adjustment') btn.classList.add('warn');
+  if (_selectedCondition === 'damaged')    btn.classList.add('bad');
+}
+
+function toggleTag(btn) {
+  const tag = btn.dataset.tag;
+  if (_activeTags.has(tag)) { _activeTags.delete(tag); btn.classList.remove('active'); }
+  else { _activeTags.add(tag); btn.classList.add('active'); }
+}
+
+async function submitSharpening() {
+  if (!_selectedPlayer) return;
+  const submitBtn = document.getElementById('sm-submit-btn');
+  const errEl     = document.getElementById('sm-error');
+  const okEl      = document.getElementById('sm-success');
+  let hollow = _selectedHollow;
+  if (hollow === 'custom') hollow = document.getElementById('sm-hollow-custom').value.trim();
+  if (!hollow) { errEl.textContent = 'Please select a hollow.'; errEl.classList.add('show'); return; }
+  const condLabels = { clean:'Clean / No Issues', minor:'Minor Wear', adjustment:'Needed Adjustment', damaged:'Damaged Edge' };
+  const conditionLabel = condLabels[_selectedCondition] || 'Clean / No Issues';
+  const tagStr   = _activeTags.size ? Array.from(_activeTags).join(', ') : '';
+  const freeNote = document.getElementById('sm-notes').value.trim();
+  const notes    = [tagStr, freeNote].filter(Boolean).join(' — ');
+  submitBtn.disabled    = true;
+  submitBtn.textContent = 'Saving…';
+  errEl.classList.remove('show');
+  okEl.classList.remove('show');
+  const today = new Date().toISOString().split('T')[0];
+  const pid   = _selectedPlayer.id;
+  try {
+    // A. Insert sharpening (condition = short key e.g. 'damaged', notes = combined text)
+    const { error: sharpErr } = await sb.from('sharpenings').insert([{
+      player_id: pid,
+      date:      today,
+      location:  'EDGE Service',
+      hollow:    hollow,
+      condition: conditionLabel,   // e.g. "Clean / No Issues"
+      notes:     notes || null,
+    }]);
+    if (sharpErr) throw sharpErr;
+
+    // B. Update profiles: increment sharpenings_used
+    try {
+      const { data: prof } = await sb.from('profiles').select('sharpenings_used').eq('id', pid).single();
+      const newCount = (prof?.sharpenings_used || 0) + 1;
+      await sb.from('profiles').update({ sharpenings_used: newCount }).eq('id', pid);
+    } catch(_) {}
+
+    // C. Insert blade_report only if there is an issue (use 'description' column)
+    if (_selectedCondition !== 'clean') {
+      const reportDesc = [conditionLabel, notes].filter(Boolean).join(' — ');
+      await sb.from('blade_reports').insert([{
+        player_id:   pid,
+        description: reportDesc,
+        photo_url:   null,
+        status:      'reviewed',
+      }]);
+    }
+    okEl.textContent = '✓ Sharpening logged for ' + (_selectedPlayer.fname || 'player') + '!';
+    okEl.classList.add('show');
+    submitBtn.textContent = '✓ Done';
+    _serviceSharpenings[pid] = { player_id: pid, date: today, hollow };
+    setTimeout(() => { closeSharpenModal(); selectServicePlayer(_selectedPlayer?.id || pid); }, 1500);
+  } catch (e) {
+    console.error('[EDGE] submitSharpening:', e);
+    errEl.textContent = 'Error: ' + (e.message || 'Could not save. Try again.');
+    errEl.classList.add('show');
+    submitBtn.disabled    = false;
+    submitBtn.textContent = 'Complete Sharpening';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('sharpen-modal-overlay');
+  if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) closeSharpenModal(); });
+});
+
+function escHtmlSvc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
 </script>
 
