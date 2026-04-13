@@ -494,22 +494,56 @@
     /* ── CONDITION DOTS ── */
     .condition { display: flex; align-items: center; gap: 6px; font-size: 13px; }
 
-    /* ── MOBILE ── */
-    @media (max-width: 600px) {
+    /* ══════════ MOBILE ══════════ */
+    @media (max-width: 700px) {
       .topnav { padding: 0 14px; min-height: 54px; }
       .topnav-nav { display: none; }
       .user-name { display: none; }
-      .page { padding: 20px 14px 80px; }
-      .queue-item { grid-template-columns: auto 1fr; }
+      .page { padding: 16px 12px 84px; }
+      .page-header { padding-bottom: 16px; }
+      .page-title { font-size: 32px; }
+      .queue-item { grid-template-columns: auto 1fr; gap: 10px; }
       .queue-item > *:nth-child(3),
       .queue-item > *:nth-child(4) { grid-column: 2; }
       .card { overflow-x: auto; }
-      .field-row { grid-template-columns: 1fr; }
+      .field-row { grid-template-columns: 1fr !important; }
       .login-card { padding: 28px 20px; }
       .mobile-bottom-nav { display: flex !important; }
+      /* Stats rows stack on small screens */
+      .stats-row { grid-template-columns: repeat(2, 1fr) !important; }
+      /* Service session player cards */
+      #svc-player-list .card.card-body > div { flex-direction: column; align-items: flex-start !important; }
+      /* Admin player detail grid stacks */
+      #asub-player-detail .grid-2 { grid-template-columns: 1fr !important; }
+      /* Height measurement grid stays 3-col but shrinks */
+      #asub-player-detail input[type="number"] { font-size: 12px !important; padding: 5px 4px !important; }
+      /* Table horizontal scroll */
+      table { font-size: 12px; }
+      table th, table td { padding: 8px 8px !important; white-space: nowrap; }
+      /* Feedback category grid: 1 col on very small */
+      #feedback-category-grid { grid-template-columns: 1fr 1fr !important; }
+      /* Queue items */
+      .queue-item { padding: 12px; }
+      /* Section headers */
+      .section-header { flex-wrap: wrap; gap: 8px; }
+      /* Subtabs scrollable */
+      .subtabs { overflow-x: auto; white-space: nowrap; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+      .subtab { flex-shrink: 0; }
+      /* Back button on player detail */
+      #asub-player-detail .page-header { padding-top: 8px; }
+      /* Complete session button */
+      #svc-complete-btn { font-size: 14px !important; padding: 12px !important; }
+      /* Stat cards in admin detail */
+      #admin-detail-stats { grid-template-columns: repeat(2,1fr) !important; }
+    }
+    @media (max-width: 400px) {
+      .stats-row { grid-template-columns: 1fr 1fr !important; }
+      .stat-value { font-size: 22px !important; }
+      #feedback-category-grid { grid-template-columns: 1fr !important; }
+      .page-title { font-size: 26px; }
     }
 
-    /* ── MOBILE BOTTOM NAV ── */
+    /* ══════════ MOBILE BOTTOM NAV (shared base) ══════════ */
     .mobile-bottom-nav {
       display: none;
       position: fixed; bottom: 0; left: 0; right: 0;
@@ -521,19 +555,28 @@
       -webkit-backdrop-filter: blur(16px);
       z-index: 200;
       align-items: stretch;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .mobile-nav-btn {
-      flex: 1; display: flex; flex-direction: column;
+      flex: 1; flex-shrink: 0;
+      min-width: 56px;
+      display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       gap: 3px; border: none; background: transparent;
       color: var(--muted);
       font-family: var(--fh); font-weight: 700; font-style: italic;
-      font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase;
-      cursor: pointer; padding: 0; transition: color .15s;
+      font-size: 8.5px; letter-spacing: 0.05em; text-transform: uppercase;
+      cursor: pointer; padding: 0 4px; transition: color .15s;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
-    .mobile-nav-icon { font-size: 18px; line-height: 1; }
+    .mobile-nav-icon { font-size: 17px; line-height: 1; }
     .mobile-nav-btn.active { color: var(--chrome-c); }
+    .mobile-nav-btn.active .mobile-nav-icon { filter: drop-shadow(0 0 6px rgba(200,205,216,0.5)); }
+    /* Admin bottom nav: blue tint for active */
+    #mobile-admin-nav .mobile-nav-btn.active { color: var(--blue); }
+    #mobile-admin-nav .mobile-nav-btn.active .mobile-nav-icon { filter: drop-shadow(0 0 6px rgba(96,165,250,0.5)); }
 
     /* ── DIVIDER ── */
     .divider { height: 1px; background: var(--border); margin: 28px 0; }
@@ -1515,6 +1558,9 @@
       <button class="mobile-nav-btn" id="mnav-icetime" onclick="playerNav('icetime')">
         <span class="mobile-nav-icon">⏱</span><span>Ice Time</span>
       </button>
+      <button class="mobile-nav-btn" id="mnav-conditionlog" onclick="playerNav('conditionlog')">
+        <span class="mobile-nav-icon">💬</span><span>Feedback</span>
+      </button>
       <button class="mobile-nav-btn" id="mnav-profile" onclick="playerNav('profile')">
         <span class="mobile-nav-icon">◉</span><span>Profile</span>
       </button>
@@ -1974,6 +2020,22 @@
         <div id="admin-reports-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Loading…</div></div>
       </div>
     </div>
+
+    <!-- ── ADMIN MOBILE BOTTOM NAV ── -->
+    <nav class="mobile-bottom-nav" id="mobile-admin-nav" style="display:none;">
+      <button class="mobile-nav-btn active" id="amnav-queue" onclick="adminNav('queue')">
+        <span class="mobile-nav-icon">📋</span><span>Queue</span>
+      </button>
+      <button class="mobile-nav-btn" id="amnav-service" onclick="adminNav('service')">
+        <span class="mobile-nav-icon">⚡</span><span>Service</span>
+      </button>
+      <button class="mobile-nav-btn" id="amnav-players" onclick="adminNav('players')">
+        <span class="mobile-nav-icon">👥</span><span>Players</span>
+      </button>
+      <button class="mobile-nav-btn" id="amnav-reports" onclick="adminNav('reports')">
+        <span class="mobile-nav-icon">💬</span><span>Feedback <span id="amnav-badge" style="display:none;background:var(--red);color:#fff;font-size:8px;font-weight:700;border-radius:10px;padding:1px 5px;margin-left:2px;vertical-align:middle;"></span></span>
+      </button>
+    </nav>
   </div>
 </div>
 
@@ -2441,7 +2503,7 @@ function playerNav(sub) {
     if (btn) btn.classList.toggle('active', s === sub);
   });
   // Sync mobile bottom nav active state
-  ['dashboard','history','icetime','profile'].forEach(s => {
+  ['dashboard','history','icetime','conditionlog','profile'].forEach(s => {
     const mBtn = document.getElementById('mnav-' + s);
     if (mBtn) mBtn.classList.toggle('active', s === sub);
   });
@@ -3245,6 +3307,12 @@ function adminNav(sub) {
     const btn = document.getElementById('anav-' + s);
     if (btn) btn.classList.toggle('active', s === sub);
   });
+  // Sync mobile admin bottom nav (maps player-detail → players highlight)
+  ['queue', 'service', 'players', 'reports'].forEach(s => {
+    const mBtn = document.getElementById('amnav-' + s);
+    if (mBtn) mBtn.classList.toggle('active', s === sub || (sub === 'player-detail' && s === 'players'));
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   if (sub === 'reports') loadAdminReports('pending');
   if (sub === 'service') initServiceSession();
 }
@@ -3732,11 +3800,12 @@ async function adminUpdateReport(id, newStatus) {
 async function refreshReportsBadge() {
   const { count } = await sb.from('blade_reports')
     .select('*', { count: 'exact', head: true }).eq('status', 'pending');
-  const badge = document.getElementById('admin-reports-badge');
-  if (badge) {
+  // Update both desktop badge and mobile nav badge
+  [document.getElementById('admin-reports-badge'), document.getElementById('amnav-badge')].forEach(badge => {
+    if (!badge) return;
     if (count > 0) { badge.textContent = count; badge.style.display = ''; }
     else { badge.style.display = 'none'; }
-  }
+  });
 }
 
 // ── STEEL RUNNER HISTORY ────────────────────────────────────
@@ -4064,9 +4133,19 @@ async function routeToProfile(user) {
     // Show view FIRST — dashboard data loads after
     if (profile.role === 'admin') {
       showView('view-admin');
+      // Show admin mobile nav, hide player nav
+      const pmn = document.getElementById('mobile-player-nav');
+      const amn = document.getElementById('mobile-admin-nav');
+      if (pmn) pmn.style.display = 'none';
+      if (amn) amn.style.removeProperty('display');
       loadAdminDashboard().catch(e => console.error('[EDGE] loadAdminDashboard (non-fatal):', e));
     } else {
       showView('view-player');
+      // Show player mobile nav, hide admin nav
+      const pmn2 = document.getElementById('mobile-player-nav');
+      const amn2 = document.getElementById('mobile-admin-nav');
+      if (pmn2) pmn2.style.removeProperty('display');
+      if (amn2) amn2.style.display = 'none';
       loadPlayerDashboard().catch(e => console.error('[EDGE] loadPlayerDashboard (non-fatal):', e));
     }
 
