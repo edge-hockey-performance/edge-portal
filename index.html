@@ -607,222 +607,6 @@
     .dot-yellow { background:var(--yellow); box-shadow:0 0 6px var(--yellow); }
     .dot-red    { background:var(--red);    box-shadow:0 0 6px var(--red); }
 
-
-    /* ── EDGE STATUS module ── */
-    .edge-status-module {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; padding: 18px 22px;
-      border-radius: var(--radius-lg); margin-bottom: 24px;
-      border: 1px solid var(--border); position: relative; overflow: hidden;
-    }
-    .edge-status-module::before {
-      content: ''; position: absolute; inset: 0; opacity: 0.04;
-      background: var(--esm-color, var(--green));
-      pointer-events: none;
-    }
-    .edge-status-module { border-color: var(--esm-border, rgba(61,214,140,0.25)); }
-    .esm-left { display: flex; align-items: center; gap: 14px; }
-    .esm-dot {
-      width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
-      background: var(--esm-color, var(--green));
-      box-shadow: 0 0 10px var(--esm-color, var(--green));
-      animation: esm-pulse 2s ease-in-out infinite;
-    }
-    @keyframes esm-pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.15); }
-    }
-    .esm-text {}
-    .esm-label {
-      font-family: var(--fh); font-weight: 900; font-style: italic;
-      font-size: 20px; text-transform: uppercase; letter-spacing: 0.02em;
-      color: var(--esm-color, var(--green)); line-height: 1;
-    }
-    .esm-sub {
-      font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 300;
-    }
-    .esm-badge {
-      font-family: var(--fh); font-size: 10px; font-weight: 700;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      padding: 4px 10px; border-radius: 20px; flex-shrink: 0;
-      background: rgba(255,255,255,0.06); color: var(--muted);
-      border: 1px solid var(--border);
-    }
-
-    /* ── Next Sharpen Recommendation banner ── */
-    .sharpen-rec-banner {
-      background: rgba(245,200,66,0.06); border: 1px solid rgba(245,200,66,0.2);
-      border-radius: var(--radius-lg); padding: 16px 20px;
-      display: flex; align-items: center; gap: 14px; margin-bottom: 24px;
-    }
-    .srb-icon { font-size: 22px; flex-shrink: 0; }
-    .srb-text {}
-    .srb-title { font-size: 13px; font-weight: 700; color: var(--yellow); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px; }
-    .srb-body  { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.5; }
-    .srb-action { font-size: 12px; color: var(--yellow); font-weight: 600; margin-top: 4px; cursor: pointer; text-decoration: underline; }
-
-    /* ── Pilot welcome banner (no-service state) ── */
-    .pilot-welcome-banner {
-      background: rgba(96,165,250,0.06); border: 1px solid rgba(96,165,250,0.18);
-      border-radius: var(--radius-lg); padding: 16px 20px;
-      display: flex; align-items: center; gap: 14px; margin-bottom: 24px;
-    }
-    .pwb-icon { font-size: 22px; flex-shrink: 0; }
-    .pwb-text {}
-    .pwb-title { font-size: 13px; font-weight: 700; color: var(--blue); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px; }
-    .pwb-body  { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.5; }
-
-    /* ── Pilot member badge (profile) ── */
-    .pilot-member-badge {
-      display: flex; align-items: center; gap: 10px;
-      background: linear-gradient(135deg, rgba(184,190,200,0.08) 0%, rgba(236,238,242,0.04) 100%);
-      border: 1px solid rgba(200,205,216,0.25); border-radius: var(--radius);
-      padding: 12px 16px; margin-bottom: 16px;
-    }
-    .pmb-dot {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--chrome-bright);
-      box-shadow: 0 0 8px rgba(236,238,242,0.6); flex-shrink: 0;
-    }
-    .pmb-text { font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--chrome-bright); }
-    .pmb-sub { font-size: 11px; color: var(--muted); font-weight: 300; margin-top: 1px; }
-
-
-    /* ══════════════════════════════════════════════════
-       QUICK SERVICE / STAFF OPS
-    ══════════════════════════════════════════════════ */
-    .service-filters {
-      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;
-    }
-    .service-filters select,
-    .service-filters input {
-      padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border);
-      border-radius: var(--radius); color: #fff; font-family: var(--fb); font-size: 13px;
-      outline: none; transition: border-color .2s;
-    }
-    .service-filters select:focus,
-    .service-filters input:focus { border-color: var(--border-hi); }
-    .service-filters select { cursor: pointer; min-width: 130px; }
-    .service-filters input  { flex: 1; min-width: 180px; }
-    .service-filter-clear   {
-      font-size: 12px; color: var(--muted); cursor: pointer; padding: 4px 8px;
-      border: 1px solid var(--border); border-radius: var(--radius); background: transparent;
-      transition: color .2s, border-color .2s;
-    }
-    .service-filter-clear:hover { color: #fff; border-color: var(--border-hi); }
-
-    /* Player list */
-    .service-player-list {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px;
-    }
-    @media(max-width: 600px) { .service-player-list { grid-template-columns: 1fr; } }
-    .service-player-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 16px 18px;
-      cursor: pointer; transition: border-color .15s, background .15s;
-      display: flex; flex-direction: column; gap: 4px;
-    }
-    .service-player-card:hover { border-color: var(--border-hi); background: #1C1C1C; }
-    .spc-name   { font-family: var(--fh); font-weight: 800; font-style: italic; font-size: 18px; text-transform: uppercase; color: var(--chrome-bright); line-height: 1.1; }
-    .spc-team   { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .spc-meta   { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
-    .spc-pill   {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 20px;
-      background: rgba(255,255,255,0.06); color: var(--silver); border: 1px solid var(--border);
-    }
-    .spc-pill.hollow { background: rgba(96,165,250,0.08); color: var(--blue); border-color: rgba(96,165,250,0.2); }
-    .spc-sharpen { font-size: 11px; color: var(--dim); margin-top: 6px; }
-    .service-empty { text-align:center; padding:40px; color:var(--muted); font-size:13px; }
-
-    /* Player detail panel (replaces list) */
-    .service-detail-panel { display: none; }
-    .service-detail-panel.active { display: block; }
-    .sdp-back {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--muted); cursor: pointer; margin-bottom: 20px;
-      padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
-      background: transparent; transition: color .2s, border-color .2s;
-    }
-    .sdp-back:hover { color: #fff; border-color: var(--border-hi); }
-    .sdp-name   { font-family: var(--fh); font-weight: 900; font-style: italic; font-size: 32px; text-transform: uppercase; color: var(--chrome-bright); line-height: 1; margin-bottom: 4px; }
-    .sdp-sub    { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
-    .sdp-stats  { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
-    .sdp-stat   { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; min-width: 120px; }
-    .sdp-stat-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-    .sdp-stat-val   { font-family: var(--fh); font-size: 20px; font-weight: 800; font-style: italic; color: var(--chrome-bright); }
-
-    /* Sharpening modal */
-    .sharpen-modal-overlay {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.75); display: none;
-      align-items: center; justify-content: center; padding: 20px;
-    }
-    .sharpen-modal-overlay.open { display: flex; }
-    .sharpen-modal {
-      background: var(--bg-2); border: 1px solid var(--border-hi);
-      border-radius: var(--radius-lg); padding: 28px 24px;
-      width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto;
-    }
-    .sm-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
-    .sm-title  { font-family: var(--fh); font-size: 22px; font-weight: 900; font-style: italic; text-transform: uppercase; color: var(--chrome-bright); }
-    .sm-player { font-size: 12px; color: var(--muted); margin-top: 3px; }
-    .sm-close  {
-      width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.07);
-      border: 1px solid var(--border); color: var(--muted); font-size: 16px; line-height: 1;
-      cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-      transition: background .15s;
-    }
-    .sm-close:hover { background: rgba(255,255,255,0.14); }
-    .sm-section       { margin-bottom: 20px; }
-    .sm-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-
-    /* Condition tap buttons */
-    .condition-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .condition-btn {
-      padding: 12px 10px; text-align: center; border-radius: var(--radius);
-      border: 2px solid var(--border); background: var(--bg-card);
-      cursor: pointer; font-size: 13px; font-weight: 600; color: var(--silver);
-      transition: all .15s; line-height: 1.3;
-    }
-    .condition-btn:hover { border-color: var(--border-hi); color: #fff; }
-    .condition-btn.selected { border-color: var(--green); color: var(--green); background: rgba(61,214,140,0.07); }
-    .condition-btn.selected.warn { border-color: var(--yellow); color: var(--yellow); background: rgba(245,200,66,0.07); }
-    .condition-btn.selected.bad  { border-color: var(--red);    color: var(--red);    background: rgba(240,82,82,0.07); }
-
-    /* Quick tag chips */
-    .tag-btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-    .tag-btn {
-      font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px;
-      border: 1px solid var(--border); background: rgba(255,255,255,0.04);
-      cursor: pointer; color: var(--muted); transition: all .15s;
-    }
-    .tag-btn:hover  { border-color: var(--border-hi); color: var(--silver); }
-    .tag-btn.active { border-color: var(--blue); color: var(--blue); background: rgba(96,165,250,0.08); }
-
-    /* Hollow quick-select */
-    .hollow-btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-    .hollow-btn {
-      min-width: 56px; padding: 10px 12px; text-align: center;
-      border-radius: var(--radius); border: 2px solid var(--border);
-      background: var(--bg-card); cursor: pointer;
-      font-family: var(--fh); font-size: 16px; font-weight: 700; color: var(--silver);
-      transition: all .15s;
-    }
-    .hollow-btn:hover  { border-color: var(--border-hi); color: #fff; }
-    .hollow-btn.active { border-color: var(--blue); color: var(--blue); background: rgba(96,165,250,0.08); }
-
-    .sm-notes-input {
-      width: 100%; padding: 10px 14px;
-      background: var(--bg-input); border: 1px solid var(--border);
-      border-radius: var(--radius); color: #fff; font-size: 13px;
-      font-family: var(--fb); resize: vertical; outline: none;
-      box-sizing: border-box; transition: border-color .2s;
-    }
-    .sm-notes-input:focus { border-color: var(--border-hi); }
-    .sm-submit { width: 100%; margin-top: 8px; }
-
     /* ── Timeline history ── */
     .timeline { display:flex; flex-direction:column; }
     .timeline-item { display:flex; gap:20px; padding:18px 0; border-bottom:1px solid var(--border); }
@@ -1151,7 +935,7 @@
         <button class="nav-btn active" id="pnav-dashboard" onclick="playerNav('dashboard')">Dashboard</button>
         <button class="nav-btn" id="pnav-history" onclick="playerNav('history')">Blade History</button>
         <button class="nav-btn" id="pnav-icetime" onclick="playerNav('icetime')">Ice Time</button>
-        <button class="nav-btn" id="pnav-conditionlog" onclick="playerNav('conditionlog')">Blade Condition Log</button>
+        <button class="nav-btn" id="pnav-conditionlog" onclick="playerNav('conditionlog')">Feedback &amp; Notes</button>
         <button class="nav-btn" id="pnav-profile" onclick="playerNav('profile')">My Profile</button>
       </div>
       <div class="topnav-user">
@@ -1167,37 +951,6 @@
          <div class="page-eyebrow">Welcome Back</div>
          <div class="page-title chrome" id="dash-greeting"></div>
          <div class="page-sub" id="dash-team"></div>
-       </div>
-
-       <!-- EDGE STATUS module (hidden until JS populates) -->
-       <div class="edge-status-module" id="edge-status-module" style="display:none;">
-         <div class="esm-left">
-           <div class="esm-dot" id="esm-dot"></div>
-           <div class="esm-text">
-             <div class="esm-label" id="esm-label">Optimal</div>
-             <div class="esm-sub"  id="esm-sub">Edges are sharp and ready.</div>
-           </div>
-         </div>
-         <div class="esm-badge" id="esm-badge">EDGE STATUS</div>
-       </div>
-
-       <!-- Pilot welcome banner (shown when no service yet) -->
-       <div class="pilot-welcome-banner" id="pilot-welcome-banner" style="display:none;">
-         <div class="pwb-icon">🏒</div>
-         <div class="pwb-text">
-           <div class="pwb-title">Founding Team Pilot — Active</div>
-           <div class="pwb-body">Your profile is set up and ready. EDGE will pick up your blades at your next team skate — no action needed until then.</div>
-         </div>
-       </div>
-
-       <!-- Next Sharpen Recommendation banner (shown when approaching/overdue) -->
-       <div class="sharpen-rec-banner" id="sharpen-rec-banner" style="display:none;">
-         <div class="srb-icon">⚡</div>
-         <div class="srb-text">
-           <div class="srb-title" id="srb-title">Next Sharpen Recommended</div>
-           <div class="srb-body" id="srb-body">Based on your logged ice time, a sharpening is coming up soon.</div>
-           <div class="srb-action" onclick="playerNav('icetime')">View your sharpening window →</div>
-         </div>
        </div>
 
        <!-- 4 stat cards -->
@@ -1228,7 +981,7 @@
        <div class="section">
          <div class="section-header"><div class="section-title">Quick Actions</div></div>
          <div class="grid-2">
-           <button class="btn btn-chrome" onclick="playerNav('conditionlog')">📸 Log Blade Condition</button>
+           <button class="btn btn-chrome" onclick="playerNav('conditionlog')">💬 Feedback &amp; Notes</button>
            <button class="btn btn-ghost"  onclick="playerNav('icetime')">⏱ Log Ice Time</button>
            <button class="btn btn-ghost"  onclick="playerNav('history')">View Blade History</button>
            <button class="btn btn-ghost"  onclick="playerNav('profile')">My Profile</button>
@@ -1387,20 +1140,14 @@
               <div class="blade-stat-val" id="ice-window-hrs">—</div>
             </div>
             <div class="blade-stat-row">
-              <div class="blade-stat-key">Recommended Window</div>
+              <div class="blade-stat-key">Sharpen Every</div>
               <div class="blade-stat-val">Every 8–10 hrs</div>
             </div>
             <div id="ice-window-alert" style="display:none;margin-top:16px;padding:14px 16px;background:rgba(245,200,66,0.07);border:1px solid rgba(245,200,66,0.25);border-radius:var(--radius);">
               <div class="dash-status-indicator status-yellow" style="margin-bottom:6px;">
                 <div class="dash-status-dot dot-yellow"></div>Approaching Recommended Service Window
               </div>
-              <div style="font-size:12px;color:var(--muted);font-weight:300;line-height:1.6;">Your blades are getting close to the 8–10 hr mark. EDGE will pick up at your next team skate — no action needed.</div>
-            </div>
-            <div id="ice-window-alert-needs" style="display:none;margin-top:16px;padding:14px 16px;background:rgba(240,82,82,0.07);border:1px solid rgba(240,82,82,0.25);border-radius:var(--radius);">
-              <div class="dash-status-indicator" style="margin-bottom:6px;">
-                <div class="dash-status-dot dot-red"></div>Sharpening Recommended
-              </div>
-              <div style="font-size:12px;color:var(--muted);font-weight:300;line-height:1.6;">You've hit or passed the recommended service window. EDGE will prioritize your blades at the next team pickup.</div>
+              <div style="font-size:12px;color:var(--muted);font-weight:300;">Consider booking a sharpening soon.</div>
             </div>
           </div>
         </div>
@@ -1500,7 +1247,6 @@
               <div id="profile-details"></div>
               <div class="divider"></div>
               <div class="section-header" style="margin-bottom:12px;"><div class="section-title">Membership</div></div>
-              <div id="pilot-member-badge-wrap"></div>
               <div id="profile-membership"></div>
             </div>
           </div>
@@ -1548,6 +1294,65 @@
                 <label>Skate Model</label>
                 <input type="text" id="edit-skate" placeholder="e.g. Bauer Vapor Hyperlite 2"/>
               </div>
+              <div class="divider" style="margin:18px 0 14px;"></div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Equipment &amp; Steel</div>
+              <div class="field">
+                <label>Number of Steel Sets <span style="color:var(--dim);font-weight:400;">(pairs of runners)</span></label>
+                <select id="edit-steel-sets">
+                  <option value="">Select…</option>
+                  <option value="1">1 set (standard)</option>
+                  <option value="2">2 sets (rotating)</option>
+                  <option value="3">3 sets</option>
+                  <option value="4+">4 or more sets</option>
+                </select>
+                <div style="font-size:11px;color:var(--dim);margin-top:4px;line-height:1.4;">Helps EDGE track wear per set and optimize your sharpening rotation.</div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Steel Brand</label>
+                  <select id="edit-steel-brand">
+                    <option value="">Select brand</option>
+                    <option>Bauer</option>
+                    <option>Step Steel</option>
+                    <option>Tydan Performance</option>
+                    <option>Flare</option>
+                    <option>ProSharp</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Steel Model</label>
+                  <input type="text" id="edit-steel-model" placeholder="e.g. LS Pulse TI, BlackSteel"/>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Current Steel Install Date</label>
+                  <input type="date" id="edit-steel-install-date"/>
+                </div>
+                <div class="field">
+                  <label>Est. Prior Sharpenings on Steel</label>
+                  <input type="number" id="edit-prior-sharpen-count" min="0" max="200" placeholder="0"/>
+                </div>
+              </div>
+              <div class="field">
+                <label>Blade Profile Preference</label>
+                <select id="edit-profile-pref">
+                  <option value="">Not specified</option>
+                  <option value="10ft Flat">10ft Flat (stock — most common)</option>
+                  <option value="11ft Flat">11ft Flat (slightly flatter)</option>
+                  <option value="9ft Flat">9ft Flat (slightly more aggressive)</option>
+                  <option value="8ft Flat">8ft Flat (aggressive)</option>
+                  <option value="Combo 10/12">Combo 10/12 (forward pitch)</option>
+                  <option value="Combo 9/13">Combo 9/13 (speed profile)</option>
+                  <option value="Custom">Custom — see equipment notes</option>
+                  <option value="Let EDGE Decide">Let EDGE Decide</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Equipment Notes <span style="color:var(--dim);font-weight:400;">(optional)</span></label>
+                <textarea id="edit-equipment-notes" rows="3" placeholder="Any notes about your skates, steel preferences, or special requests…" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;padding:10px;font-size:14px;resize:vertical;"></textarea>
+              </div>
               <div class="alert alert-success" id="edit-profile-ok" style="margin-bottom:12px;"></div>
               <div style="display:flex;gap:10px;">
                 <button class="btn btn-chrome" style="flex:1;" onclick="saveProfileEdits()">Save Changes</button>
@@ -1559,35 +1364,136 @@
       </div>
     </div>
 
-    <!-- Report Blade Issue sub-view -->
+    <!-- Feedback & Notes sub-view -->
     <div class="page" id="psub-conditionlog" style="display:none;">
       <div class="page-header">
-        <div class="page-eyebrow">Blade Care</div>
-        <div class="page-title">Blade <span class="chrome">Condition Log</span></div>
-        <div class="page-sub">Noticed a chip, nick, or dull edge? Let us know before your next skate so we can prep your blades.</div>
+        <div class="page-eyebrow">Your Voice</div>
+        <div class="page-title">Feedback <span class="chrome">&amp; Notes</span></div>
+        <div class="page-sub">Share how your last sharpening felt, request a preference change, or flag a blade issue — your sharpener reviews everything before your next visit.</div>
       </div>
 
       <!-- Submit form -->
       <div class="section">
-        <div class="section-header"><div class="section-title">Log a Condition</div></div>
+        <div class="section-header"><div class="section-title">Submit Feedback</div></div>
         <div class="card card-body">
+
+          <!-- Category selector -->
           <div class="field">
-            <label>Photo <span style="color:var(--dim);font-weight:400;">(optional but helpful)</span></label>
-            <div class="photo-upload-area" id="photo-upload-area">
-              <input type="file" id="condition-photo" accept="image/*" onchange="onConditionPhotoChange(this)"/>
-              <div class="photo-upload-label">
-                <strong>📸 Tap to add a photo</strong>
-                Chip, nick, uneven edge — anything you notice
-              </div>
-              <img class="photo-preview-img" id="condition-photo-preview" src="" alt="Preview"/>
+            <label>What type of feedback?</label>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:4px;" id="feedback-category-grid">
+              <button type="button" class="feedback-cat-btn active" id="fcat-sharpening" onclick="setFeedbackCat('sharpening')" style="padding:12px 10px;border-radius:var(--radius);border:1px solid var(--border-hi);background:rgba(200,205,216,0.1);color:#fff;font-size:13px;font-weight:600;text-align:left;cursor:pointer;transition:all .15s;">
+                <div style="font-size:18px;margin-bottom:4px;">⭐</div>
+                <div>Sharpening Feedback</div>
+                <div style="font-size:11px;font-weight:400;color:var(--muted);margin-top:2px;">How did your last sharpen feel?</div>
+              </button>
+              <button type="button" class="feedback-cat-btn" id="fcat-preference" onclick="setFeedbackCat('preference')" style="padding:12px 10px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--silver);font-size:13px;font-weight:600;text-align:left;cursor:pointer;transition:all .15s;">
+                <div style="font-size:18px;margin-bottom:4px;">🔧</div>
+                <div>Preference Change</div>
+                <div style="font-size:11px;font-weight:400;color:var(--dim);margin-top:2px;">Request a hollow, profile, or setup change</div>
+              </button>
+              <button type="button" class="feedback-cat-btn" id="fcat-condition" onclick="setFeedbackCat('condition')" style="padding:12px 10px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--silver);font-size:13px;font-weight:600;text-align:left;cursor:pointer;transition:all .15s;">
+                <div style="font-size:18px;margin-bottom:4px;">📸</div>
+                <div>Blade Condition Issue</div>
+                <div style="font-size:11px;font-weight:400;color:var(--dim);margin-top:2px;">Chip, nick, or edge problem</div>
+              </button>
+              <button type="button" class="feedback-cat-btn" id="fcat-general" onclick="setFeedbackCat('general')" style="padding:12px 10px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--silver);font-size:13px;font-weight:600;text-align:left;cursor:pointer;transition:all .15s;">
+                <div style="font-size:18px;margin-bottom:4px;">📝</div>
+                <div>General Note</div>
+                <div style="font-size:11px;font-weight:400;color:var(--dim);margin-top:2px;">Anything else for your sharpener</div>
+              </button>
             </div>
           </div>
-          <div class="field">
-            <label>Description</label>
-            <textarea id="condition-desc" rows="3" placeholder="e.g. noticed a chip on the inside edge after last game, felt rough on crossovers…" style="width:100%;padding:11px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;font-size:14px;resize:vertical;outline:none;box-sizing:border-box;font-family:inherit;"></textarea>
+
+          <!-- Category: Sharpening Feedback -->
+          <div id="ffields-sharpening">
+            <div class="field">
+              <label>How did your last sharpening feel?</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+                <button type="button" class="feedback-rating-btn active" id="frating-great" onclick="setFeedbackRating('great')" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(61,214,140,0.4);background:rgba(61,214,140,0.12);color:var(--green);font-size:13px;font-weight:600;cursor:pointer;">✓ Great</button>
+                <button type="button" class="feedback-rating-btn" id="frating-good" onclick="setFeedbackRating('good')" style="padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--silver);font-size:13px;font-weight:600;cursor:pointer;">Good</button>
+                <button type="button" class="feedback-rating-btn" id="frating-off" onclick="setFeedbackRating('off')" style="padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--silver);font-size:13px;font-weight:600;cursor:pointer;">Something felt off</button>
+                <button type="button" class="feedback-rating-btn" id="frating-needs_work" onclick="setFeedbackRating('needs_work')" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(240,82,82,0.3);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;">Needs work</button>
+              </div>
+            </div>
+            <div class="field">
+              <label>What specifically did you notice? <span style="color:var(--dim);font-weight:400;">(optional)</span></label>
+              <textarea id="ftext-sharpening" rows="3" placeholder="e.g. edges felt sharp but I noticed I was catching on tight turns, right edge seemed slightly duller…" style="width:100%;padding:11px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;font-size:14px;resize:vertical;font-family:inherit;"></textarea>
+            </div>
           </div>
-          <div class="alert alert-success" id="condition-ok"></div>
-          <button class="btn btn-chrome" onclick="submitConditionLog()">Submit</button>
+
+          <!-- Category: Preference Change -->
+          <div id="ffields-preference" style="display:none;">
+            <div class="field">
+              <label>What would you like to change?</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;margin-bottom:12px;">
+                <button type="button" class="feedback-pref-btn active" id="fpref-hollow" onclick="togglePrefType('hollow')" style="padding:6px 14px;border-radius:20px;border:1px solid rgba(200,205,216,0.4);background:rgba(200,205,216,0.1);color:var(--chrome-bright);font-size:12px;font-weight:600;cursor:pointer;">Hollow</button>
+                <button type="button" class="feedback-pref-btn" id="fpref-profile" onclick="togglePrefType('profile')" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--silver);font-size:12px;font-weight:600;cursor:pointer;">Profile</button>
+                <button type="button" class="feedback-pref-btn" id="fpref-other" onclick="togglePrefType('other')" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--silver);font-size:12px;font-weight:600;cursor:pointer;">Other Setup</button>
+              </div>
+              <!-- Hollow sub-fields -->
+              <div id="fpref-sub-hollow">
+                <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Your current hollow: <strong id="fpref-current-hollow" style="color:var(--chrome-bright);">—</strong></div>
+                <select id="fpref-hollow-select" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;padding:10px;font-size:14px;">
+                  <option value="">Select desired hollow</option>
+                  <option>3/8"</option><option>7/16"</option>
+                  <option>1/2"</option><option>9/16"</option>
+                  <option>5/8"</option><option>3/4"</option><option>1"</option>
+                  <option value="not_sure">Not sure — let EDGE decide</option>
+                </select>
+              </div>
+              <!-- Profile sub-fields -->
+              <div id="fpref-sub-profile" style="display:none;">
+                <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Your current profile: <strong id="fpref-current-profile" style="color:var(--chrome-bright);">—</strong></div>
+                <select id="fpref-profile-select" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;padding:10px;font-size:14px;">
+                  <option value="">Select desired profile</option>
+                  <option value="10ft Flat">10ft Flat (stock)</option>
+                  <option value="11ft Flat">11ft Flat (flatter, more glide)</option>
+                  <option value="9ft Flat">9ft Flat (more aggressive)</option>
+                  <option value="8ft Flat">8ft Flat (very aggressive)</option>
+                  <option value="Combo 10/12">Combo 10/12</option>
+                  <option value="Combo 9/13">Combo 9/13</option>
+                  <option value="Custom">Custom — I'll describe below</option>
+                  <option value="Let EDGE Decide">Let EDGE decide</option>
+                </select>
+              </div>
+              <!-- Other sub-field -->
+              <div id="fpref-sub-other" style="display:none;"></div>
+            </div>
+            <div class="field">
+              <label>Additional context <span style="color:var(--dim);font-weight:400;">(optional)</span></label>
+              <textarea id="ftext-preference" rows="3" placeholder="e.g. felt like I was losing grip on stops after the last few games, thinking I want to go shallower…" style="width:100%;padding:11px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;font-size:14px;resize:vertical;font-family:inherit;"></textarea>
+            </div>
+          </div>
+
+          <!-- Category: Blade Condition -->
+          <div id="ffields-condition" style="display:none;">
+            <div class="field">
+              <label>Photo <span style="color:var(--dim);font-weight:400;">(optional but helpful)</span></label>
+              <div class="photo-upload-area" id="photo-upload-area">
+                <input type="file" id="condition-photo" accept="image/*" onchange="onConditionPhotoChange(this)"/>
+                <div class="photo-upload-label">
+                  <strong>📸 Tap to add a photo</strong>
+                  Chip, nick, uneven edge — anything you notice
+                </div>
+                <img class="photo-preview-img" id="condition-photo-preview" src="" alt="Preview"/>
+              </div>
+            </div>
+            <div class="field">
+              <label>Describe the issue</label>
+              <textarea id="ftext-condition" rows="3" placeholder="e.g. noticed a chip on the inside edge after last game, felt rough on crossovers…" style="width:100%;padding:11px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;font-size:14px;resize:vertical;font-family:inherit;"></textarea>
+            </div>
+          </div>
+
+          <!-- Category: General Note -->
+          <div id="ffields-general" style="display:none;">
+            <div class="field">
+              <label>Your note</label>
+              <textarea id="ftext-general" rows="4" placeholder="Anything you want your sharpener to know — heads up before your next visit, questions about your setup, etc." style="width:100%;padding:11px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;font-size:14px;resize:vertical;font-family:inherit;"></textarea>
+            </div>
+          </div>
+
+          <div class="alert alert-success" id="condition-ok" style="margin-top:8px;"></div>
+          <button class="btn btn-chrome" style="width:100%;margin-top:4px;" onclick="submitConditionLog()">Submit</button>
         </div>
       </div>
 
@@ -1627,10 +1533,10 @@
         <small>Staff Dashboard</small>
       </div>
       <div class="topnav-nav">
-        <button class="nav-btn active" id="anav-service" onclick="adminNav('service')">⚡ Quick Service</button>
-        <button class="nav-btn" id="anav-queue" onclick="adminNav('queue')">Blade Queue</button>
+        <button class="nav-btn active" id="anav-queue" onclick="adminNav('queue')">Blade Queue</button>
+        <button class="nav-btn" id="anav-service" onclick="adminNav('service')" style="background:rgba(96,165,250,0.08);color:var(--blue);">⚡ Service Session</button>
         <button class="nav-btn" id="anav-players" onclick="adminNav('players')">All Players</button>
-        <button class="nav-btn" id="anav-reports" onclick="adminNav('reports')">Condition Reports <span id="admin-reports-badge" style="display:none;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:20px;padding:1px 6px;margin-left:4px;vertical-align:middle;"></span></button>
+        <button class="nav-btn" id="anav-reports" onclick="adminNav('reports')">Player Feedback <span id="admin-reports-badge" style="display:none;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:20px;padding:1px 6px;margin-left:4px;vertical-align:middle;"></span></button>
       </div>
       <div class="topnav-user">
         <div class="user-avatar" style="background:linear-gradient(135deg,#2A3A2A,#3A4E3A);color:#3DD68C;">EP</div>
@@ -1638,119 +1544,6 @@
         <button class="nav-btn logout" onclick="logout()">Sign Out</button>
       </div>
     </nav>
-
-    <!-- ── Quick Service sub-view ── -->
-    <div class="page" id="asub-service">
-      <div class="page-header">
-        <div class="page-eyebrow">Staff Operations</div>
-        <div class="page-title">Quick <span class="chrome">Service</span></div>
-        <div class="page-sub">Find a player, log a sharpening. Designed to be done in under 20 seconds.</div>
-      </div>
-
-      <!-- Filters + Search -->
-      <div class="service-filters" id="service-filters">
-        <select id="sf-program" onchange="filterServicePlayers()">
-          <option value="">All Programs</option>
-          <option>Mission</option>
-          <option>Reapers</option>
-          <option>St. Viator</option>
-          <option>Other / Independent</option>
-        </select>
-        <select id="sf-team" onchange="filterServicePlayers()">
-          <option value="">All Teams</option>
-          <option>Bantam (13U &amp; 14U) — 2012 &amp; 2013</option>
-          <option>15U Midget — 2011</option>
-          <option>16U Midget Minor — 2010</option>
-          <option>18U Midget Major — 2008 &amp; 2009</option>
-        </select>
-        <select id="sf-hollow" onchange="filterServicePlayers()">
-          <option value="">All Hollows</option>
-          <option>3/8"</option><option>7/16"</option>
-          <option>1/2"</option><option>9/16"</option>
-          <option>5/8"</option><option>3/4"</option><option>1"</option>
-        </select>
-        <input type="text" id="sf-search" placeholder="🔍  Search player name…" oninput="filterServicePlayers()"/>
-        <button class="service-filter-clear" onclick="clearServiceFilters()">Clear</button>
-      </div>
-
-      <!-- Player list (shown by default) -->
-      <div id="service-list-wrap">
-        <div class="service-player-list" id="service-player-list">
-          <div class="service-empty">Loading players…</div>
-        </div>
-      </div>
-
-      <!-- Player detail panel (hidden until a player is selected) -->
-      <div class="service-detail-panel" id="service-detail-panel">
-        <button class="sdp-back" onclick="closeServiceDetail()">← Back to Players</button>
-        <div class="sdp-name" id="sdp-name"></div>
-        <div class="sdp-sub"  id="sdp-sub"></div>
-        <div class="sdp-stats" id="sdp-stats"></div>
-        <button class="btn btn-chrome" style="max-width:260px;font-size:16px;padding:14px 24px;" onclick="openSharpenModal()">
-          Log Sharpening
-        </button>
-      </div>
-    </div>
-
-    <!-- ── Sharpening Quick-Entry Modal ── -->
-    <div class="sharpen-modal-overlay" id="sharpen-modal-overlay">
-      <div class="sharpen-modal">
-        <div class="sm-header">
-          <div>
-            <div class="sm-title">Log Sharpening</div>
-            <div class="sm-player" id="sm-player-name"></div>
-          </div>
-          <button class="sm-close" onclick="closeSharpenModal()">✕</button>
-        </div>
-
-        <!-- Hollow -->
-        <div class="sm-section">
-          <div class="sm-section-label">Hollow</div>
-          <div class="hollow-btn-group" id="sm-hollow-group">
-            <button class="hollow-btn" data-hollow="1/2&quot;"  onclick="selectHollow(this)">1/2"</button>
-            <button class="hollow-btn" data-hollow="5/8&quot;"  onclick="selectHollow(this)">5/8"</button>
-            <button class="hollow-btn" data-hollow="3/4&quot;"  onclick="selectHollow(this)">3/4"</button>
-            <button class="hollow-btn" data-hollow="9/16&quot;" onclick="selectHollow(this)">9/16"</button>
-            <button class="hollow-btn" data-hollow="custom"    onclick="selectHollow(this)">Custom</button>
-          </div>
-          <input type="text" id="sm-hollow-custom" class="sm-notes-input" style="display:none;margin-top:8px;width:auto;" placeholder='Custom hollow e.g. "7/16"'/>
-        </div>
-
-        <!-- Edge Condition -->
-        <div class="sm-section">
-          <div class="sm-section-label">Edge Condition</div>
-          <div class="condition-btn-group">
-            <button class="condition-btn selected" data-cond="clean" onclick="selectCondition(this)">✓ Clean<br><span style="font-size:11px;font-weight:400;opacity:0.7;">No issues</span></button>
-            <button class="condition-btn" data-cond="minor" onclick="selectCondition(this)">Minor Wear<br><span style="font-size:11px;font-weight:400;opacity:0.7;">Light use marks</span></button>
-            <button class="condition-btn" data-cond="adjustment" onclick="selectCondition(this)">Needed Adjustment<br><span style="font-size:11px;font-weight:400;opacity:0.7;">Hollow changed</span></button>
-            <button class="condition-btn" data-cond="damaged" onclick="selectCondition(this)">Damaged Edge<br><span style="font-size:11px;font-weight:400;opacity:0.7;">Chip or nick</span></button>
-          </div>
-        </div>
-
-        <!-- Quick Tags -->
-        <div class="sm-section" id="sm-tags-section">
-          <div class="sm-section-label">Quick Tags <span style="font-weight:300;color:var(--dim);">(optional)</span></div>
-          <div class="tag-btn-group">
-            <button class="tag-btn" data-tag="Uneven edges"          onclick="toggleTag(this)">Uneven edges</button>
-            <button class="tag-btn" data-tag="Chipped steel"         onclick="toggleTag(this)">Chipped steel</button>
-            <button class="tag-btn" data-tag="Player requested change" onclick="toggleTag(this)">Player requested change</button>
-            <button class="tag-btn" data-tag="Hollow adjusted"       onclick="toggleTag(this)">Hollow adjusted</button>
-          </div>
-        </div>
-
-        <!-- Notes -->
-        <div class="sm-section">
-          <div class="sm-section-label">Notes <span style="font-weight:300;color:var(--dim);">(optional)</span></div>
-          <textarea class="sm-notes-input" id="sm-notes" rows="2" placeholder="Any additional notes…"></textarea>
-        </div>
-
-        <div class="alert alert-error"   id="sm-error"   style="margin-bottom:8px;"></div>
-        <div class="alert alert-success" id="sm-success" style="margin-bottom:8px;"></div>
-        <button class="btn btn-chrome sm-submit" id="sm-submit-btn" onclick="submitSharpening()">
-          Complete Sharpening
-        </button>
-      </div>
-    </div>
 
     <!-- Queue sub-view -->
     <div class="page" id="asub-queue">
@@ -1840,7 +1633,7 @@
         <div class="card">
           <table>
             <thead>
-              <tr><th>Player</th><th>Organization / Team</th><th>Membership</th><th>Hollow</th><th>Skate Model</th><th>Total Sharpenings</th></tr>
+              <tr><th>Player</th><th>Organization / Team</th><th>Membership</th><th>Hollow</th><th>Skate Model</th><th>Sharpenings</th><th>Steel Health</th><th></th></tr>
             </thead>
             <tbody id="admin-players-table"></tbody>
           </table>
@@ -1848,12 +1641,329 @@
       </div>
     </div>
 
+    <!-- ══════════ SERVICE SESSION SUB-VIEW (admin) ══════════ -->
+    <div class="page" id="asub-service" style="display:none;">
+      <div class="page-header">
+        <div class="page-eyebrow">Staff Operations</div>
+        <div class="page-title">Service <span class="chrome">Session</span></div>
+        <div class="page-sub">All registered players load automatically. Use the filters and search to narrow by program or team, then log sharpenings for your session.</div>
+      </div>
+
+      <!-- Session config bar (always visible) -->
+      <div class="card card-body" style="margin-bottom:16px;">
+        <div class="field-row" style="flex-wrap:wrap;gap:12px;margin-bottom:0;">
+          <div class="field" style="min-width:140px;margin-bottom:0;">
+            <label>Service Date</label>
+            <input type="date" id="svc-date"/>
+          </div>
+          <div class="field" style="min-width:180px;margin-bottom:0;">
+            <label>Location</label>
+            <select id="svc-location">
+              <option>Nicholas Sportsplex</option>
+              <option>Glacier Ice Arena</option>
+              <option>Edge Office</option>
+              <option>On-site / Rink</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field" style="min-width:150px;margin-bottom:0;">
+            <label>Filter: Organization</label>
+            <select id="svc-org" onchange="onSvcOrgChange()">
+              <option value="">All Programs</option>
+              <option value="Mission">Mission</option>
+              <option value="Reapers">Reapers</option>
+              <option value="St. Viator">St. Viator</option>
+              <option value="Other">Other / Independent</option>
+            </select>
+          </div>
+          <div class="field" style="min-width:160px;margin-bottom:0;">
+            <label>Filter: Team</label>
+            <select id="svc-team" onchange="filterServicePlayers()">
+              <option value="">All Teams</option>
+            </select>
+          </div>
+          <div class="field" style="min-width:160px;margin-bottom:0;">
+            <label>Search Player</label>
+            <input type="text" id="svc-search" placeholder="Name…" oninput="filterServicePlayers()" style="font-size:13px;"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Session info strip -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span id="svc-count-badge" style="font-size:12px;color:var(--muted);padding:4px 10px;background:var(--bg-card);border-radius:20px;border:1px solid var(--border);">0 selected</span>
+          <span id="svc-showing-badge" style="font-size:12px;color:var(--dim);"></span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost btn-sm" onclick="svcSelectVisible()">Select Shown</button>
+          <button class="btn btn-ghost btn-sm" onclick="svcSelectAll()">Select All</button>
+          <button class="btn btn-ghost btn-sm" onclick="svcSelectNone()">Clear All</button>
+        </div>
+      </div>
+
+      <!-- Player cards -->
+      <div id="svc-player-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+        <div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Loading players…</div>
+      </div>
+
+      <!-- Complete Session -->
+      <div class="section">
+        <div class="section-header"><div class="section-title">Complete Session</div></div>
+        <div class="card card-body">
+          <div style="margin-bottom:14px;">
+            <div style="font-size:14px;font-weight:600;" id="svc-summary-line">Select players above to log their sharpenings.</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">Selected players will have a sharpening record added to their history with your notes.</div>
+          </div>
+          <div id="svc-complete-ok" style="margin-bottom:12px;padding:10px 14px;border-radius:var(--radius);display:none;font-size:13px;"></div>
+          <button class="btn btn-chrome" style="width:100%;font-size:16px;padding:14px;" onclick="completeServiceSession()" id="svc-complete-btn">Complete Session &amp; Log All Sharpenings</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Player Detail / Edit sub-view (admin) -->
+    <div class="page" id="asub-player-detail" style="display:none;">
+      <div class="page-header" style="padding-bottom:8px;">
+        <button class="btn btn-ghost btn-sm" onclick="adminNav('players')" style="margin-bottom:12px;">← Back to All Players</button>
+        <div class="page-eyebrow">Member Profile</div>
+        <div class="page-title" id="admin-detail-title">Player <span class="chrome">Profile</span></div>
+        <div class="page-sub" id="admin-detail-sub">Full profile, equipment details, and steel health tracking.</div>
+      </div>
+
+      <!-- ── Top info strip ── -->
+      <div class="stats-row" id="admin-detail-stats" style="margin-bottom:20px;"></div>
+
+      <div class="grid-2">
+
+        <!-- LEFT: Player Info + Equipment (admin-editable) -->
+        <div>
+          <div class="section">
+            <div class="section-header">
+              <div class="section-title">Player Info</div>
+            </div>
+            <div class="card card-body">
+              <div class="field-row">
+                <div class="field">
+                  <label>First Name</label>
+                  <input type="text" id="aed-fname" placeholder="First name"/>
+                </div>
+                <div class="field">
+                  <label>Last Name</label>
+                  <input type="text" id="aed-lname" placeholder="Last name"/>
+                </div>
+              </div>
+              <div class="field">
+                <label>Organization / Program</label>
+                <select id="aed-org" onchange="onAdminEditOrgChange()">
+                  <option value="">Select organization</option>
+                  <option value="Mission">Mission</option>
+                  <option value="Reapers">Reapers</option>
+                  <option value="St. Viator">St. Viator</option>
+                  <option value="Other">Other / Independent</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Team</label>
+                <select id="aed-team"><option value="">Select organization first</option></select>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Birth Year</label>
+                  <select id="aed-birth-year">
+                    <option value="">Select year</option>
+                    <option>2007</option><option>2008</option><option>2009</option>
+                    <option>2010</option><option>2011</option><option>2012</option>
+                    <option>2013</option><option>2014</option><option>2015</option>
+                    <option>2016</option><option>2017</option><option>2018</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Position</label>
+                  <select id="aed-position">
+                    <option value="">Select position</option>
+                    <option>Forward</option>
+                    <option>Defense</option>
+                    <option>Goalie</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Hollow</label>
+                  <select id="aed-hollow">
+                    <option>3/8"</option><option>7/16"</option>
+                    <option>1/2"</option><option>9/16"</option>
+                    <option value="5/8&quot;" selected>5/8"</option>
+                    <option>3/4"</option><option>1"</option>
+                    <option value="not_sure">Not sure</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Membership Plan</label>
+                  <select id="aed-plan">
+                    <option value="spring_pilot">Founding Team Pilot</option>
+                    <option value="member">EDGE Member ($40/mo)</option>
+                    <option value="single">Single Visit ($25)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Sharpenings Used</label>
+                  <input type="number" id="aed-sharps-used" min="0" placeholder="0"/>
+                </div>
+                <div class="field">
+                  <label>Sharpenings Allowed</label>
+                  <input type="number" id="aed-sharps-allowed" min="0" placeholder="0"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section" style="margin-top:16px;">
+            <div class="section-header"><div class="section-title">Equipment</div></div>
+            <div class="card card-body">
+              <div class="field">
+                <label>Skate Model</label>
+                <input type="text" id="aed-skate" placeholder="e.g. Bauer Vapor Hyperlite 2"/>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Steel Brand</label>
+                  <select id="aed-steel-brand">
+                    <option value="">Select brand</option>
+                    <option>Bauer</option>
+                    <option>Step Steel</option>
+                    <option>Tydan Performance</option>
+                    <option>Flare</option>
+                    <option>ProSharp</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Steel Model</label>
+                  <input type="text" id="aed-steel-model" placeholder="e.g. LS Pulse TI"/>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Install Date</label>
+                  <input type="date" id="aed-steel-install-date"/>
+                </div>
+                <div class="field">
+                  <label>Prior Sharpenings on Steel</label>
+                  <input type="number" id="aed-prior-sharpen-count" min="0" max="200" placeholder="0"/>
+                </div>
+              </div>
+              <div class="field">
+                <label>Blade Profile Preference</label>
+                <select id="aed-profile-pref">
+                  <option value="">Not specified</option>
+                  <option value="10ft Flat">10ft Flat (stock)</option>
+                  <option value="11ft Flat">11ft Flat (flatter)</option>
+                  <option value="9ft Flat">9ft Flat (aggressive)</option>
+                  <option value="8ft Flat">8ft Flat (very aggressive)</option>
+                  <option value="Combo 10/12">Combo 10/12</option>
+                  <option value="Combo 9/13">Combo 9/13</option>
+                  <option value="Custom">Custom</option>
+                  <option value="Let EDGE Decide">Let EDGE Decide</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Equipment Notes</label>
+                <textarea id="aed-equipment-notes" rows="2" placeholder="Player equipment notes…" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;padding:10px;font-size:14px;resize:vertical;"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Steel Health + Internal Notes (staff-only) -->
+        <div>
+          <!-- Steel Health Score -->
+          <div class="section">
+            <div class="section-header">
+              <div class="section-title">Steel Health <span style="font-size:11px;color:var(--muted);font-weight:400;font-family:var(--fb);margin-left:6px;">Staff Only</span></div>
+            </div>
+            <div class="card card-body">
+              <!-- Health score display -->
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+                <div id="aed-health-gauge" style="width:72px;height:72px;border-radius:50%;background:conic-gradient(var(--green) 0% 100%, var(--bg-input) 0%);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <div style="width:52px;height:52px;border-radius:50%;background:var(--bg-card);display:flex;align-items:center;justify-content:center;">
+                    <span id="aed-health-score-display" style="font-family:var(--fh);font-size:22px;font-weight:700;">—</span>
+                  </div>
+                </div>
+                <div>
+                  <div id="aed-health-label" style="font-family:var(--fh);font-size:16px;font-weight:700;letter-spacing:.04em;">Awaiting Measurement</div>
+                  <div id="aed-health-rec" style="font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4;">Enter measurements and condition ratings below to generate a score.</div>
+                </div>
+              </div>
+
+              <!-- Blade height measurements -->
+              <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Blade Height Measurements (mm)</div>
+              <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:center;margin-bottom:16px;">
+                <div style="font-size:11px;color:var(--dim);font-weight:600;"></div>
+                <div style="font-size:11px;color:var(--muted);font-weight:600;text-align:center;">Left</div>
+                <div style="font-size:11px;color:var(--muted);font-weight:600;text-align:center;">Right</div>
+                <div style="font-size:12px;color:var(--silver);font-weight:600;">Toe</div>
+                <input type="number" id="aed-h-toe-l" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
+                <input type="number" id="aed-h-toe-r" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
+                <div style="font-size:12px;color:var(--silver);font-weight:600;">Mid</div>
+                <input type="number" id="aed-h-mid-l" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
+                <input type="number" id="aed-h-mid-r" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
+                <div style="font-size:12px;color:var(--silver);font-weight:600;">Heel</div>
+                <input type="number" id="aed-h-heel-l" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
+                <input type="number" id="aed-h-heel-r" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
+              </div>
+
+              <!-- Condition ratings -->
+              <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Condition Ratings (1 = Poor · 5 = Perfect)</div>
+              <div class="field">
+                <label style="display:flex;justify-content:space-between;"><span>Edge Damage</span><span id="aed-edge-damage-val" style="color:var(--chrome-c);">5</span></label>
+                <input type="range" id="aed-edge-damage" min="1" max="5" value="5" oninput="document.getElementById('aed-edge-damage-val').textContent=this.value;recalcHealthScore();" style="width:100%;accent-color:var(--chrome-c);"/>
+              </div>
+              <div class="field">
+                <label style="display:flex;justify-content:space-between;"><span>Profile Wear</span><span id="aed-profile-wear-val" style="color:var(--chrome-c);">5</span></label>
+                <input type="range" id="aed-profile-wear" min="1" max="5" value="5" oninput="document.getElementById('aed-profile-wear-val').textContent=this.value;recalcHealthScore();" style="width:100%;accent-color:var(--chrome-c);"/>
+              </div>
+              <div class="field">
+                <label style="display:flex;justify-content:space-between;"><span>Overall Steel Condition</span><span id="aed-steel-cond-val" style="color:var(--chrome-c);">5</span></label>
+                <input type="range" id="aed-steel-cond" min="1" max="5" value="5" oninput="document.getElementById('aed-steel-cond-val').textContent=this.value;recalcHealthScore();" style="width:100%;accent-color:var(--chrome-c);"/>
+              </div>
+
+              <div class="field" style="margin-top:4px;">
+                <label>Steel Health Notes <span style="color:var(--dim);font-weight:400;">(internal)</span></label>
+                <textarea id="aed-steel-health-notes" rows="2" placeholder="Observations, wear patterns, replacement timeline…" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;padding:10px;font-size:14px;resize:vertical;"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Internal Notes (admin-only) -->
+          <div class="section" style="margin-top:16px;">
+            <div class="section-header">
+              <div class="section-title">Internal Notes <span style="font-size:11px;color:var(--muted);font-weight:400;font-family:var(--fb);margin-left:6px;">Never visible to player</span></div>
+            </div>
+            <div class="card card-body">
+              <textarea id="aed-internal-notes" rows="5" placeholder="Staff observations, preferences, service history notes…" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;padding:10px;font-size:14px;resize:vertical;line-height:1.5;"></textarea>
+            </div>
+          </div>
+
+          <!-- Save buttons -->
+          <div class="alert alert-success" id="aed-save-ok" style="margin:12px 0;"></div>
+          <div style="display:flex;gap:10px;margin-top:4px;">
+            <button class="btn btn-chrome" style="flex:1;" onclick="saveAdminPlayerEdits()">Save All Changes</button>
+            <button class="btn btn-ghost btn-sm" onclick="adminNav('players')">Cancel</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- Incoming Reports sub-view -->
     <div class="page" id="asub-reports" style="display:none;">
       <div class="page-header">
-        <div class="page-eyebrow">Player Feedback</div>
-        <div class="page-title">Blade <span class="chrome">Condition Reports</span></div>
-        <div class="page-sub">Photos and notes submitted by players and parents — review and reply before they come in.</div>
+        <div class="page-eyebrow">Player Voice</div>
+        <div class="page-title">Player <span class="chrome">Feedback</span></div>
+        <div class="page-sub">Sharpening feedback, preference requests, blade issues, and general notes submitted by players — review and reply before their next visit.</div>
       </div>
       <div class="section">
         <div class="subtabs">
@@ -2043,13 +2153,13 @@ const ORG_TEAMS = {
   'Mission': [
     'Mite (8U)', 'Squirt Minor (10U)', 'Squirt Major (10U)',
     'Peewee Minor (12U)', 'Peewee Major (12U)',
-    'Bantam Minor (14U)', 'Bantam Major (14U)',
+    'Bantam Minor (14U)', 'Bantam Major (15U)',
     'Midget Minor (16U)', 'Midget Major (18U)'
   ],
   'Reapers': [
     'Mite (8U)', 'Squirt Minor (10U)', 'Squirt Major (10U)',
     'Peewee Minor (12U)', 'Peewee Major (12U)',
-    'Bantam Minor (14U)', 'Bantam Major (14U)',
+    'Bantam Minor (14U)', 'Bantam Major (15U)',
     'Midget Minor (16U)', 'Midget Major (18U)'
   ],
   'St. Viator': ['Freshman', 'JV', 'Varsity'],
@@ -2213,7 +2323,7 @@ async function loadPlayerDashboard() {
     set('dash-last-loc',  last.location || 'EDGE Service');
   } else {
     set('dash-last-date', '—');
-    set('dash-last-loc',  'Ready for first service');
+    set('dash-last-loc',  'No service yet');
   }
 
   // ── Stat card 2: Skates Since Sharpen (from skate_log) ──
@@ -2227,80 +2337,6 @@ async function loadPlayerDashboard() {
     } catch(e) { skatesSince = '—'; }
   }
   set('dash-skates-since', skatesSince);
-
-  // ── EDGE STATUS module ──
-  const esmModule = document.getElementById('edge-status-module');
-  const esmLabel  = document.getElementById('esm-label');
-  const esmSub    = document.getElementById('esm-sub');
-  const esmDot    = document.getElementById('esm-dot');
-  const pilotBanner  = document.getElementById('pilot-welcome-banner');
-  const sharpenBanner = document.getElementById('sharpen-rec-banner');
-  const srbTitle  = document.getElementById('srb-title');
-  const srbBody   = document.getElementById('srb-body');
-
-  if (!mySharps.length) {
-    // No service yet — show pilot welcome banner
-    if (pilotBanner) pilotBanner.style.display = '';
-    if (esmModule)   esmModule.style.display = 'none';
-    if (sharpenBanner) sharpenBanner.style.display = 'none';
-  } else {
-    // Calculate hours on current edges from skate_log durations
-    let iceHrsOnEdges = 0;
-    try {
-      const lastSDate = mySharps[0].date;
-      const { data: recentSkates = [] } = await sb.from('skate_log').select('duration').eq('player_id', currentProfile.id).gt('date', lastSDate);
-      iceHrsOnEdges = recentSkates.reduce((sum, s) => sum + (s.duration || 60), 0) / 60;
-    } catch(e) {}
-
-    // Determine status
-    let esmState; // 'optimal' | 'approaching' | 'recommended'
-    if (iceHrsOnEdges < 7) {
-      esmState = 'optimal';
-    } else if (iceHrsOnEdges < 10) {
-      esmState = 'approaching';
-    } else {
-      esmState = 'recommended';
-    }
-
-    if (esmModule) {
-      esmModule.style.display = '';
-      if (esmState === 'optimal') {
-        esmModule.style.setProperty('--esm-color', 'var(--green)');
-        esmModule.style.setProperty('--esm-border', 'rgba(61,214,140,0.25)');
-        if (esmLabel) esmLabel.textContent = 'Optimal';
-        if (esmSub)   esmSub.textContent   = 'Edges are sharp and ready. Keep logging ice time.';
-        if (esmDot)   { esmDot.style.background = 'var(--green)'; esmDot.style.boxShadow = '0 0 10px var(--green)'; }
-      } else if (esmState === 'approaching') {
-        esmModule.style.setProperty('--esm-color', 'var(--yellow)');
-        esmModule.style.setProperty('--esm-border', 'rgba(245,200,66,0.25)');
-        if (esmLabel) esmLabel.textContent = 'Approaching';
-        if (esmSub)   esmSub.textContent   = 'You\'re nearing your recommended service window (8–10 hrs).';
-        if (esmDot)   { esmDot.style.background = 'var(--yellow)'; esmDot.style.boxShadow = '0 0 10px var(--yellow)'; }
-      } else {
-        esmModule.style.setProperty('--esm-color', 'var(--red)');
-        esmModule.style.setProperty('--esm-border', 'rgba(240,82,82,0.25)');
-        if (esmLabel) esmLabel.textContent = 'Sharpen Recommended';
-        if (esmSub)   esmSub.textContent   = 'Based on your ice time, a sharpening is due. EDGE will handle it at your next team skate.';
-        if (esmDot)   { esmDot.style.background = 'var(--red)'; esmDot.style.boxShadow = '0 0 10px var(--red)'; }
-      }
-    }
-
-    // Show/hide sharpen recommendation banner
-    if (sharpenBanner) {
-      if (esmState === 'approaching') {
-        sharpenBanner.style.display = '';
-        if (srbTitle) srbTitle.textContent = 'Sharpen Coming Up';
-        if (srbBody)  srbBody.textContent  = 'You\'re at ' + iceHrsOnEdges.toFixed(1) + ' hrs on your current edges. EDGE recommends sharpening at 8–10 hrs — we\'ll take care of it at your next team skate.';
-      } else if (esmState === 'recommended') {
-        sharpenBanner.style.display = '';
-        if (srbTitle) srbTitle.textContent = 'Sharpen Recommended Now';
-        if (srbBody)  srbBody.textContent  = 'You\'ve logged ' + iceHrsOnEdges.toFixed(1) + ' hrs on your current edges. EDGE will prioritize your blades at the next team pickup.';
-      } else {
-        sharpenBanner.style.display = 'none';
-      }
-    }
-    if (pilotBanner) pilotBanner.style.display = 'none';
-  }
 
   // ── Stat card 3: Blade Condition (from last sharpening) ──
   const condEl  = document.getElementById('dash-condition-val');
@@ -2361,6 +2397,14 @@ async function loadPlayerDashboard() {
     profileRows.push(
       ['Position',     currentProfile.position || '—'],
       ['Skate Model',  currentProfile.skate_model || '—'],
+    );
+    if (currentProfile.steel_sets_count) profileRows.push(['Steel Sets', currentProfile.steel_sets_count + (currentProfile.steel_sets_count === 4 ? '+' : '') + ' set' + (currentProfile.steel_sets_count > 1 ? 's' : '')]);
+    if (currentProfile.steel_brand || currentProfile.steel_model) {
+      const steelStr = [currentProfile.steel_brand, currentProfile.steel_model].filter(Boolean).join(' ');
+      profileRows.push(['Steel', steelStr]);
+    }
+    if (currentProfile.profile_preference) profileRows.push(['Profile Pref', currentProfile.profile_preference]);
+    profileRows.push(
       ['Member Since', fmtDate(currentProfile.member_since)]
     );
     // Fallback: if only old-style team field exists (no org), show it as "Program"
@@ -2377,23 +2421,9 @@ async function loadPlayerDashboard() {
   if (memEl) memEl.innerHTML = [
     ['Plan',         currentProfile.plan === 'spring_pilot' ? 'Founding Team Pilot' : currentProfile.plan === 'member' ? 'EDGE Membership' : 'Single Visits'],
     ['Rate',         currentProfile.plan === 'spring_pilot' ? 'Complimentary' : currentProfile.plan === 'member' ? '$40 / month' : '$25 / visit'],
-    ['Sharpenings',  currentProfile.plan === 'member' ? used + ' used of ' + allowed + ' this month' : 'Included in pilot'],
+    ['Sharpenings',  currentProfile.plan === 'member' ? used + ' used of ' + allowed + ' this month' : 'Pay per visit'],
     ['Status',       '<span class="badge badge-green"><span class="badge-dot"></span>Active</span>']
   ].map(([k, v]) => `<div class="profile-item"><div class="profile-key">${k}</div><div class="profile-val">${v}</div></div>`).join('');
-
-  // Pilot member badge
-  const pilotBadgeWrap = document.getElementById('pilot-member-badge-wrap');
-  if (pilotBadgeWrap && currentProfile.plan === 'spring_pilot') {
-    pilotBadgeWrap.innerHTML = `<div class="pilot-member-badge">
-      <div>
-        <div class="pmb-dot"></div>
-      </div>
-      <div>
-        <div class="pmb-text">Founding Team Pilot Member</div>
-        <div class="pmb-sub">Spring 2025 · Complimentary access</div>
-      </div>
-    </div>`;
-  }
 
   // Hollow visualizer
   document.getElementById('profile-hollow-label').textContent = currentProfile.hollow;
@@ -2512,6 +2542,24 @@ function toggleEditProfile() {
   if (byEl && currentProfile.birth_year) byEl.value = currentProfile.birth_year;
   if (posEl && currentProfile.position)  posEl.value = currentProfile.position;
   if (skateEl) skateEl.value = currentProfile.skate_model || '';
+
+  // Steel sets
+  const setsEl = document.getElementById('edit-steel-sets');
+  if (setsEl) setsEl.value = currentProfile.steel_sets_count != null ? String(currentProfile.steel_sets_count) : '';
+
+  // Equipment fields
+  const sbEl   = document.getElementById('edit-steel-brand');
+  const smEl   = document.getElementById('edit-steel-model');
+  const sidEl  = document.getElementById('edit-steel-install-date');
+  const pscEl  = document.getElementById('edit-prior-sharpen-count');
+  const ppEl   = document.getElementById('edit-profile-pref');
+  const enEl   = document.getElementById('edit-equipment-notes');
+  if (sbEl)  sbEl.value  = currentProfile.steel_brand  || '';
+  if (smEl)  smEl.value  = currentProfile.steel_model  || '';
+  if (sidEl) sidEl.value = currentProfile.steel_install_date || '';
+  if (pscEl) pscEl.value = currentProfile.prior_sharpen_count != null ? currentProfile.prior_sharpen_count : '';
+  if (ppEl)  ppEl.value  = currentProfile.profile_preference || '';
+  if (enEl)  enEl.value  = currentProfile.equipment_notes || '';
 }
 
 function onEditOrgChange() {
@@ -2535,12 +2583,27 @@ async function saveProfileEdits() {
   const skate      = document.getElementById('edit-skate').value.trim();
   const okEl       = document.getElementById('edit-profile-ok');
 
+  const steel_brand         = (document.getElementById('edit-steel-brand')?.value || '').trim();
+  const steel_model         = (document.getElementById('edit-steel-model')?.value || '').trim();
+  const steel_install_date  = document.getElementById('edit-steel-install-date')?.value || '';
+  const prior_sharpen_count = document.getElementById('edit-prior-sharpen-count')?.value || '';
+  const profile_preference  = document.getElementById('edit-profile-pref')?.value || '';
+  const equipment_notes     = (document.getElementById('edit-equipment-notes')?.value || '').trim();
+
   const updates = {};
-  if (org)        updates.organization = org;
-  if (team)       updates.team         = team;
-  if (birth_year) updates.birth_year   = parseInt(birth_year);
-  if (position)   updates.position     = position;
-  if (skate)      updates.skate_model  = skate;
+  if (org)                   updates.organization        = org;
+  if (team)                  updates.team                = team;
+  if (birth_year)            updates.birth_year          = parseInt(birth_year);
+  if (position)              updates.position            = position;
+  if (skate)                 updates.skate_model         = skate;
+  const steel_sets = document.getElementById('edit-steel-sets')?.value || '';
+  if (steel_sets) updates.steel_sets_count = steel_sets === '4+' ? 4 : parseInt(steel_sets);
+  if (steel_brand)           updates.steel_brand         = steel_brand;
+  if (steel_model)           updates.steel_model         = steel_model;
+  if (steel_install_date)    updates.steel_install_date  = steel_install_date;
+  if (prior_sharpen_count !== '') updates.prior_sharpen_count = parseInt(prior_sharpen_count);
+  if (profile_preference)    updates.profile_preference  = profile_preference;
+  updates.equipment_notes = equipment_notes; // always save (can clear)
 
   if (!Object.keys(updates).length) {
     okEl.textContent = 'No changes to save.';
@@ -2570,6 +2633,591 @@ async function saveProfileEdits() {
   await loadPlayerDashboard();
 }
 
+// ── SERVICE SESSION ─────────────────────────────────────────
+let svcAllPlayers  = [];   // all registered players (fetched once)
+let svcVisible     = [];   // players currently shown after filter
+let svcSelected    = {};   // { playerId: { included: bool, hollow, condition, notes } }
+
+async function initServiceSession() {
+  // Set today as default date
+  const dateEl = document.getElementById('svc-date');
+  if (dateEl && !dateEl.value) {
+    dateEl.value = new Date().toISOString().split('T')[0];
+  }
+
+  // Load all players from Supabase
+  const { data: players = [], error } = await sb.from('profiles')
+    .select('*')
+    .neq('role', 'admin')
+    .order('lname', { ascending: true });
+
+  if (error) { console.error('[EDGE] svc init fetch error:', error); return; }
+
+  svcAllPlayers = players;
+  svcSelected   = {};
+
+  // Pre-populate selection state with each player's defaults
+  for (const p of players) {
+    svcSelected[p.id] = {
+      included:  false,
+      hollow:    p.hollow || '5/8"',
+      condition: 'good',
+      notes:     ''
+    };
+  }
+
+  svcVisible = [...svcAllPlayers];
+  renderServicePlayers();
+  updateSvcCountBadge();
+}
+
+function onSvcOrgChange() {
+  const org     = document.getElementById('svc-org').value;
+  const teamSel = document.getElementById('svc-team');
+  teamSel.innerHTML = '<option value="">All Teams</option>';
+  if (org && ORG_TEAMS[org]) {
+    ORG_TEAMS[org].forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t; opt.textContent = t;
+      teamSel.appendChild(opt);
+    });
+  }
+  filterServicePlayers();
+}
+
+function filterServicePlayers() {
+  const org    = document.getElementById('svc-org').value;
+  const team   = document.getElementById('svc-team').value;
+  const search = (document.getElementById('svc-search')?.value || '').toLowerCase().trim();
+
+  svcVisible = svcAllPlayers.filter(p => {
+    if (org  && p.organization !== org)  return false;
+    if (team && p.team         !== team) return false;
+    if (search) {
+      const full = ((p.fname || '') + ' ' + (p.lname || '')).toLowerCase();
+      if (!full.includes(search)) return false;
+    }
+    return true;
+  });
+
+  renderServicePlayers();
+  updateSvcCountBadge();
+  const showEl = document.getElementById('svc-showing-badge');
+  if (showEl) {
+    if (svcVisible.length < svcAllPlayers.length) {
+      showEl.textContent = `Showing ${svcVisible.length} of ${svcAllPlayers.length} players`;
+    } else {
+      showEl.textContent = `${svcAllPlayers.length} player${svcAllPlayers.length !== 1 ? 's' : ''} total`;
+    }
+  }
+}
+
+function renderServicePlayers() {
+  const listEl = document.getElementById('svc-player-list');
+  if (!listEl) return;
+
+  if (!svcVisible.length) {
+    listEl.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px;">No players match the current filter.</div>';
+    return;
+  }
+
+  listEl.innerHTML = svcVisible.map(p => {
+    const sel   = svcSelected[p.id] || { included: false, hollow: p.hollow || '5/8"', condition: 'good', notes: '' };
+    const initials = (p.fname||'?')[0].toUpperCase() + (p.lname||'?')[0].toUpperCase();
+    const teamTag  = [p.organization, p.team].filter(Boolean).join(' · ');
+    return `
+    <div class="card card-body" id="svc-card-${p.id}" style="padding:14px 16px;transition:opacity .15s;${sel.included ? '' : 'opacity:0.5;'}">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;cursor:pointer;flex-shrink:0;">
+          <input type="checkbox" id="svc-chk-${p.id}" ${sel.included ? 'checked' : ''} onchange="toggleSvcPlayer('${p.id}', this.checked)" style="width:18px;height:18px;accent-color:var(--chrome-c);cursor:pointer;"/>
+        </label>
+        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:160px;">
+          <div class="user-avatar" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">${initials}</div>
+          <div>
+            <div style="font-weight:600;">${p.fname} ${p.lname}</div>
+            <div style="font-size:11px;color:var(--muted);">${teamTag}${p.hollow ? ' · <strong>' + p.hollow + '</strong>' : ''}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;flex:1;min-width:280px;">
+          <div class="field" style="min-width:100px;margin-bottom:0;">
+            <label style="font-size:11px;">Hollow Applied</label>
+            <select id="svc-hollow-${p.id}" style="font-size:13px;padding:6px 8px;" onchange="updateSvcField('${p.id}','hollow',this.value)" ${sel.included ? '' : 'disabled'}>
+              <option ${sel.hollow==='3/8"'?'selected':''}>3/8"</option>
+              <option ${sel.hollow==='7/16"'?'selected':''}>7/16"</option>
+              <option ${sel.hollow==='1/2"'?'selected':''}>1/2"</option>
+              <option ${sel.hollow==='9/16"'?'selected':''}>9/16"</option>
+              <option ${sel.hollow==='5/8"'||!sel.hollow?'selected':''}>5/8"</option>
+              <option ${sel.hollow==='3/4"'?'selected':''}>3/4"</option>
+              <option ${sel.hollow==='1"'?'selected':''}>1"</option>
+            </select>
+          </div>
+          <div class="field" style="min-width:110px;margin-bottom:0;">
+            <label style="font-size:11px;">Condition</label>
+            <select id="svc-cond-${p.id}" style="font-size:13px;padding:6px 8px;" onchange="updateSvcField('${p.id}','condition',this.value)" ${sel.included ? '' : 'disabled'}>
+              <option value="excellent" ${sel.condition==='excellent'?'selected':''}>Excellent</option>
+              <option value="good" ${sel.condition==='good'?'selected':''}>Good</option>
+              <option value="fair" ${sel.condition==='fair'?'selected':''}>Fair</option>
+              <option value="poor" ${sel.condition==='poor'?'selected':''}>Poor</option>
+            </select>
+          </div>
+          <div class="field" style="flex:1;min-width:180px;margin-bottom:0;">
+            <label style="font-size:11px;">Notes / Feedback for Player</label>
+            <input type="text" id="svc-notes-${p.id}" value="${(sel.notes||'').replace(/"/g,'&quot;')}" placeholder="e.g. Edges corrected, minor chip repaired…" style="font-size:13px;padding:6px 8px;" oninput="updateSvcField('${p.id}','notes',this.value)" ${sel.included ? '' : 'disabled'}/>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateSvcSummaryLine();
+}
+
+function toggleSvcPlayer(pid, checked) {
+  if (!svcSelected[pid]) return;
+  svcSelected[pid].included = checked;
+  const card = document.getElementById('svc-card-' + pid);
+  if (card) card.style.opacity = checked ? '1' : '0.5';
+  ['hollow','cond','notes'].forEach(f => {
+    const el = document.getElementById(`svc-${f}-${pid}`);
+    if (el) el.disabled = !checked;
+  });
+  updateSvcCountBadge();
+  updateSvcSummaryLine();
+}
+
+function updateSvcField(pid, field, value) {
+  if (svcSelected[pid]) svcSelected[pid][field === 'cond' ? 'condition' : field] = value;
+}
+
+function updateSvcCountBadge() {
+  const count = Object.values(svcSelected).filter(s => s.included).length;
+  const el = document.getElementById('svc-count-badge');
+  if (el) el.textContent = count + ' selected';
+}
+
+function updateSvcSummaryLine() {
+  const count = Object.values(svcSelected).filter(s => s.included).length;
+  const lineEl = document.getElementById('svc-summary-line');
+  if (!lineEl) return;
+  if (count === 0) {
+    lineEl.textContent = 'No players selected — check at least one player above.';
+    lineEl.style.color = 'var(--muted)';
+  } else {
+    lineEl.textContent = `Ready to log ${count} sharpening${count > 1 ? 's' : ''}.`;
+    lineEl.style.color = '#fff';
+  }
+}
+
+// Select all currently visible players
+function svcSelectVisible() {
+  svcVisible.forEach(p => {
+    svcSelected[p.id].included = true;
+    const chk  = document.getElementById('svc-chk-' + p.id);
+    const card = document.getElementById('svc-card-' + p.id);
+    if (chk)  chk.checked      = true;
+    if (card) card.style.opacity = '1';
+    ['hollow','cond','notes'].forEach(f => {
+      const el = document.getElementById(`svc-${f}-${p.id}`);
+      if (el) el.disabled = false;
+    });
+  });
+  updateSvcCountBadge();
+  updateSvcSummaryLine();
+}
+
+// Select every player regardless of filter
+function svcSelectAll() {
+  svcAllPlayers.forEach(p => {
+    svcSelected[p.id].included = true;
+    const chk  = document.getElementById('svc-chk-' + p.id);
+    const card = document.getElementById('svc-card-' + p.id);
+    if (chk)  chk.checked        = true;
+    if (card) card.style.opacity  = '1';
+    ['hollow','cond','notes'].forEach(f => {
+      const el = document.getElementById(`svc-${f}-${p.id}`);
+      if (el) el.disabled = false;
+    });
+  });
+  updateSvcCountBadge();
+  updateSvcSummaryLine();
+}
+
+function svcSelectNone() {
+  svcAllPlayers.forEach(p => {
+    svcSelected[p.id].included = false;
+    const chk  = document.getElementById('svc-chk-' + p.id);
+    const card = document.getElementById('svc-card-' + p.id);
+    if (chk)  chk.checked        = false;
+    if (card) card.style.opacity  = '0.5';
+    ['hollow','cond','notes'].forEach(f => {
+      const el = document.getElementById(`svc-${f}-${p.id}`);
+      if (el) el.disabled = true;
+    });
+  });
+  updateSvcCountBadge();
+  updateSvcSummaryLine();
+}
+
+function resetServiceSession() {
+  const okEl = document.getElementById('svc-complete-ok');
+  const btn  = document.getElementById('svc-complete-btn');
+  if (okEl) okEl.style.display = 'none';
+  if (btn)  { btn.disabled = false; btn.classList.remove('btn-loading'); btn.textContent = 'Complete Session & Log All Sharpenings'; }
+  // Re-init fetches fresh data
+  initServiceSession();
+}
+
+async function completeServiceSession() {
+  const date     = document.getElementById('svc-date').value;
+  const location = document.getElementById('svc-location').value;
+  const okEl     = document.getElementById('svc-complete-ok');
+  const btn      = document.getElementById('svc-complete-btn');
+
+  if (!date) {
+    if (okEl) { okEl.textContent = 'Please set a service date.'; okEl.style.background = 'rgba(240,82,82,0.1)'; okEl.style.color = 'var(--red)'; okEl.style.display = 'block'; }
+    return;
+  }
+
+  const toLog = svcAllPlayers.filter(p => svcSelected[p.id]?.included);
+  if (!toLog.length) {
+    if (okEl) { okEl.textContent = 'No players selected. Check at least one player above.'; okEl.style.background = 'rgba(240,82,82,0.1)'; okEl.style.color = 'var(--red)'; okEl.style.display = 'block'; }
+    return;
+  }
+
+  if (btn) { btn.classList.add('btn-loading'); btn.textContent = 'Logging…'; btn.disabled = true; }
+  if (okEl) okEl.style.display = 'none';
+
+  let logged = 0;
+  let errors  = 0;
+
+  for (const p of toLog) {
+    const sel = svcSelected[p.id];
+    const notesText = sel.notes?.trim()
+      || `Serviced by EDGE. ${capFirst(sel.condition || 'good')} condition. Edges clean and consistent.`;
+
+    const { error: sharpErr } = await sb.from('sharpenings').insert({
+      player_id: p.id,
+      date:      date,
+      location:  location,
+      hollow:    sel.hollow || p.hollow || '5/8"',
+      condition: sel.condition || 'good',
+      notes:     notesText
+    });
+
+    if (sharpErr) { console.error('[EDGE] sharpening insert error for', p.id, sharpErr); errors++; continue; }
+
+    if (p.plan === 'member' || p.plan === 'spring_pilot') {
+      const newCount = (p.sharpenings_used || 0) + 1;
+      await sb.from('profiles').update({ sharpenings_used: newCount }).eq('id', p.id);
+    }
+    logged++;
+  }
+
+  if (btn) { btn.classList.remove('btn-loading'); btn.disabled = false; btn.textContent = 'Complete Session & Log All Sharpenings'; }
+
+  if (okEl) {
+    if (errors === 0) {
+      okEl.textContent = `✓ Session complete — ${logged} sharpening${logged !== 1 ? 's' : ''} logged. Players will see this in their Blade History.`;
+      okEl.style.background = 'rgba(61,214,140,0.1)'; okEl.style.color = 'var(--green)';
+      okEl.style.display = 'block';
+    } else {
+      okEl.textContent = `${logged} logged, ${errors} failed — check console for details.`;
+      okEl.style.background = 'rgba(240,82,82,0.1)'; okEl.style.color = 'var(--red)';
+      okEl.style.display = 'block';
+    }
+    if (errors === 0) setTimeout(() => resetServiceSession(), 5000);
+  }
+
+  try { await renderAdminPlayers(); } catch(e) {}
+  try { await renderQueue('pending'); } catch(e) {}
+}
+
+// ── STEEL HEALTH SCORE CALCULATION ──────────────────────────
+function calcSteelHealthScore(heights, edgeDamage, profileWear, steelCondition, sharpenCount) {
+  // heights = array of up to 6 mm values (toe/mid/heel L+R)
+  // edgeDamage, profileWear, steelCondition = 1-5 (5=perfect)
+  // sharpenCount = total sharpenings on current steel
+
+  // COMPONENT 1: Height score (0-40 pts)
+  // Baseline new = 3.5mm, replace threshold = 2.5mm (1mm of usable life)
+  let heightScore = 40;
+  const validHeights = heights.filter(h => h > 0 && h <= 5);
+  if (validHeights.length > 0) {
+    const avgH = validHeights.reduce((a, b) => a + b, 0) / validHeights.length;
+    const minH = Math.min(...validHeights);
+    // Use minimum height as limiting factor (blade is only as good as its shortest point)
+    const heightPct = Math.max(0, Math.min(1, (minH - 2.5) / 1.0)); // 0 at 2.5mm, 1 at 3.5mm+
+    heightScore = Math.round(heightPct * 40);
+  }
+
+  // COMPONENT 2: Sharpen count score (0-20 pts)
+  // Expected max life ~80 sharpenings
+  let sharpenScore = 20;
+  if (sharpenCount > 0) {
+    const sharpenPct = Math.max(0, 1 - (sharpenCount / 80));
+    sharpenScore = Math.round(sharpenPct * 20);
+  }
+
+  // COMPONENT 3: Condition ratings (0-40 pts, 3 ratings × max ~13.3 each)
+  // Ratings 1-5, weight: edge damage 40%, profile wear 30%, overall condition 30%
+  const condScore = Math.round(
+    ((edgeDamage   / 5) * 0.40 +
+     (profileWear  / 5) * 0.30 +
+     (steelCondition / 5) * 0.30) * 40
+  );
+
+  const total = Math.max(0, Math.min(100, heightScore + sharpenScore + condScore));
+  return total;
+}
+
+function recalcHealthScore() {
+  const heights = [
+    parseFloat(document.getElementById('aed-h-toe-l')?.value)  || 0,
+    parseFloat(document.getElementById('aed-h-toe-r')?.value)  || 0,
+    parseFloat(document.getElementById('aed-h-mid-l')?.value)  || 0,
+    parseFloat(document.getElementById('aed-h-mid-r')?.value)  || 0,
+    parseFloat(document.getElementById('aed-h-heel-l')?.value) || 0,
+    parseFloat(document.getElementById('aed-h-heel-r')?.value) || 0,
+  ];
+  const edgeDamage    = parseInt(document.getElementById('aed-edge-damage')?.value) || 5;
+  const profileWear   = parseInt(document.getElementById('aed-profile-wear')?.value) || 5;
+  const steelCond     = parseInt(document.getElementById('aed-steel-cond')?.value)  || 5;
+  const priorSharps   = parseInt(document.getElementById('aed-prior-sharpen-count')?.value) || 0;
+
+  const score = calcSteelHealthScore(heights, edgeDamage, profileWear, steelCond, priorSharps);
+  const hasData = heights.some(h => h > 0);
+
+  const scoreEl = document.getElementById('aed-health-score-display');
+  const labelEl = document.getElementById('aed-health-label');
+  const recEl   = document.getElementById('aed-health-rec');
+  const gaugeEl = document.getElementById('aed-health-gauge');
+
+  if (!hasData) {
+    if (scoreEl) scoreEl.textContent = '—';
+    if (labelEl) labelEl.textContent = 'Awaiting Measurement';
+    if (recEl)   recEl.textContent   = 'Enter blade height measurements to generate a score.';
+    return;
+  }
+
+  if (scoreEl) scoreEl.textContent = score;
+
+  let color, label, rec;
+  if (score >= 80) {
+    color = 'var(--green)'; label = 'Excellent';
+    rec   = 'Steel is in great shape. Continue normal monitoring.';
+  } else if (score >= 60) {
+    color = '#A8D5A2'; label = 'Good';
+    rec   = 'Steel performing well. Monitor height at next service.';
+  } else if (score >= 40) {
+    color = 'var(--yellow)'; label = 'Fair — Watch Closely';
+    rec   = 'Steel showing wear. Plan replacement within 10–15 sharpenings.';
+  } else if (score >= 20) {
+    color = '#F5A442'; label = 'Poor — Replace Soon';
+    rec   = 'Steel is significantly worn. Recommend replacement at next visit.';
+  } else {
+    color = 'var(--red)'; label = 'Critical — Replace Now';
+    rec   = 'Steel is at or below safe threshold. Immediate replacement recommended.';
+  }
+
+  if (gaugeEl) {
+    const pct = score;
+    gaugeEl.style.background = `conic-gradient(${color} 0% ${pct}%, var(--bg-input) ${pct}% 100%)`;
+  }
+  if (scoreEl) scoreEl.style.color = color;
+  if (labelEl) { labelEl.textContent = label; labelEl.style.color = color; }
+  if (recEl)   recEl.textContent    = rec;
+}
+
+// ── ADMIN: OPEN PLAYER DETAIL PANEL ──────────────────────────
+let adminEditPlayerId = null;
+
+async function openAdminPlayerDetail(playerId) {
+  adminEditPlayerId = playerId;
+
+  // Fetch full profile
+  const { data: p, error } = await sb.from('profiles').select('*').eq('id', playerId).single();
+  if (error || !p) { console.error('[EDGE] fetch player detail error:', error); return; }
+
+  // Update header
+  const titleEl = document.getElementById('admin-detail-title');
+  const subEl   = document.getElementById('admin-detail-sub');
+  if (titleEl) titleEl.innerHTML = `${p.fname} <span class="chrome">${p.lname}</span>`;
+  if (subEl)   subEl.textContent = `${p.email || ''} · ${p.organization || ''} ${p.team || ''}`.trim().replace(/^·\s*/, '');
+
+  // Stat strip
+  const statsEl = document.getElementById('admin-detail-stats');
+  if (statsEl) {
+    const score = p.steel_health_score != null ? p.steel_health_score : '—';
+    statsEl.innerHTML = `
+      <div class="stat-card"><div class="stat-label">Plan</div><div class="stat-value" style="font-size:16px;">${p.plan === 'spring_pilot' ? 'Founding Pilot' : p.plan === 'member' ? 'Member' : 'Single'}</div></div>
+      <div class="stat-card"><div class="stat-label">Hollow</div><div class="stat-value" style="font-size:16px;">${p.hollow || '—'}</div></div>
+      <div class="stat-card"><div class="stat-label">Steel Health</div><div class="stat-value" style="font-size:16px;">${score}</div></div>
+      <div class="stat-card"><div class="stat-label">Member Since</div><div class="stat-value" style="font-size:14px;">${fmtDate(p.member_since)}</div></div>
+    `;
+  }
+
+  // Fill Player Info fields
+  const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+  setVal('aed-fname', p.fname);
+  setVal('aed-lname', p.lname);
+  setVal('aed-birth-year', p.birth_year);
+  setVal('aed-position', p.position);
+  setVal('aed-hollow', p.hollow);
+  setVal('aed-plan', p.plan);
+  setVal('aed-sharps-used', p.sharpenings_used);
+  setVal('aed-sharps-allowed', p.sharpenings_allowed);
+
+  // Org / team cascade
+  const orgSel = document.getElementById('aed-org');
+  if (orgSel && p.organization) {
+    orgSel.value = p.organization;
+    onAdminEditOrgChange();
+    const teamSel = document.getElementById('aed-team');
+    if (teamSel && p.team) teamSel.value = p.team;
+  }
+
+  // Equipment fields
+  setVal('aed-skate', p.skate_model);
+  setVal('aed-steel-brand', p.steel_brand);
+  setVal('aed-steel-model', p.steel_model);
+  setVal('aed-steel-install-date', p.steel_install_date);
+  setVal('aed-prior-sharpen-count', p.prior_sharpen_count != null ? p.prior_sharpen_count : '');
+  setVal('aed-profile-pref', p.profile_preference);
+  setVal('aed-equipment-notes', p.equipment_notes);
+
+  // Steel height measurements
+  setVal('aed-h-toe-l',  p.steel_height_toe_l);
+  setVal('aed-h-toe-r',  p.steel_height_toe_r);
+  setVal('aed-h-mid-l',  p.steel_height_mid_l);
+  setVal('aed-h-mid-r',  p.steel_height_mid_r);
+  setVal('aed-h-heel-l', p.steel_height_heel_l);
+  setVal('aed-h-heel-r', p.steel_height_heel_r);
+
+  // Condition ratings
+  const setRange = (id, labelId, val) => {
+    const el = document.getElementById(id);
+    const lb = document.getElementById(labelId);
+    if (el) { el.value = val || 5; }
+    if (lb) { lb.textContent = val || 5; }
+  };
+  setRange('aed-edge-damage',  'aed-edge-damage-val',  p.steel_edge_damage);
+  setRange('aed-profile-wear', 'aed-profile-wear-val', p.steel_profile_wear);
+  setRange('aed-steel-cond',   'aed-steel-cond-val',   p.steel_condition);
+
+  // Steel health notes & internal notes
+  setVal('aed-steel-health-notes', p.steel_health_notes);
+  setVal('aed-internal-notes', p.internal_notes);
+
+  // Recalculate gauge
+  recalcHealthScore();
+
+  // Clear save alert
+  const okEl = document.getElementById('aed-save-ok');
+  if (okEl) okEl.classList.remove('show');
+
+  adminNav('player-detail');
+}
+
+function onAdminEditOrgChange() {
+  const org     = document.getElementById('aed-org').value;
+  const teamSel = document.getElementById('aed-team');
+  if (!org || !ORG_TEAMS[org]) {
+    teamSel.innerHTML = '<option value="">Select organization first</option>';
+    teamSel.disabled  = true;
+    return;
+  }
+  teamSel.disabled  = false;
+  teamSel.innerHTML = '<option value="">Select team</option>' +
+    ORG_TEAMS[org].map(t => `<option value="${t}">${t}</option>`).join('');
+}
+
+async function saveAdminPlayerEdits() {
+  if (!adminEditPlayerId) return;
+  const okEl = document.getElementById('aed-save-ok');
+  const btn  = document.querySelector('#asub-player-detail .btn-chrome');
+  if (btn) { btn.classList.add('btn-loading'); btn.textContent = 'Saving…'; }
+
+  // Collect heights
+  const getNum = (id) => { const v = parseFloat(document.getElementById(id)?.value); return isNaN(v) ? null : v; };
+  const getInt  = (id) => { const v = parseInt(document.getElementById(id)?.value); return isNaN(v) ? null : v; };
+  const getStr  = (id) => (document.getElementById(id)?.value || '').trim() || null;
+
+  const heights = [
+    getNum('aed-h-toe-l'),  getNum('aed-h-toe-r'),
+    getNum('aed-h-mid-l'),  getNum('aed-h-mid-r'),
+    getNum('aed-h-heel-l'), getNum('aed-h-heel-r'),
+  ];
+  const edgeDamage  = getInt('aed-edge-damage')  || 5;
+  const profileWear = getInt('aed-profile-wear') || 5;
+  const steelCond   = getInt('aed-steel-cond')   || 5;
+  const priorSharps = getInt('aed-prior-sharpen-count') || 0;
+
+  // Compute health score only if we have at least one height measurement
+  const hasHeight = heights.some(h => h !== null && h > 0);
+  const healthScore = hasHeight ? calcSteelHealthScore(heights, edgeDamage, profileWear, steelCond, priorSharps) : null;
+
+  const updates = {
+    fname:                   getStr('aed-fname'),
+    lname:                   getStr('aed-lname'),
+    organization:            getStr('aed-org'),
+    team:                    getStr('aed-team'),
+    birth_year:              getInt('aed-birth-year'),
+    position:                getStr('aed-position'),
+    hollow:                  getStr('aed-hollow'),
+    plan:                    getStr('aed-plan'),
+    sharpenings_used:        getInt('aed-sharps-used'),
+    sharpenings_allowed:     getInt('aed-sharps-allowed'),
+    // Equipment
+    skate_model:             getStr('aed-skate'),
+    steel_brand:             getStr('aed-steel-brand'),
+    steel_model:             getStr('aed-steel-model'),
+    steel_install_date:      getStr('aed-steel-install-date'),
+    prior_sharpen_count:     priorSharps,
+    profile_preference:      getStr('aed-profile-pref'),
+    equipment_notes:         document.getElementById('aed-equipment-notes')?.value.trim() || null,
+    // Steel heights
+    steel_height_toe_l:      heights[0],
+    steel_height_toe_r:      heights[1],
+    steel_height_mid_l:      heights[2],
+    steel_height_mid_r:      heights[3],
+    steel_height_heel_l:     heights[4],
+    steel_height_heel_r:     heights[5],
+    // Condition ratings
+    steel_edge_damage:       edgeDamage,
+    steel_profile_wear:      profileWear,
+    steel_condition:         steelCond,
+    // Health score + notes
+    steel_health_score:      healthScore,
+    steel_health_notes:      document.getElementById('aed-steel-health-notes')?.value.trim() || null,
+    // Internal notes
+    internal_notes:          document.getElementById('aed-internal-notes')?.value.trim() || null,
+  };
+
+  // Remove null values for cleaner update (but keep explicit nulls for height fields to allow clearing)
+  const payload = Object.fromEntries(
+    Object.entries(updates).filter(([k, v]) => v !== undefined)
+  );
+
+  const { error } = await sb.from('profiles').update(payload).eq('id', adminEditPlayerId);
+
+  if (btn) { btn.classList.remove('btn-loading'); btn.textContent = 'Save All Changes'; }
+
+  if (error) {
+    if (okEl) { okEl.textContent = 'Error saving: ' + (error.message || 'please try again.'); okEl.style.background = 'rgba(240,82,82,0.1)'; okEl.style.color = 'var(--red)'; okEl.classList.add('show'); }
+    return;
+  }
+
+  if (okEl) {
+    okEl.textContent = '✓ Profile saved' + (healthScore !== null ? ` — Steel Health: ${healthScore}/100` : '');
+    okEl.style.background = ''; okEl.style.color = '';
+    okEl.classList.add('show');
+    setTimeout(() => okEl.classList.remove('show'), 3000);
+  }
+
+  // Refresh players table in background
+  renderAdminPlayers();
+}
+
 // ── ADMIN DASHBOARD ─────────────────────────────────────────
 async function loadAdminDashboard() {
   const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
@@ -2588,19 +3236,17 @@ async function loadAdminDashboard() {
   try { await renderQueue('pending');  } catch (e) { console.error('[EDGE] renderQueue error:', e); }
   try { await renderAdminPlayers();   } catch (e) { console.error('[EDGE] renderAdminPlayers error:', e); }
   try { await refreshReportsBadge();  } catch (e) { /* non-fatal */ }
-  // Default to Quick Service tab
-  adminNav('service');
 }
 
 function adminNav(sub) {
-  ['service', 'queue', 'players', 'reports'].forEach(s => {
+  ['queue', 'service', 'players', 'reports', 'player-detail'].forEach(s => {
     const el = document.getElementById('asub-' + s);
     if (el) el.style.display = s === sub ? '' : 'none';
     const btn = document.getElementById('anav-' + s);
     if (btn) btn.classList.toggle('active', s === sub);
   });
   if (sub === 'reports') loadAdminReports('pending');
-  if (sub === 'service') loadServicePlayers();
+  if (sub === 'service') initServiceSession();
 }
 
 let currentReportsTab = 'pending';
@@ -2692,15 +3338,28 @@ async function renderAdminPlayers() {
   const el = document.getElementById('admin-players-table');
   el.innerHTML = players.map(p => {
     const count = sharpenings.filter(s => s.player_id === p.id).length;
+    const score = p.steel_health_score != null ? p.steel_health_score : null;
+    let healthBadge;
+    if (score === null) {
+      healthBadge = '<span style="font-size:11px;color:var(--dim);">—</span>';
+    } else if (score >= 70) {
+      healthBadge = `<span class="badge badge-green">${score}</span>`;
+    } else if (score >= 40) {
+      healthBadge = `<span class="badge badge-yellow">${score}</span>`;
+    } else {
+      healthBadge = `<span class="badge" style="background:rgba(240,82,82,0.15);color:var(--red);border:1px solid rgba(240,82,82,0.3);">${score} — Replace Soon</span>`;
+    }
     return `<tr>
       <td><strong>${p.fname} ${p.lname}</strong><br><span style="font-size:11px;color:var(--muted);">${p.email || ''}</span></td>
       <td>${p.organization ? `<span style="font-size:12px;color:var(--muted);">${p.organization}</span><br>` : ''}${p.team || ''}</td>
-      <td>${p.plan === 'member' ? '<span class="badge badge-chrome">EDGE Member</span>' : '<span class="badge badge-yellow">Single Visit</span>'}</td>
+      <td>${p.plan === 'member' ? '<span class="badge badge-chrome">EDGE Member</span>' : p.plan === 'spring_pilot' ? '<span class="badge badge-chrome" style="background:rgba(200,205,216,0.12);">Founding Pilot</span>' : '<span class="badge badge-yellow">Single Visit</span>'}</td>
       <td><strong>${p.hollow || '—'}</strong></td>
       <td style="font-size:12px;color:var(--muted);">${p.skate_model || '—'}</td>
       <td style="text-align:center;"><strong>${count}</strong></td>
+      <td style="text-align:center;">${healthBadge}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openAdminPlayerDetail('${p.id}')">Edit</button></td>
     </tr>`;
-  }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;">No players yet.</td></tr>';
+  }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px;">No players yet.</td></tr>';
 }
 
 // ── BLADE STATUS ─────────────────────────────────────────────
@@ -2733,10 +3392,10 @@ async function loadBladeStatus() {
     document.getElementById('blade-condition-val').textContent = '—';
   }
 
-  let rec = 'Log ice sessions to get a recommendation';
-  if (iceHrs >= 10)     rec = 'Now — edges are overdue';
-  else if (iceHrs >= 8) rec = 'Soon — within 1–2 sessions';
-  else                  rec = 'After ~' + Math.max(0, (9 - iceHrs)).toFixed(1) + ' more hours on ice';
+  let rec = '5–8 hours on ice';
+  if (iceHrs >= 10)     rec = 'Now — edges are overdue (8+ hrs)';
+  else if (iceHrs >= 8) rec = 'Soon — within 1–2 sessions (7–8 hrs)';
+  else                  rec = 'After ~' + Math.max(0, (5 - iceHrs)).toFixed(1) + '–' + Math.max(0, (8 - iceHrs)).toFixed(1) + ' more hrs on ice';
   document.getElementById('blade-next-rec').textContent = rec;
 }
 
@@ -2769,15 +3428,13 @@ async function loadIceTime() {
   const cycleHrs      = cycleMins / 60;
 
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  set('ice-window-last',   lastSharpen ? fmtDateShort(lastSharpen.date) : 'First service upcoming');
+  set('ice-window-last',   lastSharpen ? fmtDateShort(lastSharpen.date) : 'No service yet');
   set('ice-window-skates', cycleSessions.length + (cycleSessions.length === 1 ? ' Session' : ' Sessions'));
   set('ice-window-hrs',    cycleMins ? cycleHrs.toFixed(1) + ' hrs' : '—');
 
   // Service alert if approaching recommended window (>= 7 hrs)
   const alertEl = document.getElementById('ice-window-alert');
-  const needsAlertEl = document.getElementById('ice-window-alert-needs');
-  if (alertEl)      alertEl.style.display      = (cycleHrs >= 7 && cycleHrs < 10) ? '' : 'none';
-  if (needsAlertEl) needsAlertEl.style.display = cycleHrs >= 10 ? '' : 'none';
+  if (alertEl) alertEl.style.display = cycleHrs >= 7 ? '' : 'none';
 
   // Load the skate log list
   await initSkateLog();
@@ -2788,13 +3445,74 @@ async function loadIceTime() {
 // ── BLADE CONDITION LOG ─────────────────────────────────────
 let _conditionPhotoFile = null;
 
+// ── FEEDBACK & NOTES ────────────────────────────────────────
+let _feedbackCat    = 'sharpening';
+let _feedbackRating = 'great';
+let _prefType       = 'hollow';
+
+function setFeedbackCat(cat) {
+  _feedbackCat = cat;
+  ['sharpening','preference','condition','general'].forEach(c => {
+    const btn = document.getElementById('fcat-' + c);
+    const fields = document.getElementById('ffields-' + c);
+    const isActive = c === cat;
+    if (btn) {
+      btn.style.background  = isActive ? 'rgba(200,205,216,0.1)'  : 'transparent';
+      btn.style.borderColor = isActive ? 'var(--border-hi)'        : 'var(--border)';
+      btn.style.color       = isActive ? '#fff'                    : 'var(--silver)';
+    }
+    if (fields) fields.style.display = isActive ? '' : 'none';
+  });
+  // Pre-fill current prefs into preference form
+  if (cat === 'preference') {
+    const hollowEl = document.getElementById('fpref-current-hollow');
+    const profEl   = document.getElementById('fpref-current-profile');
+    if (hollowEl) hollowEl.textContent = currentProfile?.hollow || 'Not set';
+    if (profEl)   profEl.textContent   = currentProfile?.profile_preference || 'Not set';
+  }
+}
+
+function setFeedbackRating(rating) {
+  _feedbackRating = rating;
+  const colors = { great: 'var(--green)', good: 'var(--blue)', off: 'var(--yellow)', needs_work: 'var(--red)' };
+  const borders = { great: 'rgba(61,214,140,0.4)', good: 'rgba(96,165,250,0.4)', off: 'rgba(245,200,66,0.4)', needs_work: 'rgba(240,82,82,0.4)' };
+  const bgs = { great: 'rgba(61,214,140,0.12)', good: 'rgba(96,165,250,0.12)', off: 'rgba(245,200,66,0.12)', needs_work: 'rgba(240,82,82,0.1)' };
+  ['great','good','off','needs_work'].forEach(r => {
+    const btn = document.getElementById('frating-' + r);
+    if (!btn) return;
+    const isActive = r === rating;
+    btn.style.background  = isActive ? bgs[r]     : 'transparent';
+    btn.style.borderColor = isActive ? borders[r]  : 'var(--border)';
+    btn.style.color       = isActive ? colors[r]   : 'var(--silver)';
+  });
+}
+
+function togglePrefType(type) {
+  _prefType = type;
+  ['hollow','profile','other'].forEach(t => {
+    const btn = document.getElementById('fpref-' + t);
+    const sub = document.getElementById('fpref-sub-' + t);
+    const isActive = t === type;
+    if (btn) {
+      btn.style.background  = isActive ? 'rgba(200,205,216,0.1)' : 'transparent';
+      btn.style.borderColor = isActive ? 'rgba(200,205,216,0.4)' : 'var(--border)';
+      btn.style.color       = isActive ? 'var(--chrome-bright)'   : 'var(--silver)';
+    }
+    if (sub) sub.style.display = isActive ? '' : 'none';
+  });
+  // For "other" type, reuse the preference textarea
+  const otherSub = document.getElementById('fpref-sub-other');
+  if (type === 'other' && otherSub && !otherSub.querySelector('textarea')) {
+    otherSub.innerHTML = '<textarea id="ftext-pref-other" rows="3" placeholder="e.g. I want to try a different profile next time, or my skates feel like they need a blade check…" style="width:100%;padding:11px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:#fff;font-size:14px;resize:vertical;font-family:inherit;"></textarea>';
+  }
+}
+
 function onConditionPhotoChange(input) {
   _conditionPhotoFile = input.files[0] || null;
   const preview = document.getElementById('condition-photo-preview');
   const area    = document.getElementById('photo-upload-area');
   if (_conditionPhotoFile) {
-    const url = URL.createObjectURL(_conditionPhotoFile);
-    preview.src = url;
+    preview.src = URL.createObjectURL(_conditionPhotoFile);
     preview.style.display = 'block';
     area.querySelector('.photo-upload-label').style.display = 'none';
   } else {
@@ -2804,63 +3522,86 @@ function onConditionPhotoChange(input) {
 }
 
 async function submitConditionLog() {
-  const desc  = (document.getElementById('condition-desc').value || '').trim();
-  const okEl  = document.getElementById('condition-ok');
-
-  if (!desc && !_conditionPhotoFile) {
-    okEl.textContent = 'Please add a description or photo before submitting.';
+  const okEl = document.getElementById('condition-ok');
+  const showErr = (msg) => {
+    okEl.textContent = msg;
     okEl.style.background = 'rgba(240,82,82,0.12)';
     okEl.style.color = 'var(--red)';
     okEl.style.border = '1px solid rgba(240,82,82,0.25)';
     okEl.classList.add('show');
-    setTimeout(() => { okEl.classList.remove('show'); okEl.style = ''; }, 4000);
-    return;
+    setTimeout(() => { okEl.classList.remove('show'); okEl.style = ''; }, 5000);
+  };
+
+  // Build category-specific description
+  let description = '';
+  let category    = _feedbackCat;
+
+  if (category === 'sharpening') {
+    const ratingLabels = { great: 'Great', good: 'Good', off: 'Something felt off', needs_work: 'Needs work' };
+    const extra = (document.getElementById('ftext-sharpening')?.value || '').trim();
+    description = `[Rating: ${ratingLabels[_feedbackRating] || _feedbackRating}]` + (extra ? ` — ${extra}` : '');
+  } else if (category === 'preference') {
+    if (_prefType === 'hollow') {
+      const sel = document.getElementById('fpref-hollow-select')?.value;
+      const extra = (document.getElementById('ftext-preference')?.value || '').trim();
+      if (!sel) { showErr('Please select a desired hollow.'); return; }
+      description = `[Hollow Change Request: ${sel}]` + (extra ? ` — ${extra}` : '');
+    } else if (_prefType === 'profile') {
+      const sel = document.getElementById('fpref-profile-select')?.value;
+      const extra = (document.getElementById('ftext-preference')?.value || '').trim();
+      if (!sel) { showErr('Please select a desired profile.'); return; }
+      description = `[Profile Change Request: ${sel}]` + (extra ? ` — ${extra}` : '');
+    } else {
+      const extra = (document.getElementById('ftext-pref-other')?.value || '').trim()
+                 || (document.getElementById('ftext-preference')?.value || '').trim();
+      if (!extra) { showErr('Please describe the change you want.'); return; }
+      description = `[Setup Change] ${extra}`;
+    }
+  } else if (category === 'condition') {
+    const desc = (document.getElementById('ftext-condition')?.value || '').trim();
+    if (!desc && !_conditionPhotoFile) { showErr('Please add a description or photo.'); return; }
+    description = desc || 'Photo submitted — no description.';
+  } else if (category === 'general') {
+    description = (document.getElementById('ftext-general')?.value || '').trim();
+    if (!description) { showErr('Please write a note before submitting.'); return; }
   }
 
+  // Upload photo if present (condition category only)
   let photoUrl = null;
-
-  // Upload photo to Supabase Storage if provided
-  if (_conditionPhotoFile) {
+  if (_conditionPhotoFile && category === 'condition') {
     const ext  = _conditionPhotoFile.name.split('.').pop();
     const path = currentProfile.id + '/' + Date.now() + '.' + ext;
     const { error: uploadErr } = await sb.storage.from('blade-reports').upload(path, _conditionPhotoFile, { upsert: false });
-    if (uploadErr) {
-      okEl.textContent = 'Photo upload failed: ' + (uploadErr.message || 'Check storage bucket setup');
-      okEl.style.background = 'rgba(240,82,82,0.12)';
-      okEl.style.color = 'var(--red)';
-      okEl.style.border = '1px solid rgba(240,82,82,0.25)';
-      okEl.classList.add('show');
-      setTimeout(() => { okEl.classList.remove('show'); okEl.style = ''; }, 6000);
-      return;
-    }
+    if (uploadErr) { showErr('Photo upload failed: ' + (uploadErr.message || 'Check storage settings')); return; }
     const { data: urlData } = sb.storage.from('blade-reports').getPublicUrl(path);
     photoUrl = urlData.publicUrl;
   }
 
   const { error } = await sb.from('blade_reports').insert({
-    player_id: currentProfile.id,
-    description: desc || null,
-    photo_url: photoUrl,
-    status: 'pending',
+    player_id:   currentProfile.id,
+    description: description,
+    photo_url:   photoUrl,
+    status:      'pending',
+    category:    category,
   });
 
-  if (error) {
-    okEl.textContent = 'Error: ' + (error.message || JSON.stringify(error));
-    okEl.style.background = 'rgba(240,82,82,0.12)';
-    okEl.style.color = 'var(--red)';
-    okEl.style.border = '1px solid rgba(240,82,82,0.25)';
-    okEl.classList.add('show');
-    setTimeout(() => { okEl.classList.remove('show'); okEl.style = ''; }, 6000);
-    return;
-  }
+  if (error) { showErr('Error submitting: ' + (error.message || 'please try again.')); return; }
 
   // Reset form
-  document.getElementById('condition-desc').value = '';
+  document.getElementById('ftext-sharpening') && (document.getElementById('ftext-sharpening').value = '');
+  document.getElementById('ftext-preference') && (document.getElementById('ftext-preference').value = '');
+  document.getElementById('ftext-condition')  && (document.getElementById('ftext-condition').value  = '');
+  document.getElementById('ftext-general')    && (document.getElementById('ftext-general').value    = '');
+  document.getElementById('fpref-hollow-select')  && (document.getElementById('fpref-hollow-select').value  = '');
+  document.getElementById('fpref-profile-select') && (document.getElementById('fpref-profile-select').value = '');
   _conditionPhotoFile = null;
   const preview = document.getElementById('condition-photo-preview');
-  preview.style.display = 'none';
-  document.getElementById('photo-upload-area').querySelector('.photo-upload-label').style.display = '';
-  document.getElementById('condition-photo').value = '';
+  if (preview) preview.style.display = 'none';
+  const photoLabel = document.querySelector('#photo-upload-area .photo-upload-label');
+  if (photoLabel) photoLabel.style.display = '';
+  const photoInput = document.getElementById('condition-photo');
+  if (photoInput) photoInput.value = '';
+  setFeedbackRating('great');
 
   okEl.textContent = '✓ Submitted — your sharpener will review it before your next visit.';
   okEl.style = '';
@@ -2877,29 +3618,34 @@ async function loadConditionLog() {
   const { data: reports = [], error } = await sb.from('blade_reports')
     .select('*').eq('player_id', currentProfile.id).order('created_at', { ascending: false });
 
-  if (error) { listEl.innerHTML = '<div style="padding:20px;color:var(--red);font-size:13px;">Error loading reports.</div>'; return; }
+  if (error) { listEl.innerHTML = '<div style="padding:20px;color:var(--red);font-size:13px;">Error loading submissions.</div>'; return; }
 
   if (!reports.length) {
     listEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;line-height:1.6;">
-      No submissions yet.<br><span style="color:var(--dim);">Submit a blade condition above and your sharpener will respond before your next visit.</span>
+      No submissions yet.<br><span style="color:var(--dim);">Submit feedback above — your sharpener reviews everything before your next visit.</span>
     </div>`;
     return;
   }
 
   const statusLabel = { pending: 'Awaiting Review', reviewed: 'Reviewed', resolved: 'Resolved' };
+  const catLabel    = { sharpening: '⭐ Sharpening Feedback', preference: '🔧 Preference Change', condition: '📸 Blade Condition', general: '📝 General Note' };
 
   listEl.innerHTML = '<div class="report-list">' + reports.map(r => {
     const thumbHtml = r.photo_url
       ? `<img class="report-thumb" src="${r.photo_url}" alt="Blade photo" onclick="window.open('${r.photo_url}','_blank')"/>`
-      : `<div class="report-thumb-placeholder">📸</div>`;
+      : `<div class="report-thumb-placeholder">${(catLabel[r.category] || '📝').split(' ')[0]}</div>`;
     const noteHtml = r.admin_note
-      ? `<div class="report-sharpener-note"><div class="report-sharpener-label">Feedback from your sharpener</div>${r.admin_note}</div>`
+      ? `<div class="report-sharpener-note"><div class="report-sharpener-label">Response from your sharpener</div>${r.admin_note}</div>`
+      : '';
+    const catTag = r.category
+      ? `<span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;display:block;">${catLabel[r.category] || r.category}</span>`
       : '';
     return `<div class="report-item">
       ${thumbHtml}
       <div class="report-body">
+        ${catTag}
         <div class="report-date">${fmtDate(r.created_at ? r.created_at.split('T')[0] : '')}</div>
-        <div class="report-desc">${r.description || '<em style="color:var(--dim)">Photo only — no description</em>'}</div>
+        <div class="report-desc">${r.description || '<em style="color:var(--dim)">No description</em>'}</div>
         ${noteHtml}
         <span class="report-status status-${r.status}">${statusLabel[r.status] || r.status}</span>
       </div>
@@ -2914,7 +3660,7 @@ async function loadAdminReports(status) {
   listEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Loading…</div>';
 
   const { data: reports = [], error } = await sb.from('blade_reports')
-    .select('*, profiles(fname, lname, org, team)')
+    .select('*, profiles(fname, lname, organization, team)')
     .eq('status', status || currentReportsTab)
     .order('created_at', { ascending: false });
 
@@ -2939,20 +3685,25 @@ async function loadAdminReports(status) {
   listEl.innerHTML = reports.map(r => {
     const p = r.profiles || {};
     const playerName = ((p.fname || '') + ' ' + (p.lname || '')).trim() || 'Unknown player';
-    const teamInfo   = [p.org, p.team].filter(Boolean).join(' — ') || 'No team on file';
+    const teamInfo   = [p.organization, p.team].filter(Boolean).join(' — ') || 'No team on file';
+    const catLabel   = { sharpening: '⭐ Sharpening Feedback', preference: '🔧 Preference Change', condition: '📸 Blade Condition', general: '📝 General Note' };
+    const catIcon    = r.category ? (catLabel[r.category] || '📝').split(' ')[0] : '📸';
     const thumbHtml  = r.photo_url
       ? `<img class="admin-report-thumb" src="${r.photo_url}" alt="Blade" onclick="window.open('${r.photo_url}','_blank')" title="Click to view full size"/>`
-      : `<div class="admin-report-nophoto">📸</div>`;
+      : `<div class="admin-report-nophoto">${catIcon}</div>`;
+    const catBadgeHtml = r.category
+      ? `<span style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--silver);margin-right:6px;">${catLabel[r.category] || r.category}</span>`
+      : '';
     const existing   = r.admin_note ? `value="${r.admin_note.replace(/"/g,"&quot;")}"` : '';
     return `<div class="admin-report-item" id="ar-${r.id}">
       ${thumbHtml}
       <div class="admin-report-body">
         <div class="admin-report-player">${playerName}</div>
         <div class="admin-report-team">${teamInfo}</div>
-        <div class="admin-report-date">${fmtDate(r.created_at ? r.created_at.split('T')[0] : '')} · <span class="report-status status-${r.status}">${statusLabel[r.status]||r.status}</span></div>
-        <div class="admin-report-desc">${r.description || '<em style="color:var(--dim)">No description — photo only</em>'}</div>
+        <div class="admin-report-date">${catBadgeHtml}${fmtDate(r.created_at ? r.created_at.split('T')[0] : '')} · <span class="report-status status-${r.status}">${statusLabel[r.status]||r.status}</span></div>
+        <div class="admin-report-desc">${r.description || '<em style="color:var(--dim)">No description</em>'}</div>
         <div class="admin-report-actions">
-          <input class="admin-note-input" id="anote-${r.id}" placeholder="Leave a note for the player…" ${existing}/>
+          <input class="admin-note-input" id="anote-${r.id}" placeholder="Respond to this player…" ${existing}/>
           <button class="btn btn-ghost btn-sm" onclick="adminUpdateReport('${r.id}','reviewed')">Mark Reviewed</button>
           <button class="btn btn-chrome btn-sm" onclick="adminUpdateReport('${r.id}','resolved')">Mark Resolved</button>
         </div>
@@ -3474,256 +4225,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
-
-
-// ══════════════════════════════════════════════════════════
-//  QUICK SERVICE — Staff Operations
-// ══════════════════════════════════════════════════════════
-
-let _serviceAllPlayers  = [];
-let _serviceSharpenings = {};
-let _selectedPlayer     = null;
-let _selectedCondition  = 'clean';
-let _selectedHollow     = '';
-let _activeTags         = new Set();
-
-async function loadServicePlayers() {
-  const listEl = document.getElementById('service-player-list');
-  if (listEl) listEl.innerHTML = '<div class="service-empty">Loading…</div>';
-  try {
-    const { data: players = [], error: pErr } = await sb
-      .from('profiles').select('id, fname, lname, organization, team, hollow, plan, position')
-      .neq('role', 'admin').order('lname', { ascending: true });
-    if (pErr) throw pErr;
-    const { data: sharps = [] } = await sb.from('sharpenings')
-      .select('player_id, date, hollow').order('date', { ascending: false });
-    const sharpenMap = {};
-    for (const s of sharps) {
-      if (!sharpenMap[s.player_id]) sharpenMap[s.player_id] = s;
-    }
-    _serviceAllPlayers  = players;
-    _serviceSharpenings = sharpenMap;
-    renderServiceList(_serviceAllPlayers);
-  } catch (e) {
-    console.error('[EDGE] loadServicePlayers:', e);
-    if (listEl) listEl.innerHTML = '<div class="service-empty">Error loading players.</div>';
-  }
-}
-
-function filterServicePlayers() {
-  const program = document.getElementById('sf-program')?.value || '';
-  const team    = document.getElementById('sf-team')?.value    || '';
-  const hollow  = document.getElementById('sf-hollow')?.value  || '';
-  const search  = (document.getElementById('sf-search')?.value || '').toLowerCase().trim();
-  const filtered = _serviceAllPlayers.filter(p => {
-    if (program && (p.organization || '') !== program) return false;
-    if (team    && (p.team || '') !== team)            return false;
-    if (hollow  && (p.hollow || '') !== hollow)        return false;
-    if (search) {
-      const full = ((p.fname || '') + ' ' + (p.lname || '')).toLowerCase();
-      if (!full.includes(search)) return false;
-    }
-    return true;
-  });
-  renderServiceList(filtered);
-}
-
-function clearServiceFilters() {
-  ['sf-program','sf-team','sf-hollow','sf-search'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  renderServiceList(_serviceAllPlayers);
-}
-
-function renderServiceList(players) {
-  const el = document.getElementById('service-player-list');
-  if (!el) return;
-  if (!players.length) { el.innerHTML = '<div class="service-empty">No players match your filters.</div>'; return; }
-  el.innerHTML = players.map(p => {
-    const name     = (p.fname || '') + ' ' + (p.lname || '');
-    const team     = [p.organization, p.team].filter(Boolean).join(' · ') || '—';
-    const hollow   = p.hollow || '—';
-    const lastS    = _serviceSharpenings[p.id];
-    const lastDate = lastS ? fmtDateShort(lastS.date) : 'No service yet';
-    const pid      = p.id;
-    return `<div class="service-player-card" onclick="selectServicePlayer('${pid}')">
-      <div class="spc-name">${escHtmlSvc(name)}</div>
-      <div class="spc-team">${escHtmlSvc(team)}</div>
-      <div class="spc-meta">
-        <span class="spc-pill hollow">${escHtmlSvc(hollow)}</span>
-        ${p.position ? `<span class="spc-pill">${escHtmlSvc(p.position)}</span>` : ''}
-      </div>
-      <div class="spc-sharpen">Last sharpen: ${lastDate}</div>
-    </div>`;
-  }).join('');
-}
-
-function selectServicePlayer(playerId) {
-  const p = _serviceAllPlayers.find(x => x.id === playerId);
-  if (!p) return;
-  _selectedPlayer = p;
-  document.getElementById('service-list-wrap').style.display  = 'none';
-  document.getElementById('service-filters').style.display    = 'none';
-  const panel = document.getElementById('service-detail-panel');
-  panel.classList.add('active');
-  const name  = (p.fname || '') + ' ' + (p.lname || '');
-  const team  = [p.organization, p.team].filter(Boolean).join(' · ') || '—';
-  const lastS = _serviceSharpenings[p.id];
-  document.getElementById('sdp-name').textContent = name;
-  document.getElementById('sdp-sub').textContent  = team;
-  document.getElementById('sdp-stats').innerHTML  = [
-    ['Hollow',      p.hollow || '—'],
-    ['Last Sharpen',lastS ? fmtDateShort(lastS.date) : '—'],
-    ['Plan',        p.plan === 'spring_pilot' ? 'Pilot' : (p.plan || '—')],
-  ].map(([l,v]) => `<div class="sdp-stat"><div class="sdp-stat-label">${l}</div><div class="sdp-stat-val">${escHtmlSvc(String(v))}</div></div>`).join('');
-}
-
-function closeServiceDetail() {
-  _selectedPlayer = null;
-  document.getElementById('service-detail-panel').classList.remove('active');
-  document.getElementById('service-list-wrap').style.display = '';
-  document.getElementById('service-filters').style.display   = '';
-}
-
-function openSharpenModal() {
-  if (!_selectedPlayer) return;
-  _selectedCondition = 'clean';
-  _activeTags        = new Set();
-  _selectedHollow    = _selectedPlayer.hollow || '5/8"';
-  document.querySelectorAll('.condition-btn').forEach(b => b.classList.remove('selected','warn','bad'));
-  const cleanBtn = document.querySelector('.condition-btn[data-cond="clean"]');
-  if (cleanBtn) cleanBtn.classList.add('selected');
-  document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('sm-notes').value = '';
-  const errEl = document.getElementById('sm-error');
-  const okEl  = document.getElementById('sm-success');
-  if (errEl) errEl.classList.remove('show');
-  if (okEl)  okEl.classList.remove('show');
-  const submitBtn = document.getElementById('sm-submit-btn');
-  if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Complete Sharpening'; }
-  const name = (_selectedPlayer.fname || '') + ' ' + (_selectedPlayer.lname || '');
-  document.getElementById('sm-player-name').textContent = name + ' · ' + (_selectedPlayer.hollow || '5/8"') + ' hollow';
-  const playerHollow = _selectedPlayer.hollow || '5/8"';
-  document.getElementById('sm-hollow-custom').style.display = 'none';
-  document.querySelectorAll('.hollow-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.hollow === playerHollow);
-  });
-  const hollowBtns = Array.from(document.querySelectorAll('.hollow-btn[data-hollow]'));
-  const matched = hollowBtns.find(b => b.dataset.hollow === playerHollow && b.dataset.hollow !== 'custom');
-  if (!matched) {
-    const customBtn = document.querySelector('.hollow-btn[data-hollow="custom"]');
-    if (customBtn) { customBtn.classList.add('active'); }
-    const customInput = document.getElementById('sm-hollow-custom');
-    customInput.style.display = '';
-    customInput.value = playerHollow;
-  }
-  document.getElementById('sharpen-modal-overlay').classList.add('open');
-}
-
-function closeSharpenModal() {
-  document.getElementById('sharpen-modal-overlay').classList.remove('open');
-}
-
-function selectHollow(btn) {
-  document.querySelectorAll('.hollow-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  _selectedHollow = btn.dataset.hollow;
-  const customInput = document.getElementById('sm-hollow-custom');
-  if (btn.dataset.hollow === 'custom') {
-    customInput.style.display = '';
-    customInput.focus();
-  } else {
-    customInput.style.display = 'none';
-    customInput.value = '';
-  }
-}
-
-function selectCondition(btn) {
-  document.querySelectorAll('.condition-btn').forEach(b => b.classList.remove('selected','warn','bad'));
-  _selectedCondition = btn.dataset.cond;
-  btn.classList.add('selected');
-  if (_selectedCondition === 'minor')      btn.classList.add('warn');
-  if (_selectedCondition === 'adjustment') btn.classList.add('warn');
-  if (_selectedCondition === 'damaged')    btn.classList.add('bad');
-}
-
-function toggleTag(btn) {
-  const tag = btn.dataset.tag;
-  if (_activeTags.has(tag)) { _activeTags.delete(tag); btn.classList.remove('active'); }
-  else { _activeTags.add(tag); btn.classList.add('active'); }
-}
-
-async function submitSharpening() {
-  if (!_selectedPlayer) return;
-  const submitBtn = document.getElementById('sm-submit-btn');
-  const errEl     = document.getElementById('sm-error');
-  const okEl      = document.getElementById('sm-success');
-  let hollow = _selectedHollow;
-  if (hollow === 'custom') hollow = document.getElementById('sm-hollow-custom').value.trim();
-  if (!hollow) { errEl.textContent = 'Please select a hollow.'; errEl.classList.add('show'); return; }
-  const condLabels = { clean:'Clean / No Issues', minor:'Minor Wear', adjustment:'Needed Adjustment', damaged:'Damaged Edge' };
-  const conditionLabel = condLabels[_selectedCondition] || 'Clean / No Issues';
-  const tagStr   = _activeTags.size ? Array.from(_activeTags).join(', ') : '';
-  const freeNote = document.getElementById('sm-notes').value.trim();
-  const notes    = [tagStr, freeNote].filter(Boolean).join(' — ');
-  submitBtn.disabled    = true;
-  submitBtn.textContent = 'Saving…';
-  errEl.classList.remove('show');
-  okEl.classList.remove('show');
-  const today = new Date().toISOString().split('T')[0];
-  const pid   = _selectedPlayer.id;
-  try {
-    // A. Insert sharpening (condition = short key e.g. 'damaged', notes = combined text)
-    const { error: sharpErr } = await sb.from('sharpenings').insert([{
-      player_id: pid,
-      date:      today,
-      location:  'EDGE Service',
-      hollow:    hollow,
-      condition: conditionLabel,   // e.g. "Clean / No Issues"
-      notes:     notes || null,
-    }]);
-    if (sharpErr) throw sharpErr;
-
-    // B. Update profiles: increment sharpenings_used
-    try {
-      const { data: prof } = await sb.from('profiles').select('sharpenings_used').eq('id', pid).single();
-      const newCount = (prof?.sharpenings_used || 0) + 1;
-      await sb.from('profiles').update({ sharpenings_used: newCount }).eq('id', pid);
-    } catch(_) {}
-
-    // C. Insert blade_report only if there is an issue (use 'description' column)
-    if (_selectedCondition !== 'clean') {
-      const reportDesc = [conditionLabel, notes].filter(Boolean).join(' — ');
-      await sb.from('blade_reports').insert([{
-        player_id:   pid,
-        description: reportDesc,
-        photo_url:   null,
-        status:      'reviewed',
-      }]);
-    }
-    okEl.textContent = '✓ Sharpening logged for ' + (_selectedPlayer.fname || 'player') + '!';
-    okEl.classList.add('show');
-    submitBtn.textContent = '✓ Done';
-    _serviceSharpenings[pid] = { player_id: pid, date: today, hollow };
-    setTimeout(() => { closeSharpenModal(); selectServicePlayer(_selectedPlayer?.id || pid); }, 1500);
-  } catch (e) {
-    console.error('[EDGE] submitSharpening:', e);
-    errEl.textContent = 'Error: ' + (e.message || 'Could not save. Try again.');
-    errEl.classList.add('show');
-    submitBtn.disabled    = false;
-    submitBtn.textContent = 'Complete Sharpening';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const overlay = document.getElementById('sharpen-modal-overlay');
-  if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) closeSharpenModal(); });
-});
-
-function escHtmlSvc(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
 
 </script>
 
