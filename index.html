@@ -982,6 +982,7 @@
         <button class="nav-btn" id="pnav-profile" onclick="playerNav('profile')">My Profile</button>
       </div>
       <div class="topnav-user">
+        <a href="https://edgehockeyperformance.com" target="_blank" class="nav-btn" style="text-decoration:none;color:var(--muted);font-size:11px;letter-spacing:0.1em;">↗ EDGE Site</a>
         <div class="user-avatar" id="player-avatar-nav">RM</div>
         <div class="user-name" id="player-name-nav">Ryan M.</div>
         <button class="nav-btn logout" onclick="logout()">Sign Out</button>
@@ -1564,6 +1565,9 @@
       <button class="mobile-nav-btn" id="mnav-profile" onclick="playerNav('profile')">
         <span class="mobile-nav-icon">◉</span><span>Profile</span>
       </button>
+      <a href="https://edgehockeyperformance.com" target="_blank" class="mobile-nav-btn" style="text-decoration:none;">
+        <span class="mobile-nav-icon">↗</span><span>EDGE</span>
+      </a>
     </nav>
   </div>
 </div>
@@ -1585,6 +1589,7 @@
         <button class="nav-btn" id="anav-reports" onclick="adminNav('reports')">Player Feedback <span id="admin-reports-badge" style="display:none;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:20px;padding:1px 6px;margin-left:4px;vertical-align:middle;"></span></button>
       </div>
       <div class="topnav-user">
+        <a href="https://edgehockeyperformance.com" target="_blank" class="nav-btn" style="text-decoration:none;color:var(--muted);font-size:11px;letter-spacing:0.1em;">↗ EDGE Site</a>
         <div class="user-avatar" style="background:linear-gradient(135deg,#2A3A2A,#3A4E3A);color:#3DD68C;">EP</div>
         <div class="user-name">EDGE Staff</div>
         <button class="nav-btn logout" onclick="logout()">Sign Out</button>
@@ -2035,6 +2040,9 @@
       <button class="mobile-nav-btn" id="amnav-reports" onclick="adminNav('reports')">
         <span class="mobile-nav-icon">💬</span><span>Feedback <span id="amnav-badge" style="display:none;background:var(--red);color:#fff;font-size:8px;font-weight:700;border-radius:10px;padding:1px 5px;margin-left:2px;vertical-align:middle;"></span></span>
       </button>
+      <a href="https://edgehockeyperformance.com" target="_blank" class="mobile-nav-btn" style="text-decoration:none;">
+        <span class="mobile-nav-icon">↗</span><span>EDGE</span>
+      </a>
     </nav>
   </div>
 </div>
@@ -3092,6 +3100,7 @@ function recalcHealthScore() {
 
 // ── ADMIN: OPEN PLAYER DETAIL PANEL ──────────────────────────
 let adminEditPlayerId = null;
+let adminEditPlayerData = null;
 
 async function openAdminPlayerDetail(playerId) {
   adminEditPlayerId = playerId;
@@ -3099,6 +3108,7 @@ async function openAdminPlayerDetail(playerId) {
   // Fetch full profile
   const { data: p, error } = await sb.from('profiles').select('*').eq('id', playerId).single();
   if (error || !p) { console.error('[EDGE] fetch player detail error:', error); return; }
+  adminEditPlayerData = p;
 
   // Update header
   const titleEl = document.getElementById('admin-detail-title');
@@ -3221,8 +3231,8 @@ async function saveAdminPlayerEdits() {
   const updates = {
     fname:                   getStr('aed-fname'),
     lname:                   getStr('aed-lname'),
-    organization:            getStr('aed-org'),
-    team:                    getStr('aed-team'),
+    organization:            getStr('aed-org') || adminEditPlayerData?.organization || null,
+    team:                    getStr('aed-team') || adminEditPlayerData?.team || null,
     birth_year:              getInt('aed-birth-year'),
     position:                getStr('aed-position'),
     hollow:                  getStr('aed-hollow'),
