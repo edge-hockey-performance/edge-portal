@@ -4108,7 +4108,7 @@ async function routeToProfile(user) {
     let profile, fetchError;
     for (let _attempt = 0; _attempt < 2; _attempt++) {
       const _fetchPromise = sb.from('profiles').select('*').eq('id', user.id).single();
-      const _timeoutPromise = new Promise((_, rej) => setTimeout(() => rej(new Error('Profile fetch timeout — check connection')), 10000));
+      const _timeoutPromise = new Promise((_, rej) => setTimeout(() => rej(new Error('Profile fetch timeout — check connection')), 30000));
       try {
         const { data: _p, error: _e } = await Promise.race([_fetchPromise, _timeoutPromise]);
         profile = _p; fetchError = _e;
@@ -4282,7 +4282,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     showView('view-login');
   }
 
-  // Safety net: never spin forever — fall back to login after 3s
+  // Safety net: never spin forever — fall back to login after 35s
   setTimeout(() => {
     const loader = document.getElementById('session-loader');
     if (loader && loader.style.display !== 'none') {
@@ -4290,7 +4290,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       showView('view-login');
       hideSessionLoader();
     }
-  }, 3000);
+  }, 35000);
 
   // Clean any stray auth tokens from the URL without triggering a reload
   if (window.location.hash.includes('access_token') || window.location.search.includes('code=')) {
