@@ -4189,12 +4189,16 @@ function hideSessionLoader() {
 // ── BOOT ────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   // Safari (mobile + desktop) has a broken Web Locks API that causes Supabase auth
-  // to hang indefinitely. Bypass it entirely with a no-op custom lock function.
+  // to hang indefinitely — bypass it only on Safari, let all other browsers use
+  // the real lock so token refresh works correctly.
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   const safariLockFix = (_name, _acquireTimeout, fn) => fn();
   sb = supabase.createClient(SB_URL, SB_KEY, {
     auth: {
-      lock: safariLockFix,
+      ...(isSafari ? { lock: safariLockFix } : {}),
       persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
       storageKey: 'edge-portal-auth',
     }
   });
@@ -4270,7 +4274,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    // TOKEN_REFRESHED / USER_UPDATED — no re-routing needed
+    if (event === 'TOKEN_REFRESHED') {
+      // Keep currentUser up to date so subsequent fetches use the refreshed token
+      if (session?.user) currentUser = session.user;
+      return;
+    }
+
+    // USER_UPDATED — no re-routing needed
   });
 
   // Only show the session loader if there's a stored session to restore.
