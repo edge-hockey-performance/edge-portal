@@ -2141,7 +2141,7 @@ async function doLogin() {
   let loginErr;
   try {
     const _signIn = sb.auth.signInWithPassword({ email, password: pass });
-    const _timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Check your connection and try again.')), 12000));
+    const _timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Check your connection and try again.')), 25000));
     const { error } = await Promise.race([_signIn, _timeout]);
     loginErr = error;
   } catch(e) { loginErr = e; }
@@ -2164,7 +2164,7 @@ async function doAdminLogin() {
   let adminLoginErr;
   try {
     const _signIn = sb.auth.signInWithPassword({ email, password: pass });
-    const _timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Check your connection and try again.')), 12000));
+    const _timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Check your connection and try again.')), 25000));
     const { error } = await Promise.race([_signIn, _timeout]);
     adminLoginErr = error;
   } catch(e) { adminLoginErr = e; }
@@ -4221,6 +4221,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (_registering) return;
 
     if (event === 'SIGNED_OUT') {
+      // Before accepting a sign-out, try to recover the session once.
+      // Supabase can fire SIGNED_OUT spuriously during token refresh on slow connections.
+      try {
+        const { data: { session: _recovered } } = await sb.auth.getSession();
+        if (_recovered?.user) {
+          console.log('[EDGE] SIGNED_OUT overridden — session recovered, re-routing');
+          currentUser = _recovered.user;
+          await routeToProfile(_recovered.user);
+          return;
+        }
+      } catch(_e) { /* genuine sign-out, fall through */ }
       currentUser = null; currentProfile = null;
       showView('view-login');
       return;
