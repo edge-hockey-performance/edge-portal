@@ -664,6 +664,32 @@
     .tl-tag { font-size:10px; font-weight:700; letter-spacing:0.10em; text-transform:uppercase; padding:3px 8px; border-radius:4px; border:1px solid var(--border); color:var(--muted); }
     .tl-tag.repair    { border-color:rgba(245,200,66,0.3); color:var(--yellow); }
     .tl-tag.corrected { border-color:rgba(61,214,140,0.3); color:var(--green); }
+    .tl-ratings { display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
+    .tl-rating-chip { font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--silver); }
+    .tl-rating-chip.r5 { border-color:rgba(61,214,140,0.4); color:var(--green); }
+    .tl-rating-chip.r4 { border-color:rgba(61,214,140,0.2); color:#7dd9aa; }
+    .tl-rating-chip.r3 { border-color:rgba(245,200,66,0.3); color:var(--yellow); }
+    .tl-rating-chip.r2 { border-color:rgba(240,82,82,0.25); color:#f07070; }
+    .tl-rating-chip.r1 { border-color:rgba(240,82,82,0.5); color:var(--red); }
+
+    /* ── Tap Ratings (Service Session) ── */
+    .tap-rating-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+    .tap-rating-label { font-size:11px; color:var(--muted); font-weight:600; letter-spacing:0.06em; text-transform:uppercase; min-width:110px; }
+    .tap-rating-btns { display:flex; gap:5px; }
+    .trb { width:40px; height:40px; border-radius:8px; border:1px solid var(--border); background:var(--bg-input); color:var(--muted); font-size:14px; font-weight:700; cursor:pointer; transition:all .12s; display:flex; align-items:center; justify-content:center; }
+    .trb:hover { border-color:var(--border-hi); color:#fff; }
+    .trb.sel-1 { background:rgba(240,82,82,0.2); border-color:rgba(240,82,82,0.6); color:var(--red); }
+    .trb.sel-2 { background:rgba(240,130,82,0.18); border-color:rgba(240,130,82,0.5); color:#f09060; }
+    .trb.sel-3 { background:rgba(245,200,66,0.18); border-color:rgba(245,200,66,0.5); color:var(--yellow); }
+    .trb.sel-4 { background:rgba(61,214,140,0.15); border-color:rgba(61,214,140,0.4); color:#7dd9aa; }
+    .trb.sel-5 { background:rgba(61,214,140,0.2); border-color:rgba(61,214,140,0.6); color:var(--green); }
+    .svc-set-header { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); padding:8px 0 4px; border-top:1px solid var(--border); margin-top:10px; }
+    .svc-set2-section { margin-top:10px; padding:12px; background:rgba(96,165,250,0.05); border:1px solid rgba(96,165,250,0.15); border-radius:var(--radius); }
+    @media(max-width:600px) { .tap-rating-label { min-width:90px; font-size:10px; } .trb { width:36px; height:36px; font-size:13px; } }
+
+    /* ── Player Filters (All Players) ── */
+    .players-filter-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; align-items:flex-end; }
+    .players-filter-bar .field { min-width:130px; margin-bottom:0; flex:1; }
 
     /* ── Steel lifecycle bar ── */
     .lifecycle-bar-wrap { margin:20px 0 8px; }
@@ -1583,7 +1609,7 @@
         <small>Staff Dashboard</small>
       </div>
       <div class="topnav-nav">
-        <button class="nav-btn active" id="anav-queue" onclick="adminNav('queue')">Blade Queue</button>
+        <button class="nav-btn active" id="anav-queue" onclick="adminNav('queue')">Dashboard</button>
         <button class="nav-btn" id="anav-service" onclick="adminNav('service')" style="background:rgba(96,165,250,0.08);color:var(--blue);">⚡ Service Session</button>
         <button class="nav-btn" id="anav-players" onclick="adminNav('players')">All Players</button>
         <button class="nav-btn" id="anav-reports" onclick="adminNav('reports')">Player Feedback <span id="admin-reports-badge" style="display:none;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:20px;padding:1px 6px;margin-left:4px;vertical-align:middle;"></span></button>
@@ -1596,24 +1622,24 @@
       </div>
     </nav>
 
-    <!-- Queue sub-view -->
+    <!-- Dashboard sub-view -->
     <div class="page" id="asub-queue">
       <div class="page-header">
-        <div class="page-eyebrow">Operations</div>
-        <div class="page-title">Blade <span class="chrome">Queue</span></div>
-        <div class="page-sub">All incoming steel — pending service, in progress, and completed today.</div>
+        <div class="page-eyebrow">Staff Operations</div>
+        <div class="page-title">EDGE <span class="chrome">Dashboard</span></div>
+        <div class="page-sub">Program overview and quick access to core tools.</div>
       </div>
 
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-label">Pending Service</div>
+          <div class="stat-label">Appointments</div>
           <div class="stat-value" id="admin-stat-pending">0</div>
-          <div class="stat-sub">Awaiting sharpening</div>
+          <div class="stat-sub">Pending in queue</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Completed Today</div>
           <div class="stat-value" id="admin-stat-done">0</div>
-          <div class="stat-sub">Returned to players</div>
+          <div class="stat-sub">Sessions logged today</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Active Members</div>
@@ -1627,7 +1653,36 @@
         </div>
       </div>
 
+      <!-- Quick Actions -->
       <div class="section">
+        <div class="section-header"><div class="section-title">Quick Actions</div></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+          <div class="card card-body" style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;">
+            <div style="font-size:22px;">⚡</div>
+            <div style="font-weight:700;font-size:15px;">Service Session</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.5;">Log sharpenings for multiple players at once with tap ratings.</div>
+            <button class="btn btn-chrome btn-sm" onclick="adminNav('service')" style="margin-top:4px;">Start Session →</button>
+          </div>
+          <div class="card card-body" style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;">
+            <div style="font-size:22px;">👥</div>
+            <div style="font-weight:700;font-size:15px;">All Players</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.5;">View, filter, and manage every registered player and their blade profile.</div>
+            <button class="btn btn-ghost btn-sm" onclick="adminNav('players')" style="margin-top:4px;">View Players →</button>
+          </div>
+          <div class="card card-body" style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;">
+            <div style="font-size:22px;">💬</div>
+            <div style="font-weight:700;font-size:15px;">Player Feedback</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.5;">Review sharpening feedback and blade issue reports from players.</div>
+            <button class="btn btn-ghost btn-sm" onclick="adminNav('reports')" style="margin-top:4px;">View Feedback →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appointment Queue (legacy) -->
+      <div class="section" style="margin-top:8px;">
+        <div class="section-header">
+          <div class="section-title">Appointment Queue <span style="font-size:11px;color:var(--dim);font-weight:400;font-family:var(--fb);margin-left:6px;">submitted by players</span></div>
+        </div>
         <div class="subtabs">
           <button class="subtab active" id="qtab-pending" onclick="queueTab('pending')">Pending</button>
           <button class="subtab" id="qtab-scheduled" onclick="queueTab('scheduled')">Scheduled</button>
@@ -1677,6 +1732,51 @@
           </div>
         </div>
       </div>
+
+      <!-- Players filter bar -->
+      <div class="players-filter-bar" style="margin-bottom:10px;">
+        <div class="field" style="min-width:150px;margin-bottom:0;flex:1;">
+          <label style="font-size:11px;">Organization</label>
+          <select id="apf-org" onchange="onApfOrgChange()" style="font-size:13px;padding:6px 8px;">
+            <option value="">All Programs</option>
+            <option value="Mission">Mission</option>
+            <option value="Reapers">Reapers</option>
+            <option value="St. Viator">St. Viator</option>
+            <option value="Other">Other / Independent</option>
+          </select>
+        </div>
+        <div class="field" style="min-width:150px;margin-bottom:0;flex:1;">
+          <label style="font-size:11px;">Team</label>
+          <select id="apf-team" onchange="filterAdminPlayers()" style="font-size:13px;padding:6px 8px;">
+            <option value="">All Teams</option>
+          </select>
+        </div>
+        <div class="field" style="min-width:120px;margin-bottom:0;flex:1;">
+          <label style="font-size:11px;">Hollow</label>
+          <select id="apf-hollow" onchange="filterAdminPlayers()" style="font-size:13px;padding:6px 8px;">
+            <option value="">Any Hollow</option>
+            <option>3/8"</option><option>7/16"</option><option>1/2"</option>
+            <option>9/16"</option><option>5/8"</option><option>3/4"</option><option>1"</option>
+          </select>
+        </div>
+        <div class="field" style="min-width:140px;margin-bottom:0;flex:1;">
+          <label style="font-size:11px;">Membership</label>
+          <select id="apf-plan" onchange="filterAdminPlayers()" style="font-size:13px;padding:6px 8px;">
+            <option value="">All Plans</option>
+            <option value="spring_pilot">Founding Pilot</option>
+            <option value="member">EDGE Member</option>
+            <option value="single">Single Visit</option>
+          </select>
+        </div>
+        <div class="field" style="min-width:160px;margin-bottom:0;flex:2;">
+          <label style="font-size:11px;">Search</label>
+          <input type="text" id="apf-search" placeholder="Name or email…" oninput="filterAdminPlayers()" style="font-size:13px;padding:6px 8px;"/>
+        </div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:2px;">
+          <button class="btn btn-ghost btn-sm" onclick="clearApf()">Clear</button>
+        </div>
+      </div>
+      <div id="apf-count" style="font-size:12px;color:var(--muted);margin-bottom:10px;"></div>
 
       <!-- Players table -->
       <div class="section">
@@ -1944,26 +2044,9 @@
                   </div>
                 </div>
                 <div>
-                  <div id="aed-health-label" style="font-family:var(--fh);font-size:16px;font-weight:700;letter-spacing:.04em;">Awaiting Measurement</div>
-                  <div id="aed-health-rec" style="font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4;">Enter measurements and condition ratings below to generate a score.</div>
+                  <div id="aed-health-label" style="font-family:var(--fh);font-size:16px;font-weight:700;letter-spacing:.04em;">Excellent</div>
+                  <div id="aed-health-rec" style="font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4;">Adjust the condition sliders below to update the score.</div>
                 </div>
-              </div>
-
-              <!-- Blade height measurements -->
-              <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Blade Height Measurements (mm)</div>
-              <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:center;margin-bottom:16px;">
-                <div style="font-size:11px;color:var(--dim);font-weight:600;"></div>
-                <div style="font-size:11px;color:var(--muted);font-weight:600;text-align:center;">Left</div>
-                <div style="font-size:11px;color:var(--muted);font-weight:600;text-align:center;">Right</div>
-                <div style="font-size:12px;color:var(--silver);font-weight:600;">Toe</div>
-                <input type="number" id="aed-h-toe-l" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
-                <input type="number" id="aed-h-toe-r" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
-                <div style="font-size:12px;color:var(--silver);font-weight:600;">Mid</div>
-                <input type="number" id="aed-h-mid-l" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
-                <input type="number" id="aed-h-mid-r" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
-                <div style="font-size:12px;color:var(--silver);font-weight:600;">Heel</div>
-                <input type="number" id="aed-h-heel-l" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
-                <input type="number" id="aed-h-heel-r" step="0.01" min="0" max="5" placeholder="3.50" oninput="recalcHealthScore()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:#fff;padding:6px 8px;font-size:13px;text-align:center;width:100%;"/>
               </div>
 
               <!-- Condition ratings -->
@@ -2029,7 +2112,7 @@
     <!-- ── ADMIN MOBILE BOTTOM NAV ── -->
     <nav class="mobile-bottom-nav" id="mobile-admin-nav" style="display:none;">
       <button class="mobile-nav-btn active" id="amnav-queue" onclick="adminNav('queue')">
-        <span class="mobile-nav-icon">📋</span><span>Queue</span>
+        <span class="mobile-nav-icon">🏠</span><span>Home</span>
       </button>
       <button class="mobile-nav-btn" id="amnav-service" onclick="adminNav('service')">
         <span class="mobile-nav-icon">⚡</span><span>Service</span>
@@ -2284,15 +2367,23 @@ async function doRegister() {
 
   _registering = true;
 
-  const { data, error } = await sb.auth.signUp({ email, password: pass });
-  if (error) {
+  // ── Step 1: Sign up with timeout ─────────────────────────────
+  let signUpData, signUpErr;
+  try {
+    const _su      = sb.auth.signUp({ email, password: pass });
+    const _suTimer = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out — check your connection and try again.')), 25000));
+    const { data: d, error: e } = await Promise.race([_su, _suTimer]);
+    signUpData = d; signUpErr = e;
+  } catch(e) { signUpErr = e; }
+
+  if (signUpErr) {
     _registering = false;
     if (btn) { btn.classList.remove('btn-loading'); btn.textContent = orig; }
-    errEl.textContent = error.message || 'Could not create account. Try again.';
+    errEl.textContent = signUpErr.message || 'Could not create account. Try again.';
     errEl.classList.add('show'); return;
   }
 
-  if (!data?.user?.id) {
+  if (!signUpData?.user?.id) {
     _registering = false;
     if (btn) { btn.classList.remove('btn-loading'); btn.textContent = orig; }
     okEl.textContent = 'Check your email to confirm your account, then sign in.';
@@ -2301,22 +2392,28 @@ async function doRegister() {
 
   await new Promise(r => setTimeout(r, 600));
 
-  const { error: profileError } = await sb.from('profiles').upsert({
-    id: data.user.id, fname, lname, email,
-    organization:        org,
-    team,
-    birth_year:          birth_year ? parseInt(birth_year) : null,
-    position:            pos || '',
-    skate_model:         skate || 'Not specified',
-    hollow,
-    plan:                'spring_pilot',
-    role:                'player',
-    sharpenings_used:    0,
-    sharpenings_allowed: 0,
-    member_since:        new Date().toISOString().split('T')[0]
-  }, { onConflict: 'id' });
-
-  if (profileError) console.error('[EDGE] profile upsert error:', profileError);
+  // ── Step 2: Create profile with timeout ──────────────────────
+  try {
+    const _upsert = sb.from('profiles').upsert({
+      id: signUpData.user.id, fname, lname, email,
+      organization:        org,
+      team,
+      birth_year:          birth_year ? parseInt(birth_year) : null,
+      position:            pos || '',
+      skate_model:         skate || 'Not specified',
+      hollow,
+      plan:                'spring_pilot',
+      role:                'player',
+      sharpenings_used:    0,
+      sharpenings_allowed: 0,
+      member_since:        new Date().toISOString().split('T')[0]
+    }, { onConflict: 'id' });
+    const _upsertTimer = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 12000));
+    const { error: profileError } = await Promise.race([_upsert, _upsertTimer]);
+    if (profileError) console.error('[EDGE] profile upsert error:', profileError);
+  } catch(e) {
+    console.warn('[EDGE] profile upsert timed out or failed:', e.message);
+  }
 
   _registering = false;
   if (btn) { btn.classList.remove('btn-loading'); btn.textContent = orig; }
@@ -2324,23 +2421,37 @@ async function doRegister() {
   okEl.textContent = 'Profile created! Loading your dashboard…';
   okEl.classList.add('show');
 
-  await routeToProfile(data.user);
+  await routeToProfile(signUpData.user);
 }
 
 async function logout() {
+  _intentionalLogout = true;
   await sb.auth.signOut();
-  // onAuthStateChange fires and calls showView('view-login')
+  // onAuthStateChange fires SIGNED_OUT → showView('view-login')
+  // Fallback in case event is slow
+  setTimeout(() => {
+    currentUser = null; currentProfile = null;
+    showView('view-login');
+    _intentionalLogout = false;
+  }, 1500);
 }
 
 // ── PLAYER DASHBOARD ────────────────────────────────────────
 // Render sharpenings as timeline rows
+function ratingChip(label, val) {
+  if (!val) return '';
+  const cls = `tl-rating-chip r${val}`;
+  return `<span class="${cls}">${label} ${val}/5</span>`;
+}
+
 function sharpeningTimeline(sharps, limit) {
   const items = limit ? sharps.slice(0, limit) : sharps;
   if (!items.length) return '<div style="padding:28px 0;text-align:center;color:var(--muted);font-size:13px;">Your sharpening history will appear here after your first service.</div>';
   return items.map((s, i) => {
     const isLast = i === items.length - 1;
     const condPart = s.condition ? capFirst(s.condition) + ' Condition' : '';
-    const hollowLine = [s.hollow ? s.hollow + ' Hollow' : '', condPart].filter(Boolean).join(' · ');
+    const setLabel = (s.steel_set && s.steel_set > 1) ? ' · Set ' + s.steel_set : '';
+    const hollowLine = [s.hollow ? s.hollow + ' Hollow' + setLabel : '', condPart].filter(Boolean).join(' · ');
     const tags = [];
     if (s.location) tags.push(`<span class="tl-tag">${s.location}</span>`);
     if (s.notes) {
@@ -2349,12 +2460,21 @@ function sharpeningTimeline(sharps, limit) {
       else if (nl.includes('repair') || nl.includes('nick') || nl.includes('chip')) tags.push('<span class="tl-tag repair">Edge Repair</span>');
       else tags.push(`<span class="tl-tag">${s.notes}</span>`);
     }
+    // Ratings row
+    const ratingChips = [
+      ratingChip('Steel', s.rating_steel_health),
+      ratingChip('Height', s.rating_blade_height),
+      ratingChip('Edge', s.rating_edge_condition),
+      ratingChip('Profile', s.rating_profile_shape),
+    ].filter(Boolean);
+
     return `<div class="timeline-item">
       <div class="timeline-date">${fmtDateShort(s.date)}</div>
       <div class="timeline-dot-col"><div class="timeline-dot"></div>${!isLast ? '<div class="timeline-line"></div>' : ''}</div>
       <div class="timeline-content">
         <div class="timeline-hollow">${hollowLine}</div>
         ${tags.length ? '<div class="timeline-tags">' + tags.join('') + '</div>' : ''}
+        ${ratingChips.length ? '<div class="tl-ratings">' + ratingChips.join('') + '</div>' : ''}
       </div>
     </div>`;
   }).join('');
@@ -2368,9 +2488,18 @@ function fmtDateShort(d) {
 }
 
 async function loadPlayerDashboard() {
-  // Refresh profile from DB
-  const { data: p } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  if (p) currentProfile = p;
+  // Fetch profile + sharpenings in parallel
+  const [profileRes, sharpsRes] = await Promise.all([
+    sb.from('profiles')
+      .select('id,role,fname,lname,email,organization,team,hollow,plan,sharpenings_used,sharpenings_allowed,birth_year,position,skate_model,member_since,steel_brand,steel_model,profile_preference,steel_health_score,steel_health_notes,internal_notes,steel_edge_damage,steel_profile_wear,steel_condition,prior_sharpen_count,steel_install_date')
+      .eq('id', currentUser.id).single(),
+    sb.from('sharpenings')
+      .select('id,date,location,hollow,condition,notes,steel_set,rating_steel_health,rating_blade_height,rating_edge_condition,rating_profile_shape')
+      .eq('player_id', currentUser.id).order('date', { ascending: false })
+  ]);
+
+  if (profileRes.data) currentProfile = profileRes.data;
+  const mySharps = sharpsRes.data || [];
 
   // Nav
   document.getElementById('player-avatar-nav').textContent = (currentProfile.fname || '?')[0].toUpperCase() + ((currentProfile.lname || '')[0] || '').toUpperCase();
@@ -2382,9 +2511,6 @@ async function loadPlayerDashboard() {
   const _teamPart = currentProfile.team || '';
   const _orgTeam  = [_orgPart, _teamPart].filter(Boolean).join(' · ');
   document.getElementById('dash-team').textContent = (_orgTeam ? _orgTeam + ' · ' : '') + 'EDGE Member';
-
-  // Sharpenings
-  const { data: mySharps = [] } = await sb.from('sharpenings').select('*').eq('player_id', currentProfile.id).order('date', { ascending: false });
 
   // ── Stat card 1: Last Sharpen ──
   if (mySharps.length) {
@@ -2401,7 +2527,7 @@ async function loadPlayerDashboard() {
   let skatesSince = '—';
   if (lastSharpenDate) {
     try {
-      const { count } = await sb.from('skate_log').select('*', { count: 'exact', head: true })
+      const { count } = await sb.from('skate_log').select('id', { count: 'exact', head: true })
         .eq('player_id', currentProfile.id).gt('date', lastSharpenDate);
       skatesSince = count ?? '0';
     } catch(e) { skatesSince = '—'; }
@@ -2430,7 +2556,7 @@ async function loadPlayerDashboard() {
   const steelIndEl = document.getElementById('dash-steel-ind');
   try {
     const { data: steelRows = [] } = await sb.from('steel_history')
-      .select('*').eq('player_id', currentProfile.id).order('date', { ascending: false });
+      .select('date,notes').eq('player_id', currentProfile.id).order('date', { ascending: false });
     if (steelRows.length && steelValEl) {
       const installDate = steelRows[0].date;
       const sharpsOnSteel = mySharps.filter(s => s.date >= installDate).length;
@@ -2715,9 +2841,9 @@ async function initServiceSession() {
     dateEl.value = new Date().toISOString().split('T')[0];
   }
 
-  // Load all players from Supabase
+  // Load all players from Supabase — only columns needed for service session
   const { data: players = [], error } = await sb.from('profiles')
-    .select('*')
+    .select('id,fname,lname,email,organization,team,hollow,plan,sharpenings_used')
     .neq('role', 'admin')
     .order('lname', { ascending: true });
 
@@ -2728,12 +2854,7 @@ async function initServiceSession() {
 
   // Pre-populate selection state with each player's defaults
   for (const p of players) {
-    svcSelected[p.id] = {
-      included:  false,
-      hollow:    p.hollow || '5/8"',
-      condition: 'good',
-      notes:     ''
-    };
+    svcSelected[p.id] = mkDefaultSvcSel(p);
   }
 
   svcVisible = [...svcAllPlayers];
@@ -2782,6 +2903,66 @@ function filterServicePlayers() {
   }
 }
 
+function makeTapRatingRow(pid, setKey, metric, label, currentVal, disabled) {
+  const disAttr = disabled ? 'disabled' : '';
+  const btns = [1,2,3,4,5].map(n => {
+    const isSel = currentVal === n;
+    return `<button type="button" class="trb${isSel ? ' sel-'+n : ''}" id="svc-r-${pid}-${setKey}-${metric}-${n}" onclick="setSvcRating('${pid}','${setKey}','${metric}',${n})" ${disAttr}>${n}</button>`;
+  }).join('');
+  return `<div class="tap-rating-row"><span class="tap-rating-label">${label}</span><div class="tap-rating-btns">${btns}</div></div>`;
+}
+
+function hollowOptions(selectedVal) {
+  return ['3/8"','7/16"','1/2"','9/16"','5/8"','3/4"','1"'].map(h =>
+    `<option${(selectedVal||'5/8"')===h?' selected':''}>${h}</option>`
+  ).join('');
+}
+
+function renderSvcSetBlock(p, setKey, setData, parentIncluded) {
+  const dis = !parentIncluded || (!setData.included && setKey === 'set2');
+  const disAttr = dis ? 'disabled' : '';
+  const isSet2  = setKey === 'set2';
+  const label   = isSet2 ? 'Set 2' : 'Set 1';
+
+  const headerHtml = isSet2
+    ? `<div class="svc-set-header" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Set 2</span>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:500;">
+          <input type="checkbox" id="svc-set2chk-${p.id}" ${setData.included?'checked':''} onchange="toggleSvcSet2('${p.id}',this.checked)" ${!parentIncluded?'disabled':''} style="width:14px;height:14px;accent-color:var(--chrome-c);cursor:pointer;"/>
+          Include Set 2
+        </label>
+      </div>`
+    : `<div class="svc-set-header">Set 1</div>`;
+
+  const wrapStyle = isSet2
+    ? `class="svc-set2-section" id="svc-set2block-${p.id}"`
+    : `style="margin-top:10px;"`;
+
+  return `<div ${wrapStyle}>
+    ${headerHtml}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:8px;">
+      <div class="field" style="min-width:100px;margin-bottom:0;">
+        <label style="font-size:11px;">Hollow Applied</label>
+        <select id="svc-hollow-${p.id}-${setKey}" style="font-size:13px;padding:6px 8px;" onchange="updateSvcSetField('${p.id}','${setKey}','hollow',this.value)" ${disAttr}>
+          ${hollowOptions(setData.hollow)}
+        </select>
+      </div>
+      <div class="field" style="flex:1;min-width:180px;margin-bottom:0;">
+        <label style="font-size:11px;">Notes / Feedback for Player</label>
+        <input type="text" id="svc-notes-${p.id}-${setKey}" value="${(setData.notes||'').replace(/"/g,'&quot;')}"
+          placeholder="e.g. Edges corrected, chip repaired…" style="font-size:13px;padding:6px 8px;"
+          oninput="updateSvcSetField('${p.id}','${setKey}','notes',this.value)" ${disAttr}/>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      ${makeTapRatingRow(p.id, setKey, 'rSteelHealth',   '⚡ Steel Health',   setData.rSteelHealth,   dis)}
+      ${makeTapRatingRow(p.id, setKey, 'rBladeHeight',   '📏 Blade Height',   setData.rBladeHeight,   dis)}
+      ${makeTapRatingRow(p.id, setKey, 'rEdgeCondition', '🔪 Edge Condition', setData.rEdgeCondition, dis)}
+      ${makeTapRatingRow(p.id, setKey, 'rProfileShape',  '📐 Profile/Shape',  setData.rProfileShape,  dis)}
+    </div>
+  </div>`;
+}
+
 function renderServicePlayers() {
   const listEl = document.getElementById('svc-player-list');
   if (!listEl) return;
@@ -2792,49 +2973,28 @@ function renderServicePlayers() {
   }
 
   listEl.innerHTML = svcVisible.map(p => {
-    const sel   = svcSelected[p.id] || { included: false, hollow: p.hollow || '5/8"', condition: 'good', notes: '' };
+    const sel      = svcSelected[p.id] || mkDefaultSvcSel(p);
     const initials = (p.fname||'?')[0].toUpperCase() + (p.lname||'?')[0].toUpperCase();
     const teamTag  = [p.organization, p.team].filter(Boolean).join(' · ');
+
     return `
     <div class="card card-body" id="svc-card-${p.id}" style="padding:14px 16px;transition:opacity .15s;${sel.included ? '' : 'opacity:0.5;'}">
-      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <!-- Header row: checkbox + name + profile link -->
+      <div style="display:flex;align-items:center;gap:12px;">
         <label style="display:flex;align-items:center;cursor:pointer;flex-shrink:0;">
-          <input type="checkbox" id="svc-chk-${p.id}" ${sel.included ? 'checked' : ''} onchange="toggleSvcPlayer('${p.id}', this.checked)" style="width:18px;height:18px;accent-color:var(--chrome-c);cursor:pointer;"/>
+          <input type="checkbox" id="svc-chk-${p.id}" ${sel.included ? 'checked' : ''} onchange="toggleSvcPlayer('${p.id}', this.checked)" style="width:20px;height:20px;accent-color:var(--chrome-c);cursor:pointer;"/>
         </label>
-        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:160px;">
-          <div class="user-avatar" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">${initials}</div>
-          <div>
-            <div style="font-weight:600;">${p.fname} ${p.lname}</div>
-            <div style="font-size:11px;color:var(--muted);">${teamTag}${p.hollow ? ' · <strong>' + p.hollow + '</strong>' : ''}</div>
-          </div>
+        <div class="user-avatar" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">${initials}</div>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:15px;">${p.fname} ${p.lname}</div>
+          <div style="font-size:11px;color:var(--muted);">${teamTag}${p.hollow ? ' · <strong>' + p.hollow + '</strong>' : ''}</div>
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;flex:1;min-width:280px;">
-          <div class="field" style="min-width:100px;margin-bottom:0;">
-            <label style="font-size:11px;">Hollow Applied</label>
-            <select id="svc-hollow-${p.id}" style="font-size:13px;padding:6px 8px;" onchange="updateSvcField('${p.id}','hollow',this.value)" ${sel.included ? '' : 'disabled'}>
-              <option ${sel.hollow==='3/8"'?'selected':''}>3/8"</option>
-              <option ${sel.hollow==='7/16"'?'selected':''}>7/16"</option>
-              <option ${sel.hollow==='1/2"'?'selected':''}>1/2"</option>
-              <option ${sel.hollow==='9/16"'?'selected':''}>9/16"</option>
-              <option ${sel.hollow==='5/8"'||!sel.hollow?'selected':''}>5/8"</option>
-              <option ${sel.hollow==='3/4"'?'selected':''}>3/4"</option>
-              <option ${sel.hollow==='1"'?'selected':''}>1"</option>
-            </select>
-          </div>
-          <div class="field" style="min-width:110px;margin-bottom:0;">
-            <label style="font-size:11px;">Condition</label>
-            <select id="svc-cond-${p.id}" style="font-size:13px;padding:6px 8px;" onchange="updateSvcField('${p.id}','condition',this.value)" ${sel.included ? '' : 'disabled'}>
-              <option value="excellent" ${sel.condition==='excellent'?'selected':''}>Excellent</option>
-              <option value="good" ${sel.condition==='good'?'selected':''}>Good</option>
-              <option value="fair" ${sel.condition==='fair'?'selected':''}>Fair</option>
-              <option value="poor" ${sel.condition==='poor'?'selected':''}>Poor</option>
-            </select>
-          </div>
-          <div class="field" style="flex:1;min-width:180px;margin-bottom:0;">
-            <label style="font-size:11px;">Notes / Feedback for Player</label>
-            <input type="text" id="svc-notes-${p.id}" value="${(sel.notes||'').replace(/"/g,'&quot;')}" placeholder="e.g. Edges corrected, minor chip repaired…" style="font-size:13px;padding:6px 8px;" oninput="updateSvcField('${p.id}','notes',this.value)" ${sel.included ? '' : 'disabled'}/>
-          </div>
-        </div>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="openAdminPlayerDetail('${p.id}')" title="Open player profile" style="flex-shrink:0;font-size:11px;padding:4px 10px;">Profile →</button>
+      </div>
+      <!-- Set 1 fields (only shown when checked) -->
+      <div id="svc-fields-${p.id}" style="${sel.included ? '' : 'display:none;'}">
+        ${renderSvcSetBlock(p, 'set1', sel.set1, sel.included)}
+        ${renderSvcSetBlock(p, 'set2', sel.set2, sel.included)}
       </div>
     </div>`;
   }).join('');
@@ -2842,21 +3002,54 @@ function renderServicePlayers() {
   updateSvcSummaryLine();
 }
 
+function mkDefaultSvcSel(p) {
+  const defSet = () => ({ included: true, hollow: p.hollow || '5/8"', notes: '', rSteelHealth: null, rBladeHeight: null, rEdgeCondition: null, rProfileShape: null });
+  return { included: false, set1: defSet(), set2: { ...defSet(), included: false } };
+}
+
 function toggleSvcPlayer(pid, checked) {
   if (!svcSelected[pid]) return;
   svcSelected[pid].included = checked;
-  const card = document.getElementById('svc-card-' + pid);
-  if (card) card.style.opacity = checked ? '1' : '0.5';
-  ['hollow','cond','notes'].forEach(f => {
-    const el = document.getElementById(`svc-${f}-${pid}`);
-    if (el) el.disabled = !checked;
-  });
+  const card   = document.getElementById('svc-card-' + pid);
+  const fields = document.getElementById('svc-fields-' + pid);
+  if (card)   card.style.opacity    = checked ? '1' : '0.5';
+  if (fields) fields.style.display  = checked ? '' : 'none';
+  // Enable/disable all inputs in the fields block
+  if (fields) fields.querySelectorAll('input,select,button').forEach(el => el.disabled = !checked);
   updateSvcCountBadge();
   updateSvcSummaryLine();
 }
 
+function toggleSvcSet2(pid, checked) {
+  if (!svcSelected[pid]) return;
+  svcSelected[pid].set2.included = checked;
+  const block = document.getElementById('svc-set2block-' + pid);
+  if (!block) return;
+  block.querySelectorAll('input[type!=checkbox],select,button.trb').forEach(el => el.disabled = !checked);
+}
+
+function setSvcRating(pid, setKey, metric, value) {
+  if (!svcSelected[pid]) return;
+  const current = svcSelected[pid][setKey][metric];
+  // Toggle off if same value tapped again
+  const newVal = current === value ? null : value;
+  svcSelected[pid][setKey][metric] = newVal;
+  // Update button visual states
+  [1,2,3,4,5].forEach(n => {
+    const btn = document.getElementById(`svc-r-${pid}-${setKey}-${metric}-${n}`);
+    if (btn) {
+      btn.className = 'trb' + (newVal === n ? ' sel-' + n : '');
+    }
+  });
+}
+
+function updateSvcSetField(pid, setKey, field, value) {
+  if (svcSelected[pid] && svcSelected[pid][setKey]) svcSelected[pid][setKey][field] = value;
+}
+
+// Legacy shim for any code still calling updateSvcField
 function updateSvcField(pid, field, value) {
-  if (svcSelected[pid]) svcSelected[pid][field === 'cond' ? 'condition' : field] = value;
+  if (svcSelected[pid]) updateSvcSetField(pid, 'set1', field, value);
 }
 
 function updateSvcCountBadge() {
@@ -2878,61 +3071,40 @@ function updateSvcSummaryLine() {
   }
 }
 
+function _svcSetChecked(p, checked) {
+  if (!svcSelected[p.id]) return;
+  svcSelected[p.id].included = checked;
+  const chk    = document.getElementById('svc-chk-' + p.id);
+  const card   = document.getElementById('svc-card-' + p.id);
+  const fields = document.getElementById('svc-fields-' + p.id);
+  if (chk)    chk.checked            = checked;
+  if (card)   card.style.opacity     = checked ? '1' : '0.5';
+  if (fields) fields.style.display   = checked ? '' : 'none';
+  if (fields) fields.querySelectorAll('input,select,button').forEach(el => el.disabled = !checked);
+}
+
 // Select all currently visible players
 function svcSelectVisible() {
-  svcVisible.forEach(p => {
-    svcSelected[p.id].included = true;
-    const chk  = document.getElementById('svc-chk-' + p.id);
-    const card = document.getElementById('svc-card-' + p.id);
-    if (chk)  chk.checked      = true;
-    if (card) card.style.opacity = '1';
-    ['hollow','cond','notes'].forEach(f => {
-      const el = document.getElementById(`svc-${f}-${p.id}`);
-      if (el) el.disabled = false;
-    });
-  });
-  updateSvcCountBadge();
-  updateSvcSummaryLine();
+  svcVisible.forEach(p => _svcSetChecked(p, true));
+  updateSvcCountBadge(); updateSvcSummaryLine();
 }
 
 // Select every player regardless of filter
 function svcSelectAll() {
-  svcAllPlayers.forEach(p => {
-    svcSelected[p.id].included = true;
-    const chk  = document.getElementById('svc-chk-' + p.id);
-    const card = document.getElementById('svc-card-' + p.id);
-    if (chk)  chk.checked        = true;
-    if (card) card.style.opacity  = '1';
-    ['hollow','cond','notes'].forEach(f => {
-      const el = document.getElementById(`svc-${f}-${p.id}`);
-      if (el) el.disabled = false;
-    });
-  });
-  updateSvcCountBadge();
-  updateSvcSummaryLine();
+  svcAllPlayers.forEach(p => _svcSetChecked(p, true));
+  updateSvcCountBadge(); updateSvcSummaryLine();
 }
 
 function svcSelectNone() {
-  svcAllPlayers.forEach(p => {
-    svcSelected[p.id].included = false;
-    const chk  = document.getElementById('svc-chk-' + p.id);
-    const card = document.getElementById('svc-card-' + p.id);
-    if (chk)  chk.checked        = false;
-    if (card) card.style.opacity  = '0.5';
-    ['hollow','cond','notes'].forEach(f => {
-      const el = document.getElementById(`svc-${f}-${p.id}`);
-      if (el) el.disabled = true;
-    });
-  });
-  updateSvcCountBadge();
-  updateSvcSummaryLine();
+  svcAllPlayers.forEach(p => _svcSetChecked(p, false));
+  updateSvcCountBadge(); updateSvcSummaryLine();
 }
 
 function resetServiceSession() {
   const okEl = document.getElementById('svc-complete-ok');
   const btn  = document.getElementById('svc-complete-btn');
   if (okEl) okEl.style.display = 'none';
-  if (btn)  { btn.disabled = false; btn.classList.remove('btn-loading'); btn.textContent = 'Complete Session & Log All Sharpenings'; }
+  if (btn)  { btn.disabled = false; btn.classList.remove('btn-loading'); btn.textContent = 'Complete Session & Log All Sharpenings'; btn.innerHTML = 'Complete Session &amp; Log All Sharpenings'; }
   // Re-init fetches fresh data
   initServiceSession();
 }
@@ -2960,23 +3132,47 @@ async function completeServiceSession() {
   let logged = 0;
   let errors  = 0;
 
+  // Helper: derive text condition from edge condition rating
+  function ratingToCondition(r) {
+    if (!r) return 'good';
+    if (r >= 5) return 'excellent';
+    if (r >= 4) return 'good';
+    if (r >= 3) return 'fair';
+    return 'poor';
+  }
+
   for (const p of toLog) {
-    const sel = svcSelected[p.id];
-    const notesText = sel.notes?.trim()
-      || `Serviced by EDGE. ${capFirst(sel.condition || 'good')} condition. Edges clean and consistent.`;
+    const sel  = svcSelected[p.id];
+    const sets = [{ data: sel.set1, setNum: 1 }];
+    if (sel.set2?.included) sets.push({ data: sel.set2, setNum: 2 });
 
-    const { error: sharpErr } = await sb.from('sharpenings').insert({
-      player_id: p.id,
-      date:      date,
-      location:  location,
-      hollow:    sel.hollow || p.hollow || '5/8"',
-      condition: sel.condition || 'good',
-      notes:     notesText
-    });
+    let playerErrors = 0;
+    for (const { data: setData, setNum } of sets) {
+      const notesText = setData.notes?.trim()
+        || `Serviced by EDGE. ${capFirst(ratingToCondition(setData.rEdgeCondition))} condition. Edges clean and consistent.`;
 
-    if (sharpErr) { console.error('[EDGE] sharpening insert error for', p.id, sharpErr); errors++; continue; }
+      const row = {
+        player_id:             p.id,
+        date:                  date,
+        location:              location,
+        hollow:                setData.hollow || p.hollow || '5/8"',
+        condition:             ratingToCondition(setData.rEdgeCondition),
+        notes:                 notesText,
+        steel_set:             setNum,
+        rating_steel_health:   setData.rSteelHealth   || null,
+        rating_blade_height:   setData.rBladeHeight   || null,
+        rating_edge_condition: setData.rEdgeCondition || null,
+        rating_profile_shape:  setData.rProfileShape  || null,
+      };
+
+      const { error: sharpErr } = await sb.from('sharpenings').insert(row);
+      if (sharpErr) { console.error('[EDGE] sharpening insert error for', p.id, 'set', setNum, sharpErr); playerErrors++; }
+    }
+
+    if (playerErrors > 0) { errors++; continue; }
 
     if (p.plan === 'member' || p.plan === 'spring_pilot') {
+      const setsLogged = sets.length; // count each set separately toward usage? or just 1 per player?
       const newCount = (p.sharpenings_used || 0) + 1;
       await sb.from('profiles').update({ sharpenings_used: newCount }).eq('id', p.id);
     }
@@ -3003,71 +3199,36 @@ async function completeServiceSession() {
 }
 
 // ── STEEL HEALTH SCORE CALCULATION ──────────────────────────
-function calcSteelHealthScore(heights, edgeDamage, profileWear, steelCondition, sharpenCount) {
-  // heights = array of up to 6 mm values (toe/mid/heel L+R)
-  // edgeDamage, profileWear, steelCondition = 1-5 (5=perfect)
-  // sharpenCount = total sharpenings on current steel
+// Score uses condition slider ratings (1-5) + sharpen count
+// edgeDamage, profileWear, steelCondition = 1-5 (5=perfect)
+// sharpenCount = total sharpenings on current steel
+function calcSteelHealthScore(edgeDamage, profileWear, steelCondition, sharpenCount) {
+  // COMPONENT 1: Sharpen count score (0-20 pts) — max life ~80 sharpenings
+  const sharpenPct  = Math.max(0, 1 - ((sharpenCount || 0) / 80));
+  const sharpenScore = Math.round(sharpenPct * 20);
 
-  // COMPONENT 1: Height score (0-40 pts)
-  // Baseline new = 3.5mm, replace threshold = 2.5mm (1mm of usable life)
-  let heightScore = 40;
-  const validHeights = heights.filter(h => h > 0 && h <= 5);
-  if (validHeights.length > 0) {
-    const avgH = validHeights.reduce((a, b) => a + b, 0) / validHeights.length;
-    const minH = Math.min(...validHeights);
-    // Use minimum height as limiting factor (blade is only as good as its shortest point)
-    const heightPct = Math.max(0, Math.min(1, (minH - 2.5) / 1.0)); // 0 at 2.5mm, 1 at 3.5mm+
-    heightScore = Math.round(heightPct * 40);
-  }
-
-  // COMPONENT 2: Sharpen count score (0-20 pts)
-  // Expected max life ~80 sharpenings
-  let sharpenScore = 20;
-  if (sharpenCount > 0) {
-    const sharpenPct = Math.max(0, 1 - (sharpenCount / 80));
-    sharpenScore = Math.round(sharpenPct * 20);
-  }
-
-  // COMPONENT 3: Condition ratings (0-40 pts, 3 ratings × max ~13.3 each)
-  // Ratings 1-5, weight: edge damage 40%, profile wear 30%, overall condition 30%
+  // COMPONENT 2: Condition ratings (0-80 pts)
+  // Weight: edge damage 40%, profile wear 30%, overall condition 30%
   const condScore = Math.round(
-    ((edgeDamage   / 5) * 0.40 +
-     (profileWear  / 5) * 0.30 +
-     (steelCondition / 5) * 0.30) * 40
+    ((edgeDamage     / 5) * 0.40 +
+     (profileWear    / 5) * 0.30 +
+     (steelCondition / 5) * 0.30) * 80
   );
 
-  const total = Math.max(0, Math.min(100, heightScore + sharpenScore + condScore));
-  return total;
+  return Math.max(0, Math.min(100, sharpenScore + condScore));
 }
 
 function recalcHealthScore() {
-  const heights = [
-    parseFloat(document.getElementById('aed-h-toe-l')?.value)  || 0,
-    parseFloat(document.getElementById('aed-h-toe-r')?.value)  || 0,
-    parseFloat(document.getElementById('aed-h-mid-l')?.value)  || 0,
-    parseFloat(document.getElementById('aed-h-mid-r')?.value)  || 0,
-    parseFloat(document.getElementById('aed-h-heel-l')?.value) || 0,
-    parseFloat(document.getElementById('aed-h-heel-r')?.value) || 0,
-  ];
-  const edgeDamage    = parseInt(document.getElementById('aed-edge-damage')?.value) || 5;
-  const profileWear   = parseInt(document.getElementById('aed-profile-wear')?.value) || 5;
-  const steelCond     = parseInt(document.getElementById('aed-steel-cond')?.value)  || 5;
-  const priorSharps   = parseInt(document.getElementById('aed-prior-sharpen-count')?.value) || 0;
+  const edgeDamage  = parseInt(document.getElementById('aed-edge-damage')?.value) || 5;
+  const profileWear = parseInt(document.getElementById('aed-profile-wear')?.value) || 5;
+  const steelCond   = parseInt(document.getElementById('aed-steel-cond')?.value)  || 5;
+  const priorSharps = parseInt(document.getElementById('aed-prior-sharpen-count')?.value) || 0;
 
-  const score = calcSteelHealthScore(heights, edgeDamage, profileWear, steelCond, priorSharps);
-  const hasData = heights.some(h => h > 0);
-
+  const score   = calcSteelHealthScore(edgeDamage, profileWear, steelCond, priorSharps);
   const scoreEl = document.getElementById('aed-health-score-display');
   const labelEl = document.getElementById('aed-health-label');
   const recEl   = document.getElementById('aed-health-rec');
   const gaugeEl = document.getElementById('aed-health-gauge');
-
-  if (!hasData) {
-    if (scoreEl) scoreEl.textContent = '—';
-    if (labelEl) labelEl.textContent = 'Awaiting Measurement';
-    if (recEl)   recEl.textContent   = 'Enter blade height measurements to generate a score.';
-    return;
-  }
 
   if (scoreEl) scoreEl.textContent = score;
 
@@ -3077,7 +3238,7 @@ function recalcHealthScore() {
     rec   = 'Steel is in great shape. Continue normal monitoring.';
   } else if (score >= 60) {
     color = '#A8D5A2'; label = 'Good';
-    rec   = 'Steel performing well. Monitor height at next service.';
+    rec   = 'Steel performing well. Monitor at next service.';
   } else if (score >= 40) {
     color = 'var(--yellow)'; label = 'Fair — Watch Closely';
     rec   = 'Steel showing wear. Plan replacement within 10–15 sharpenings.';
@@ -3086,13 +3247,10 @@ function recalcHealthScore() {
     rec   = 'Steel is significantly worn. Recommend replacement at next visit.';
   } else {
     color = 'var(--red)'; label = 'Critical — Replace Now';
-    rec   = 'Steel is at or below safe threshold. Immediate replacement recommended.';
+    rec   = 'Steel at or below safe threshold. Immediate replacement recommended.';
   }
 
-  if (gaugeEl) {
-    const pct = score;
-    gaugeEl.style.background = `conic-gradient(${color} 0% ${pct}%, var(--bg-input) ${pct}% 100%)`;
-  }
+  if (gaugeEl) gaugeEl.style.background = `conic-gradient(${color} 0% ${score}%, var(--bg-input) ${score}% 100%)`;
   if (scoreEl) scoreEl.style.color = color;
   if (labelEl) { labelEl.textContent = label; labelEl.style.color = color; }
   if (recEl)   recEl.textContent    = rec;
@@ -3157,14 +3315,6 @@ async function openAdminPlayerDetail(playerId) {
   setVal('aed-profile-pref', p.profile_preference);
   setVal('aed-equipment-notes', p.equipment_notes);
 
-  // Steel height measurements
-  setVal('aed-h-toe-l',  p.steel_height_toe_l);
-  setVal('aed-h-toe-r',  p.steel_height_toe_r);
-  setVal('aed-h-mid-l',  p.steel_height_mid_l);
-  setVal('aed-h-mid-r',  p.steel_height_mid_r);
-  setVal('aed-h-heel-l', p.steel_height_heel_l);
-  setVal('aed-h-heel-r', p.steel_height_heel_r);
-
   // Condition ratings
   const setRange = (id, labelId, val) => {
     const el = document.getElementById(id);
@@ -3209,24 +3359,15 @@ async function saveAdminPlayerEdits() {
   const btn  = document.querySelector('#asub-player-detail .btn-chrome');
   if (btn) { btn.classList.add('btn-loading'); btn.textContent = 'Saving…'; }
 
-  // Collect heights
   const getNum = (id) => { const v = parseFloat(document.getElementById(id)?.value); return isNaN(v) ? null : v; };
   const getInt  = (id) => { const v = parseInt(document.getElementById(id)?.value); return isNaN(v) ? null : v; };
   const getStr  = (id) => (document.getElementById(id)?.value || '').trim() || null;
 
-  const heights = [
-    getNum('aed-h-toe-l'),  getNum('aed-h-toe-r'),
-    getNum('aed-h-mid-l'),  getNum('aed-h-mid-r'),
-    getNum('aed-h-heel-l'), getNum('aed-h-heel-r'),
-  ];
   const edgeDamage  = getInt('aed-edge-damage')  || 5;
   const profileWear = getInt('aed-profile-wear') || 5;
   const steelCond   = getInt('aed-steel-cond')   || 5;
   const priorSharps = getInt('aed-prior-sharpen-count') || 0;
-
-  // Compute health score only if we have at least one height measurement
-  const hasHeight = heights.some(h => h !== null && h > 0);
-  const healthScore = hasHeight ? calcSteelHealthScore(heights, edgeDamage, profileWear, steelCond, priorSharps) : null;
+  const healthScore = calcSteelHealthScore(edgeDamage, profileWear, steelCond, priorSharps);
 
   const updates = {
     fname:                   getStr('aed-fname'),
@@ -3247,13 +3388,6 @@ async function saveAdminPlayerEdits() {
     prior_sharpen_count:     priorSharps,
     profile_preference:      getStr('aed-profile-pref'),
     equipment_notes:         document.getElementById('aed-equipment-notes')?.value.trim() || null,
-    // Steel heights
-    steel_height_toe_l:      heights[0],
-    steel_height_toe_r:      heights[1],
-    steel_height_mid_l:      heights[2],
-    steel_height_mid_r:      heights[3],
-    steel_height_heel_l:     heights[4],
-    steel_height_heel_r:     heights[5],
     // Condition ratings
     steel_edge_damage:       edgeDamage,
     steel_profile_wear:      profileWear,
@@ -3293,9 +3427,20 @@ async function saveAdminPlayerEdits() {
 // ── ADMIN DASHBOARD ─────────────────────────────────────────
 async function loadAdminDashboard() {
   const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+  // Fire all independent queries in parallel
+  const [apptsRes, playersRes, sharpsRes, queueRes, badgeRes] = await Promise.allSettled([
+    sb.from('appointments').select('id,status'),
+    sb.from('profiles').select('id,plan,fname,lname,email,organization,team,hollow,skate_model,steel_health_score,role').neq('role','admin').order('lname',{ascending:true}),
+    sb.from('sharpenings').select('player_id'),
+    sb.from('appointments').select('id,date,hollow,location,notes,player_id,profiles(fname,lname,team)').eq('status','pending').order('date',{ascending:true}),
+    sb.from('blade_reports').select('id',{count:'exact',head:true}).eq('status','pending')
+  ]);
+
+  // Stats
   try {
-    const { data: appointments = [] } = await sb.from('appointments').select('*');
-    const { data: players = [] }      = await sb.from('profiles').select('*').neq('role', 'admin');
+    const appointments = apptsRes.value?.data  || [];
+    const players      = playersRes.value?.data || [];
     const pending  = appointments.filter(a => a.status === 'pending').length;
     const done     = appointments.filter(a => a.status === 'completed').length;
     const pilots   = players.filter(p => p.plan === 'spring_pilot').length;
@@ -3305,9 +3450,48 @@ async function loadAdminDashboard() {
     setText('admin-stat-members', members + pilots);
     setText('admin-stat-rev',     '$' + (members * 40));
   } catch (e) { console.error('[EDGE] admin stats error:', e); }
-  try { await renderQueue('pending');  } catch (e) { console.error('[EDGE] renderQueue error:', e); }
-  try { await renderAdminPlayers();   } catch (e) { console.error('[EDGE] renderAdminPlayers error:', e); }
-  try { await refreshReportsBadge();  } catch (e) { /* non-fatal */ }
+
+  // Players table — reuse already-fetched data
+  try {
+    allPlayersCache     = playersRes.value?.data  || [];
+    allSharpeningsCache = sharpsRes.value?.data   || [];
+    filterAdminPlayers();
+  } catch (e) { console.error('[EDGE] renderAdminPlayers error:', e); }
+
+  // Queue — reuse fetched appointments
+  try {
+    const appts = queueRes.value?.data || [];
+    const el = document.getElementById('queue-list');
+    if (el) {
+      if (!appts.length) {
+        el.innerHTML = '<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">No pending items.</div></div>';
+      } else {
+        el.innerHTML = appts.map(a => {
+          const player   = a.profiles || {};
+          const initials = (player.fname||'?')[0] + (player.lname||'?')[0];
+          return `<div class="queue-item">
+            <div class="queue-avatar">${initials}</div>
+            <div>
+              <div class="queue-info-name">${player.fname||''} ${player.lname||''}</div>
+              <div class="queue-info-detail">${player.team||''} · ${a.hollow} hollow · ${a.location}</div>
+              ${a.notes ? `<div class="note-box" style="margin-top:6px;">${a.notes}</div>` : ''}
+            </div>
+            <div style="font-size:12px;color:var(--muted);white-space:nowrap;">${fmtDate(a.date)}</div>
+            <div><button class="btn btn-chrome btn-sm" onclick="markComplete('${a.id}')">Mark Complete</button></div>
+          </div>`;
+        }).join('');
+      }
+    }
+  } catch (e) { console.error('[EDGE] queue render error:', e); }
+
+  // Reports badge
+  try {
+    const count = badgeRes.value?.count || 0;
+    ['admin-reports-badge','amnav-badge'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = count; el.style.display = count > 0 ? '' : 'none'; }
+    });
+  } catch(e) { /* non-fatal */ }
 }
 
 function adminNav(sub) {
@@ -3409,35 +3593,97 @@ async function markPending(apptId) {
   await loadAdminDashboard();
 }
 
-async function renderAdminPlayers() {
-  const { data: players = [] }     = await sb.from('profiles').select('*').neq('role', 'admin');
-  const { data: sharpenings = [] } = await sb.from('sharpenings').select('player_id');
+// ── ALL PLAYERS FILTER STATE ─────────────────────────────────
+let allPlayersCache    = [];
+let allSharpeningsCache = [];
+
+function renderPlayerRow(p) {
+  const count = allSharpeningsCache.filter(s => s.player_id === p.id).length;
+  const score = p.steel_health_score != null ? p.steel_health_score : null;
+  let healthBadge;
+  if (score === null) {
+    healthBadge = '<span style="font-size:11px;color:var(--dim);">—</span>';
+  } else if (score >= 70) {
+    healthBadge = `<span class="badge badge-green">${score}</span>`;
+  } else if (score >= 40) {
+    healthBadge = `<span class="badge badge-yellow">${score}</span>`;
+  } else {
+    healthBadge = `<span class="badge" style="background:rgba(240,82,82,0.15);color:var(--red);border:1px solid rgba(240,82,82,0.3);">${score} — Replace Soon</span>`;
+  }
+  return `<tr>
+    <td><strong>${p.fname} ${p.lname}</strong><br><span style="font-size:11px;color:var(--muted);">${p.email || ''}</span></td>
+    <td>${p.organization ? `<span style="font-size:12px;color:var(--muted);">${p.organization}</span><br>` : ''}${p.team || ''}</td>
+    <td>${p.plan === 'member' ? '<span class="badge badge-chrome">EDGE Member</span>' : p.plan === 'spring_pilot' ? '<span class="badge badge-chrome" style="background:rgba(200,205,216,0.12);">Founding Pilot</span>' : '<span class="badge badge-yellow">Single Visit</span>'}</td>
+    <td><strong>${p.hollow || '—'}</strong></td>
+    <td style="font-size:12px;color:var(--muted);">${p.skate_model || '—'}</td>
+    <td style="text-align:center;"><strong>${count}</strong></td>
+    <td style="text-align:center;">${healthBadge}</td>
+    <td><button class="btn btn-ghost btn-sm" onclick="openAdminPlayerDetail('${p.id}')">Edit</button></td>
+  </tr>`;
+}
+
+function filterAdminPlayers() {
+  const org    = (document.getElementById('apf-org')?.value    || '').trim();
+  const team   = (document.getElementById('apf-team')?.value   || '').trim();
+  const hollow = (document.getElementById('apf-hollow')?.value || '').trim();
+  const plan   = (document.getElementById('apf-plan')?.value   || '').trim();
+  const search = (document.getElementById('apf-search')?.value || '').toLowerCase().trim();
+
+  const filtered = allPlayersCache.filter(p => {
+    if (org    && p.organization !== org)  return false;
+    if (team   && p.team         !== team) return false;
+    if (hollow && p.hollow        !== hollow) return false;
+    if (plan   && p.plan          !== plan) return false;
+    if (search) {
+      const full = ((p.fname||'') + ' ' + (p.lname||'') + ' ' + (p.email||'')).toLowerCase();
+      if (!full.includes(search)) return false;
+    }
+    return true;
+  });
 
   const el = document.getElementById('admin-players-table');
-  el.innerHTML = players.map(p => {
-    const count = sharpenings.filter(s => s.player_id === p.id).length;
-    const score = p.steel_health_score != null ? p.steel_health_score : null;
-    let healthBadge;
-    if (score === null) {
-      healthBadge = '<span style="font-size:11px;color:var(--dim);">—</span>';
-    } else if (score >= 70) {
-      healthBadge = `<span class="badge badge-green">${score}</span>`;
-    } else if (score >= 40) {
-      healthBadge = `<span class="badge badge-yellow">${score}</span>`;
-    } else {
-      healthBadge = `<span class="badge" style="background:rgba(240,82,82,0.15);color:var(--red);border:1px solid rgba(240,82,82,0.3);">${score} — Replace Soon</span>`;
-    }
-    return `<tr>
-      <td><strong>${p.fname} ${p.lname}</strong><br><span style="font-size:11px;color:var(--muted);">${p.email || ''}</span></td>
-      <td>${p.organization ? `<span style="font-size:12px;color:var(--muted);">${p.organization}</span><br>` : ''}${p.team || ''}</td>
-      <td>${p.plan === 'member' ? '<span class="badge badge-chrome">EDGE Member</span>' : p.plan === 'spring_pilot' ? '<span class="badge badge-chrome" style="background:rgba(200,205,216,0.12);">Founding Pilot</span>' : '<span class="badge badge-yellow">Single Visit</span>'}</td>
-      <td><strong>${p.hollow || '—'}</strong></td>
-      <td style="font-size:12px;color:var(--muted);">${p.skate_model || '—'}</td>
-      <td style="text-align:center;"><strong>${count}</strong></td>
-      <td style="text-align:center;">${healthBadge}</td>
-      <td><button class="btn btn-ghost btn-sm" onclick="openAdminPlayerDetail('${p.id}')">Edit</button></td>
-    </tr>`;
-  }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px;">No players yet.</td></tr>';
+  if (el) el.innerHTML = filtered.map(renderPlayerRow).join('') ||
+    '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px;">No players match the current filter.</td></tr>';
+
+  const countEl = document.getElementById('apf-count');
+  if (countEl) {
+    countEl.textContent = filtered.length < allPlayersCache.length
+      ? `Showing ${filtered.length} of ${allPlayersCache.length} players`
+      : `${allPlayersCache.length} player${allPlayersCache.length !== 1 ? 's' : ''} total`;
+  }
+}
+
+function onApfOrgChange() {
+  const org     = document.getElementById('apf-org').value;
+  const teamSel = document.getElementById('apf-team');
+  if (!teamSel) return;
+  teamSel.innerHTML = '<option value="">All Teams</option>';
+  if (org && ORG_TEAMS[org]) {
+    ORG_TEAMS[org].forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t; opt.textContent = t;
+      teamSel.appendChild(opt);
+    });
+  }
+  filterAdminPlayers();
+}
+
+function clearApf() {
+  ['apf-org','apf-team','apf-hollow','apf-plan','apf-search'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  filterAdminPlayers();
+}
+
+async function renderAdminPlayers() {
+  const [playersRes, sharpsRes] = await Promise.all([
+    sb.from('profiles').select('id,plan,fname,lname,email,organization,team,hollow,skate_model,steel_health_score,role').neq('role','admin').order('lname',{ascending:true}),
+    sb.from('sharpenings').select('player_id')
+  ]);
+  allPlayersCache     = playersRes.data  || [];
+  allSharpeningsCache = sharpsRes.data   || [];
+  filterAdminPlayers();
 }
 
 // ── BLADE STATUS ─────────────────────────────────────────────
@@ -4087,8 +4333,9 @@ async function initSkateLog() {
 }
 
 // ── REGISTRATION LOCK ── prevents onAuthStateChange routing during signup flow
-let _registering    = false;
-let _routing        = false;
+let _registering       = false;
+let _routing           = false;
+let _intentionalLogout = false;
 let _routingStarted = 0;
 
 // ── ROUTE TO PROFILE ─────────────────────────────────────────
@@ -4104,27 +4351,42 @@ async function routeToProfile(user) {
   console.log('[EDGE] routeToProfile START', user.id);
 
   try {
-    // Retry once if auth lock is briefly contended during token exchange
+    // Retry up to 4 times with backoff — handles Supabase cold starts and brief network hiccups
+    // without kicking the user to login. Only give up if auth is genuinely gone.
     let profile, fetchError;
-    for (let _attempt = 0; _attempt < 2; _attempt++) {
-      const _fetchPromise = sb.from('profiles').select('id,role,fname,lname,email,organization,team,hollow,plan,sharpenings_used,sharpenings_allowed,birth_year,position,skate_model,member_since,steel_brand,steel_model,profile_preference,steel_health_score').eq('id', user.id).single();
-      const _timeoutPromise = new Promise((_, rej) => setTimeout(() => rej(new Error('Profile fetch timeout — check connection')), 15000));
+    const _delays = [0, 1500, 3000, 5000];
+    for (let _attempt = 0; _attempt < 4; _attempt++) {
+      if (_delays[_attempt]) await new Promise(r => setTimeout(r, _delays[_attempt]));
       try {
-        const { data: _p, error: _e } = await Promise.race([_fetchPromise, _timeoutPromise]);
+        const { data: _p, error: _e } = await sb.from('profiles')
+          .select('id,role,fname,lname,email,organization,team,hollow,plan,sharpenings_used,sharpenings_allowed,birth_year,position,skate_model,member_since,steel_brand,steel_model,profile_preference,steel_health_score')
+          .eq('id', user.id).single();
         profile = _p; fetchError = _e;
       } catch(_te) { fetchError = _te; }
-      if (!fetchError || !String(fetchError.message || '').toLowerCase().includes('lock')) break;
-      console.warn('[EDGE] profile fetch lock contention, retrying in 800ms…');
-      await new Promise(r => setTimeout(r, 800));
+      if (!fetchError) break; // success
+      console.warn('[EDGE] profile fetch attempt', _attempt + 1, 'failed:', fetchError.message);
+      // If auth is gone (JWT error), no point retrying
+      if (String(fetchError.message || '').toLowerCase().includes('jwt') ||
+          String(fetchError.message || '').toLowerCase().includes('not authenticated')) break;
     }
     const error = fetchError;
 
     if (error) {
-      console.error('[EDGE] Profile fetch error:', error);
-      showView('view-login');
-      const errEl = document.getElementById('login-error');
-      if (errEl) { errEl.textContent = 'Could not load profile: ' + (error.message || 'Server error'); errEl.classList.add('show'); }
-      hideSessionLoader();
+      console.error('[EDGE] Profile fetch failed after retries:', error);
+      // Only go to login if it's an auth error — otherwise stay put and show a soft warning
+      const isAuthError = String(error.message || '').toLowerCase().includes('jwt') ||
+                          String(error.message || '').toLowerCase().includes('not authenticated') ||
+                          String(error.message || '').toLowerCase().includes('timeout');
+      if (isAuthError) {
+        showView('view-login');
+        const errEl = document.getElementById('login-error');
+        if (errEl) { errEl.textContent = 'Session expired — please sign in again.'; errEl.classList.add('show'); }
+        hideSessionLoader();
+      } else {
+        // Network error — don't log out, just hide loader and let them stay
+        hideSessionLoader();
+        console.warn('[EDGE] Staying on current view — fetch failed but session may still be valid');
+      }
       return;
     }
 
@@ -4221,8 +4483,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (_registering) return;
 
     if (event === 'SIGNED_OUT') {
-      // Before accepting a sign-out, try to recover the session once.
-      // Supabase can fire SIGNED_OUT spuriously during token refresh on slow connections.
+      // If user clicked Sign Out intentionally, go straight to login — skip recovery.
+      if (_intentionalLogout) {
+        _intentionalLogout = false;
+        currentUser = null; currentProfile = null;
+        showView('view-login');
+        return;
+      }
+      // Otherwise, Supabase can fire SIGNED_OUT spuriously during token refresh on slow
+      // connections. Try to recover the session once before accepting the logout.
       try {
         const { data: { session: _recovered } } = await sb.auth.getSession();
         if (_recovered?.user) {
