@@ -2224,7 +2224,7 @@ async function doLogin() {
   let loginErr;
   try {
     const _signIn = sb.auth.signInWithPassword({ email, password: pass });
-    const _timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Check your connection and try again.')), 25000));
+    const _timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Check your connection and try again.')), 40000));
     const { error } = await Promise.race([_signIn, _timeout]);
     loginErr = error;
   } catch(e) { loginErr = e; }
@@ -2247,7 +2247,7 @@ async function doAdminLogin() {
   let adminLoginErr;
   try {
     const _signIn = sb.auth.signInWithPassword({ email, password: pass });
-    const _timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Check your connection and try again.')), 25000));
+    const _timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Check your connection and try again.')), 40000));
     const { error } = await Promise.race([_signIn, _timeout]);
     adminLoginErr = error;
   } catch(e) { adminLoginErr = e; }
@@ -2371,7 +2371,7 @@ async function doRegister() {
   let signUpData, signUpErr;
   try {
     const _su      = sb.auth.signUp({ email, password: pass });
-    const _suTimer = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out — check your connection and try again.')), 25000));
+    const _suTimer = new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out — check your connection and try again.')), 40000));
     const { data: d, error: e } = await Promise.race([_su, _suTimer]);
     signUpData = d; signUpErr = e;
   } catch(e) { signUpErr = e; }
