@@ -4374,18 +4374,20 @@ async function routeToProfile(user) {
     if (error) {
       console.error('[EDGE] Profile fetch failed after retries:', error);
       // Only go to login if it's an auth error — otherwise stay put and show a soft warning
+      // Only kick to login on genuine auth errors (JWT gone / not authenticated).
+      // A slow network or timeout on the profile fetch does NOT mean the session
+      // is gone — keep the user where they are in that case.
       const isAuthError = String(error.message || '').toLowerCase().includes('jwt') ||
-                          String(error.message || '').toLowerCase().includes('not authenticated') ||
-                          String(error.message || '').toLowerCase().includes('timeout');
+                          String(error.message || '').toLowerCase().includes('not authenticated');
       if (isAuthError) {
         showView('view-login');
         const errEl = document.getElementById('login-error');
         if (errEl) { errEl.textContent = 'Session expired — please sign in again.'; errEl.classList.add('show'); }
         hideSessionLoader();
       } else {
-        // Network error — don't log out, just hide loader and let them stay
+        // Slow network / timeout — session is likely still valid; stay put.
         hideSessionLoader();
-        console.warn('[EDGE] Staying on current view — fetch failed but session may still be valid');
+        console.warn('[EDGE] Profile fetch failed (network) — staying on current view, session intact');
       }
       return;
     }
@@ -4490,17 +4492,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         showView('view-login');
         return;
       }
-      // Otherwise, Supabase can fire SIGNED_OUT spuriously during token refresh on slow
-      // connections. Try to recover the session once before accepting the logout.
+      // Supabase fires SIGNED_OUT when the access token expires and the background
+      // refresh fails (common on mobile when the app goes to the background, or on
+      // slow rink Wi-Fi). Wait 2 s for the network to settle, then try to get a
+      // fresh token before accepting this as a real logout.
+      console.log('[EDGE] SIGNED_OUT — attempting recovery (2 s delay)…');
+      await new Promise(r => setTimeout(r, 2000));
+
+      // 1) Try refreshSession — explicitly asks Supabase for a new access token
+      //    using the stored refresh token. This is more reliable than getSession()
+      //    when the access token has just expired.
+      try {
+        const { data: { session: _r } } = await sb.auth.refreshSession();
+        if (_r?.user) {
+          console.log('[EDGE] SIGNED_OUT overridden via refreshSession — re-routing');
+          currentUser = _r.user;
+          await routeToProfile(_r.user);
+          return;
+        }
+      } catch(_e) { console.warn('[EDGE] refreshSession failed:', _e?.message); }
+
+      // 2) Fall back to getSession — in case refresh returned without error but
+      //    refreshSession() threw (network timing quirk).
       try {
         const { data: { session: _recovered } } = await sb.auth.getSession();
         if (_recovered?.user) {
-          console.log('[EDGE] SIGNED_OUT overridden — session recovered, re-routing');
+          console.log('[EDGE] SIGNED_OUT overridden via getSession — re-routing');
           currentUser = _recovered.user;
           await routeToProfile(_recovered.user);
           return;
         }
-      } catch(_e) { /* genuine sign-out, fall through */ }
+      } catch(_e) { console.warn('[EDGE] getSession fallback failed:', _e?.message); }
+
+      // Both recovery attempts failed — this is a genuine logout.
+      console.log('[EDGE] SIGNED_OUT confirmed — showing login');
       currentUser = null; currentProfile = null;
       showView('view-login');
       return;
@@ -4572,7 +4597,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     showView('view-login');
   }
 
-  // Safety net: never spin forever — fall back to login after 18s
+  // Safety net: never spin forever — fall back to login after 30s.
+  // Extended from 18 s to give Supabase more time on slow mobile connections.
   setTimeout(() => {
     const loader = document.getElementById('session-loader');
     if (loader && loader.style.display !== 'none') {
@@ -4580,7 +4606,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       showView('view-login');
       hideSessionLoader();
     }
-  }, 18000);
+  }, 30000);
+
+  // Visibility-change refresh: when the user returns to this tab/app after it
+  // was backgrounded (e.g. switching apps on mobile), proactively refresh the
+  // Supabase token so it doesn't expire unnoticed while they're away.
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState !== 'visible') return;
+    if (!currentUser) return;
+    try {
+      const { data: { session } } = await sb.auth.refreshSession();
+      if (session?.user) {
+        currentUser = session.user;
+        console.log('[EDGE] Token silently refreshed on visibility change');
+      }
+    } catch(e) {
+      console.warn('[EDGE] Visibility-change refresh failed (non-fatal):', e?.message);
+    }
+  });
 
   // Clean any stray auth tokens from the URL without triggering a reload
   if (window.location.hash.includes('access_token') || window.location.search.includes('code=')) {
