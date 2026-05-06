@@ -4452,14 +4452,16 @@ function hideSessionLoader() {
 
 // ── BOOT ────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
-  // Safari (mobile + desktop) has a broken Web Locks API that causes Supabase auth
-  // to hang indefinitely — bypass it only on Safari, let all other browsers use
-  // the real lock so token refresh works correctly.
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  const safariLockFix = (_name, _acquireTimeout, fn) => fn();
+  // The Supabase JS client uses the Web Locks API to serialize auth operations.
+  // In practice this causes signInWithPassword (and other calls) to hang indefinitely
+  // when the lock is left held after a failed background token refresh — reproducible
+  // on Safari AND Chrome when an expired token is in localStorage.
+  // Bypassing the lock is safe: the worst case is two tabs doing a redundant refresh
+  // at the same moment, which Supabase handles gracefully.
+  const _lockBypass = (_name, _acquireTimeout, fn) => fn();
   sb = supabase.createClient(SB_URL, SB_KEY, {
     auth: {
-      ...(isSafari ? { lock: safariLockFix } : {}),
+      lock: _lockBypass,
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
