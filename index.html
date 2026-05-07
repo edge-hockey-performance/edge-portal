@@ -2212,6 +2212,34 @@ function updateHollow(val) {
   document.getElementById('profile-hollow-desc').textContent  = hollowDesc(val);
 }
 
+// ── DB TIMEOUT HELPER ───────────────────────────────────────
+// Wraps any Supabase query promise with a hard timeout so a hanging
+// network call never freezes the UI forever. Default: 12 seconds.
+// Usage: const { data, error } = await _dbFetch(sb.from('x').select(), 12000);
+async function _dbFetch(queryPromise, ms = 12000) {
+  let _timer;
+  const _timeout = new Promise((_, rej) => {
+    _timer = setTimeout(() => rej(new Error('db_timeout')), ms);
+  });
+  try {
+    const result = await Promise.race([queryPromise, _timeout]);
+    clearTimeout(_timer);
+    return result;
+  } catch(e) {
+    clearTimeout(_timer);
+    // Re-wrap timeout as a standard Supabase-style { data: null, error } object
+    if (e.message === 'db_timeout') return { data: null, error: { message: 'Request timed out — check your connection.', isTimeout: true } };
+    return { data: null, error: e };
+  }
+}
+
+// Silently refresh the Supabase session token. Call before any batch of
+// DB writes to ensure the token is fresh. Swallows errors — a failed
+// refresh is non-fatal; Supabase will catch the 401 on the write.
+async function _ensureFreshToken() {
+  try { await sb.auth.refreshSession(); } catch(e) { console.warn('[EDGE] token pre-refresh (non-fatal):', e?.message); }
+}
+
 // ── AUTH ────────────────────────────────────────────────────
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
@@ -2688,13 +2716,14 @@ async function bookDropOff() {
   const notes  = document.getElementById('sched-notes').value;
   const okEl   = document.getElementById('sched-success');
 
-  const { error } = await sb.from('appointments').insert({
+  await _ensureFreshToken();
+  const { error } = await _dbFetch(sb.from('appointments').insert({
     player_id: currentProfile.id,
     date:      schedDate,
     location:  schedLocation,
     hollow, notes,
     status:    'scheduled'
-  });
+  }), 12000);
   if (error) { console.error('bookDropOff:', error); return; }
 
   okEl.textContent = '✓ Drop-off booked for ' + fmtDate(schedDate) + ' at ' + schedLocation + '. Blades will be returned before your next skate.';
@@ -2705,7 +2734,8 @@ async function bookDropOff() {
 
 async function saveHollow() {
   const newHollow = document.getElementById('profile-hollow-select').value;
-  await sb.from('profiles').update({ hollow: newHollow }).eq('id', currentProfile.id);
+  await _ensureFreshToken();
+  await _dbFetch(sb.from('profiles').update({ hollow: newHollow }).eq('id', currentProfile.id), 10000);
   currentProfile.hollow = newHollow;
   const el = document.getElementById('hollow-saved');
   el.textContent = '✓ Hollow updated to ' + newHollow + ' — applied to all future sharpenings.';
@@ -2808,7 +2838,8 @@ async function saveProfileEdits() {
     return;
   }
 
-  const { error } = await sb.from('profiles').update(updates).eq('id', currentProfile.id);
+  await _ensureFreshToken();
+  const { error } = await _dbFetch(sb.from('profiles').update(updates).eq('id', currentProfile.id), 12000);
   if (error) {
     okEl.textContent = 'Could not save — ' + (error.message || 'please try again.');
     okEl.classList.add('show');
@@ -3115,22 +3146,27 @@ async function completeServiceSession() {
   const okEl     = document.getElementById('svc-complete-ok');
   const btn      = document.getElementById('svc-complete-btn');
 
-  if (!date) {
-    if (okEl) { okEl.textContent = 'Please set a service date.'; okEl.style.background = 'rgba(240,82,82,0.1)'; okEl.style.color = 'var(--red)'; okEl.style.display = 'block'; }
-    return;
+  function _showErr(msg) {
+    if (btn) { btn.classList.remove('btn-loading'); btn.disabled = false; btn.textContent = 'Complete Session & Log All Sharpenings'; }
+    if (okEl) { okEl.textContent = msg; okEl.style.background = 'rgba(240,82,82,0.1)'; okEl.style.color = 'var(--red)'; okEl.style.display = 'block'; }
   }
 
+  if (!date) { _showErr('Please set a service date.'); return; }
+
   const toLog = svcAllPlayers.filter(p => svcSelected[p.id]?.included);
-  if (!toLog.length) {
-    if (okEl) { okEl.textContent = 'No players selected. Check at least one player above.'; okEl.style.background = 'rgba(240,82,82,0.1)'; okEl.style.color = 'var(--red)'; okEl.style.display = 'block'; }
-    return;
-  }
+  if (!toLog.length) { _showErr('No players selected. Check at least one player above.'); return; }
 
   if (btn) { btn.classList.add('btn-loading'); btn.textContent = 'Logging…'; btn.disabled = true; }
   if (okEl) okEl.style.display = 'none';
 
-  let logged = 0;
-  let errors  = 0;
+  // Hard failsafe: if something hangs, reset the button after 45 s so it's never stuck
+  const _failsafe = setTimeout(() => {
+    console.warn('[EDGE] completeServiceSession failsafe fired — resetting button');
+    _showErr('Logging timed out. Please check your connection and try again.');
+  }, 45000);
+
+  // Refresh token before writing so we don't hit a 401 mid-loop
+  await _ensureFreshToken();
 
   // Helper: derive text condition from edge condition rating
   function ratingToCondition(r) {
@@ -3141,17 +3177,16 @@ async function completeServiceSession() {
     return 'poor';
   }
 
+  // Build all insert rows up front
+  const jobs = []; // { p, row, setNum }
   for (const p of toLog) {
     const sel  = svcSelected[p.id];
     const sets = [{ data: sel.set1, setNum: 1 }];
     if (sel.set2?.included) sets.push({ data: sel.set2, setNum: 2 });
-
-    let playerErrors = 0;
     for (const { data: setData, setNum } of sets) {
       const notesText = setData.notes?.trim()
         || `Serviced by EDGE. ${capFirst(ratingToCondition(setData.rEdgeCondition))} condition. Edges clean and consistent.`;
-
-      const row = {
+      jobs.push({ p, setNum, row: {
         player_id:             p.id,
         date:                  date,
         location:              location,
@@ -3163,22 +3198,38 @@ async function completeServiceSession() {
         rating_blade_height:   setData.rBladeHeight   || null,
         rating_edge_condition: setData.rEdgeCondition || null,
         rating_profile_shape:  setData.rProfileShape  || null,
-      };
-
-      const { error: sharpErr } = await sb.from('sharpenings').insert(row);
-      if (sharpErr) { console.error('[EDGE] sharpening insert error for', p.id, 'set', setNum, sharpErr); playerErrors++; }
+      }});
     }
-
-    if (playerErrors > 0) { errors++; continue; }
-
-    if (p.plan === 'member' || p.plan === 'spring_pilot') {
-      const setsLogged = sets.length; // count each set separately toward usage? or just 1 per player?
-      const newCount = (p.sharpenings_used || 0) + 1;
-      await sb.from('profiles').update({ sharpenings_used: newCount }).eq('id', p.id);
-    }
-    logged++;
   }
 
+  // Fire all inserts in parallel — each with its own 12 s timeout
+  const insertResults = await Promise.allSettled(
+    jobs.map(({ p, setNum, row }) =>
+      _dbFetch(sb.from('sharpenings').insert(row), 12000)
+        .then(res => ({ p, setNum, ...res }))
+    )
+  );
+
+  // Tally results
+  const failedPlayerIds = new Set();
+  for (const r of insertResults) {
+    if (r.status === 'rejected' || r.value?.error) {
+      const v = r.status === 'fulfilled' ? r.value : {};
+      console.error('[EDGE] sharpening insert error player', v.p?.id, 'set', v.setNum, r.value?.error || r.reason);
+      if (v.p) failedPlayerIds.add(v.p.id);
+    }
+  }
+
+  // Update sharpenings_used counter for successful member/pilot players (parallel)
+  const countUpdates = toLog
+    .filter(p => !failedPlayerIds.has(p.id) && (p.plan === 'member' || p.plan === 'spring_pilot'))
+    .map(p => _dbFetch(sb.from('profiles').update({ sharpenings_used: (p.sharpenings_used || 0) + 1 }).eq('id', p.id), 8000));
+  await Promise.allSettled(countUpdates);
+
+  const logged = toLog.length - failedPlayerIds.size;
+  const errors = failedPlayerIds.size;
+
+  clearTimeout(_failsafe);
   if (btn) { btn.classList.remove('btn-loading'); btn.disabled = false; btn.textContent = 'Complete Session & Log All Sharpenings'; }
 
   if (okEl) {
@@ -3187,7 +3238,7 @@ async function completeServiceSession() {
       okEl.style.background = 'rgba(61,214,140,0.1)'; okEl.style.color = 'var(--green)';
       okEl.style.display = 'block';
     } else {
-      okEl.textContent = `${logged} logged, ${errors} failed — check console for details.`;
+      okEl.textContent = `${logged} logged, ${errors} failed — check your connection and try again.`;
       okEl.style.background = 'rgba(240,82,82,0.1)'; okEl.style.color = 'var(--red)';
       okEl.style.display = 'block';
     }
@@ -3404,7 +3455,13 @@ async function saveAdminPlayerEdits() {
     Object.entries(updates).filter(([k, v]) => v !== undefined)
   );
 
-  const { error } = await sb.from('profiles').update(payload).eq('id', adminEditPlayerId);
+  await _ensureFreshToken();
+  const _saveFail = setTimeout(() => {
+    if (btn) { btn.classList.remove('btn-loading'); btn.textContent = 'Save All Changes'; }
+    if (okEl) { okEl.textContent = 'Save timed out — check your connection and try again.'; okEl.style.background = 'rgba(240,82,82,0.1)'; okEl.style.color = 'var(--red)'; okEl.classList.add('show'); }
+  }, 15000);
+  const { error } = await _dbFetch(sb.from('profiles').update(payload).eq('id', adminEditPlayerId), 12000);
+  clearTimeout(_saveFail);
 
   if (btn) { btn.classList.remove('btn-loading'); btn.textContent = 'Save All Changes'; }
 
@@ -3564,32 +3621,33 @@ async function renderQueue(status) {
 }
 
 async function markComplete(apptId) {
-  const { data: appt } = await sb.from('appointments').select('*, profiles(*)').eq('id', apptId).single();
+  await _ensureFreshToken();
+  const { data: appt } = await _dbFetch(sb.from('appointments').select('*, profiles(*)').eq('id', apptId).single(), 10000);
   if (!appt) return;
 
-  // Log a sharpening record
-  await sb.from('sharpenings').insert({
-    player_id: appt.player_id,
-    date:      new Date().toISOString().split('T')[0],
-    location:  appt.location,
-    hollow:    appt.hollow,
-    condition: 'good',
-    notes:     appt.notes || 'Serviced by EDGE. Edges clean and consistent.'
-  });
-
-  // Increment sharpenings_used for members
+  // Log sharpening + update counter + close appointment — all in parallel
+  const writes = [
+    _dbFetch(sb.from('sharpenings').insert({
+      player_id: appt.player_id,
+      date:      new Date().toISOString().split('T')[0],
+      location:  appt.location,
+      hollow:    appt.hollow,
+      condition: 'good',
+      notes:     appt.notes || 'Serviced by EDGE. Edges clean and consistent.'
+    }), 10000),
+    _dbFetch(sb.from('appointments').update({ status: 'completed' }).eq('id', apptId), 10000),
+  ];
   if (appt.profiles?.plan === 'member') {
     const newCount = (appt.profiles.sharpenings_used || 0) + 1;
-    await sb.from('profiles').update({ sharpenings_used: newCount }).eq('id', appt.player_id);
+    writes.push(_dbFetch(sb.from('profiles').update({ sharpenings_used: newCount }).eq('id', appt.player_id), 10000));
   }
-
-  // Close the appointment
-  await sb.from('appointments').update({ status: 'completed' }).eq('id', apptId);
+  await Promise.allSettled(writes);
   await loadAdminDashboard();
 }
 
 async function markPending(apptId) {
-  await sb.from('appointments').update({ status: 'pending' }).eq('id', apptId);
+  await _ensureFreshToken();
+  await _dbFetch(sb.from('appointments').update({ status: 'pending' }).eq('id', apptId), 10000);
   await loadAdminDashboard();
 }
 
@@ -3901,13 +3959,14 @@ async function submitConditionLog() {
     photoUrl = urlData.publicUrl;
   }
 
-  const { error } = await sb.from('blade_reports').insert({
+  await _ensureFreshToken();
+  const { error } = await _dbFetch(sb.from('blade_reports').insert({
     player_id:   currentProfile.id,
     description: description,
     photo_url:   photoUrl,
     status:      'pending',
     category:    category,
-  });
+  }), 12000);
 
   if (error) { showErr('Error submitting: ' + (error.message || 'please try again.')); return; }
 
@@ -4043,7 +4102,8 @@ async function adminUpdateReport(id, newStatus) {
   const updates = { status: newStatus };
   if (note) updates.admin_note = note;
 
-  const { error } = await sb.from('blade_reports').update(updates).eq('id', id);
+  await _ensureFreshToken();
+  const { error } = await _dbFetch(sb.from('blade_reports').update(updates).eq('id', id), 10000);
   if (error) { alert('Error updating report: ' + error.message); return; }
 
   // Remove from current tab view and reload
@@ -4089,12 +4149,13 @@ async function submitSteelLog() {
     return;
   }
 
-  const { error } = await sb.from('steel_history').insert({
+  await _ensureFreshToken();
+  const { error } = await _dbFetch(sb.from('steel_history').insert({
     player_id:  currentProfile.id,
     date,
     model:      model || null,
     logged_by:  'player',
-  });
+  }), 10000);
 
   if (error) {
     okEl.textContent = 'Error: ' + (error.message || JSON.stringify(error));
@@ -4229,12 +4290,13 @@ async function submitAdminSteelLog() {
     return;
   }
 
-  const { error } = await sb.from('steel_history').insert({
+  await _ensureFreshToken();
+  const { error } = await _dbFetch(sb.from('steel_history').insert({
     player_id: playerId,
     date,
     model:     model || null,
     logged_by: 'admin',
-  });
+  }), 10000);
 
   if (error) {
     okEl.textContent = 'Error: ' + (error.message || JSON.stringify(error));
@@ -4259,12 +4321,13 @@ async function logSkate() {
   const dur  = document.getElementById('log-duration').value;
   if (!date) { alert('Please select a date.'); return; }
 
-  await sb.from('skate_log').insert({
+  await _ensureFreshToken();
+  await _dbFetch(sb.from('skate_log').insert({
     player_id: currentProfile.id,
     type, date,
     rink:     rink || 'Rink',
     duration: dur ? parseInt(dur) : 60
-  });
+  }), 10000);
 
   document.getElementById('log-date').value     = '';
   document.getElementById('log-rink').value     = '';
@@ -4278,7 +4341,7 @@ async function logSkate() {
 }
 
 async function deleteSkateEntry(id) {
-  await sb.from('skate_log').delete().eq('id', id).eq('player_id', currentProfile.id);
+  await _dbFetch(sb.from('skate_log').delete().eq('id', id).eq('player_id', currentProfile.id), 8000);
   await renderSkateLog();
   await syncSkatesToDash();
 }
@@ -4351,16 +4414,19 @@ async function routeToProfile(user) {
   console.log('[EDGE] routeToProfile START', user.id);
 
   try {
-    // Retry up to 4 times with backoff — handles Supabase cold starts and brief network hiccups
-    // without kicking the user to login. Only give up if auth is genuinely gone.
+    // Retry up to 3 times with backoff — handles Supabase cold starts and brief network hiccups.
+    // Each attempt has an 8 s individual timeout so a hung connection never blocks indefinitely.
     let profile, fetchError;
-    const _delays = [0, 1500, 3000, 5000];
-    for (let _attempt = 0; _attempt < 4; _attempt++) {
+    const _delays = [0, 2000, 4000];
+    for (let _attempt = 0; _attempt < 3; _attempt++) {
       if (_delays[_attempt]) await new Promise(r => setTimeout(r, _delays[_attempt]));
       try {
-        const { data: _p, error: _e } = await sb.from('profiles')
-          .select('id,role,fname,lname,email,organization,team,hollow,plan,sharpenings_used,sharpenings_allowed,birth_year,position,skate_model,member_since,steel_brand,steel_model,profile_preference,steel_health_score')
-          .eq('id', user.id).single();
+        const { data: _p, error: _e } = await _dbFetch(
+          sb.from('profiles')
+            .select('id,role,fname,lname,email,organization,team,hollow,plan,sharpenings_used,sharpenings_allowed,birth_year,position,skate_model,member_since,steel_brand,steel_model,profile_preference,steel_health_score')
+            .eq('id', user.id).single(),
+          8000
+        );
         profile = _p; fetchError = _e;
       } catch(_te) { fetchError = _te; }
       if (!fetchError) break; // success
