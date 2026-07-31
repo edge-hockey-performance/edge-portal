@@ -170,9 +170,12 @@ Deno.serve(async (req: Request) => {
 
   try {
     if (eventType === "order_paid") {
-      const sku = requiredText(payload, "sku").toUpperCase();
+      const sku = String(payload.sku ?? "").trim().toUpperCase();
       const plan = PAID_PLANS.get(sku);
-      if (!plan) throw new Error("Unknown membership SKU");
+      if (!plan) {
+        await finish("processed");
+        return json(200, { status: "non_membership_order_ignored" });
+      }
       const quantity = optionalInteger(payload, "quantity") ?? 1;
       if (quantity !== 1) throw new Error("Membership quantity must equal one");
 
