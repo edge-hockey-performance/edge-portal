@@ -88,6 +88,7 @@ async function sha256Hex(rawBody: Uint8Array): Promise<string> {
 }
 
 Deno.serve(async (req: Request) => {
+  if (req.method === "GET") return json(200, { status: "ok" });
   if (req.method !== "POST") return json(405, { error: "method_not_allowed" });
 
   const sharedSecret = Deno.env.get("EDGE_FLOW_SHARED_SECRET");
