@@ -788,7 +788,17 @@
     .admin-note-input { flex:1; min-width:160px; padding:7px 10px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:#fff; font-size:12px; outline:none; box-sizing:border-box; }
     .admin-note-input:focus { border-color:var(--border-hi); }
 
-  </style>
+  
+  .player-context-bar { display:none; align-items:center; justify-content:flex-end; gap:10px; padding:10px 28px; border-bottom:1px solid var(--border); background:rgba(10,10,10,.96); }
+  .player-context-bar.show { display:flex; }
+  .player-context-label { color:var(--dim); font-family:var(--fh); font-size:10px; font-style:italic; font-weight:800; letter-spacing:.11em; text-transform:uppercase; }
+  .player-context-select { width:auto; min-width:210px; max-width:320px; padding:8px 32px 8px 11px; border:1px solid rgba(184,212,232,.25); border-radius:6px; background:var(--surface); color:var(--fg); font-family:var(--fb); font-size:12px; font-weight:600; }
+  @media (max-width: 720px) {
+    .player-context-bar { justify-content:stretch; padding:9px 14px; }
+    .player-context-label { flex:0 0 auto; }
+    .player-context-select { flex:1; min-width:0; max-width:none; }
+  }
+</style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -1014,6 +1024,10 @@
         <button class="nav-btn logout" onclick="logout()">Sign Out</button>
       </div>
     </nav>
+    <div class="player-context-bar" id="player-context-bar" aria-live="polite">
+      <label class="player-context-label" for="player-context-select">Viewing player</label>
+      <select class="player-context-select" id="player-context-select" onchange="switchPlayer(this.value)" aria-label="Choose player profile"></select>
+    </div>
 
      <!-- Dashboard sub-view -->
      <div class="page" id="psub-dashboard">
@@ -2140,9 +2154,11 @@ const SB_KEY = 'sb_publishable_8IfJsUxj9uKx2c2KZZthog_ueJhMQ1w';
 let sb; // initialized on DOMContentLoaded
 
 // ── STATE ───────────────────────────────────────────────────
-let currentUser    = null;  // Supabase auth user
-let currentProfile = null;  // profiles table row
-let currentRole    = 'player';
+let currentUser       = null;  // Supabase auth user
+let currentProfile    = null;  // selected portal_player_context row
+let authorizedPlayers = [];    // player rows authorized by RLS/player_access
+let isPortalStaff     = false;  // protected server-side capability
+let currentRole       = 'player';
 let schedLocation  = 'Nicholas Sportsplex';
 let schedDate      = null;
 let currentQueueTab = 'pending';
@@ -2458,10 +2474,51 @@ async function logout() {
   // onAuthStateChange fires SIGNED_OUT → showView('view-login')
   // Fallback in case event is slow
   setTimeout(() => {
-    currentUser = null; currentProfile = null;
+    currentUser = null; currentProfile = null; authorizedPlayers = []; isPortalStaff = false;
     showView('view-login');
     _intentionalLogout = false;
   }, 1500);
+}
+
+// ── PLAYER CONTEXT ────────────────────────────────────────────
+function normalizePlayerContext(player) {
+  if (!player) return null;
+  return {
+    ...player,
+    role: 'player',
+    plan: player.plan || 'free',
+    sharpenings_used: player.sharpenings_used || 0,
+    sharpenings_allowed: player.sharpenings_allowed || 0,
+  };
+}
+
+function renderPlayerContextSwitcher() {
+  const bar = document.getElementById('player-context-bar');
+  const select = document.getElementById('player-context-select');
+  if (!bar || !select) return;
+  if (authorizedPlayers.length <= 1) {
+    bar.classList.remove('show');
+    select.innerHTML = '';
+    return;
+  }
+  select.replaceChildren(...authorizedPlayers.map(player => {
+    const option = document.createElement('option');
+    option.value = player.id;
+    option.textContent = [player.fname, player.lname].filter(Boolean).join(' ') || 'Unnamed player';
+    option.selected = player.id === currentProfile?.id;
+    return option;
+  }));
+  bar.classList.add('show');
+}
+
+async function switchPlayer(playerId) {
+  const next = authorizedPlayers.find(p => p.id === playerId);
+  if (!next || next.id === currentProfile?.id) return;
+  currentProfile = normalizePlayerContext(next);
+  try { localStorage.setItem('edge-current-player:' + currentUser.id, next.id); } catch(e) {}
+  renderPlayerContextSwitcher();
+  playerNav('dashboard');
+  await loadPlayerDashboard();
 }
 
 // ── PLAYER DASHBOARD ────────────────────────────────────────
@@ -2516,17 +2573,22 @@ function fmtDateShort(d) {
 }
 
 async function loadPlayerDashboard() {
-  // Fetch profile + sharpenings in parallel
+  if (!currentProfile?.id) return;
+  const selectedPlayerId = currentProfile.id;
+  // Refresh the selected authorized player and their service history in parallel.
   const [profileRes, sharpsRes] = await Promise.all([
-    sb.from('profiles')
-      .select('id,role,fname,lname,email,organization,team,hollow,plan,sharpenings_used,sharpenings_allowed,birth_year,position,skate_model,member_since,steel_brand,steel_model,profile_preference,steel_health_score,steel_health_notes,internal_notes,steel_edge_damage,steel_profile_wear,steel_condition,prior_sharpen_count,steel_install_date')
-      .eq('id', currentUser.id).single(),
+    sb.from('portal_player_context').select('*').eq('id', selectedPlayerId).single(),
     sb.from('sharpenings')
       .select('id,date,location,hollow,condition,notes,steel_set,rating_steel_health,rating_blade_height,rating_edge_condition,rating_profile_shape')
-      .eq('player_id', currentUser.id).order('date', { ascending: false })
+      .eq('player_id', selectedPlayerId).order('date', { ascending: false })
   ]);
 
-  if (profileRes.data) currentProfile = profileRes.data;
+  if (profileRes.data) {
+    currentProfile = normalizePlayerContext(profileRes.data);
+    authorizedPlayers = authorizedPlayers.map(p => p.id === currentProfile.id ? currentProfile : p);
+  }
+  if (!currentProfile) return;
+  renderPlayerContextSwitcher();
   const mySharps = sharpsRes.data || [];
 
   // Nav
@@ -2735,7 +2797,7 @@ async function bookDropOff() {
 async function saveHollow() {
   const newHollow = document.getElementById('profile-hollow-select').value;
   await _ensureFreshToken();
-  await _dbFetch(sb.from('profiles').update({ hollow: newHollow }).eq('id', currentProfile.id), 10000);
+  await _dbFetch(sb.from('players').update({ hollow: newHollow }).eq('id', currentProfile.id), 10000);
   currentProfile.hollow = newHollow;
   const el = document.getElementById('hollow-saved');
   el.textContent = '✓ Hollow updated to ' + newHollow + ' — applied to all future sharpenings.';
@@ -2823,7 +2885,7 @@ async function saveProfileEdits() {
   if (position)              updates.position            = position;
   if (skate)                 updates.skate_model         = skate;
   const steel_sets = document.getElementById('edit-steel-sets')?.value || '';
-  if (steel_sets) updates.steel_sets_count = steel_sets === '4+' ? 4 : parseInt(steel_sets);
+  if (steel_sets) updates.steel_sets_count = Math.min(2, Math.max(1, parseInt(steel_sets)));
   if (steel_brand)           updates.steel_brand         = steel_brand;
   if (steel_model)           updates.steel_model         = steel_model;
   if (steel_install_date)    updates.steel_install_date  = steel_install_date;
@@ -2839,7 +2901,7 @@ async function saveProfileEdits() {
   }
 
   await _ensureFreshToken();
-  const { error } = await _dbFetch(sb.from('profiles').update(updates).eq('id', currentProfile.id), 12000);
+  const { error } = await _dbFetch(sb.from('players').update(updates).eq('id', currentProfile.id), 12000);
   if (error) {
     okEl.textContent = 'Could not save — ' + (error.message || 'please try again.');
     okEl.classList.add('show');
@@ -2873,9 +2935,8 @@ async function initServiceSession() {
   }
 
   // Load all players from Supabase — only columns needed for service session
-  const { data: players = [], error } = await sb.from('profiles')
-    .select('id,fname,lname,email,organization,team,hollow,plan,sharpenings_used')
-    .neq('role', 'admin')
+  const { data: players = [], error } = await sb.from('portal_player_context')
+    .select('id,source_profile_id,fname,lname,email,organization,team,hollow,plan,sharpenings_used')
     .order('lname', { ascending: true });
 
   if (error) { console.error('[EDGE] svc init fetch error:', error); return; }
@@ -3222,8 +3283,8 @@ async function completeServiceSession() {
 
   // Update sharpenings_used counter for successful member/pilot players (parallel)
   const countUpdates = toLog
-    .filter(p => !failedPlayerIds.has(p.id) && (p.plan === 'member' || p.plan === 'spring_pilot'))
-    .map(p => _dbFetch(sb.from('profiles').update({ sharpenings_used: (p.sharpenings_used || 0) + 1 }).eq('id', p.id), 8000));
+    .filter(p => !failedPlayerIds.has(p.id) && p.source_profile_id && (p.plan === 'member' || p.plan === 'spring_pilot'))
+    .map(p => _dbFetch(sb.from('profiles').update({ sharpenings_used: (p.sharpenings_used || 0) + 1 }).eq('id', p.source_profile_id), 8000));
   await Promise.allSettled(countUpdates);
 
   const logged = toLog.length - failedPlayerIds.size;
@@ -3314,9 +3375,16 @@ let adminEditPlayerData = null;
 async function openAdminPlayerDetail(playerId) {
   adminEditPlayerId = playerId;
 
-  // Fetch full profile
-  const { data: p, error } = await sb.from('profiles').select('*').eq('id', playerId).single();
-  if (error || !p) { console.error('[EDGE] fetch player detail error:', error); return; }
+  // Fetch the player context first; staff-only legacy fields stay outside the player-facing view.
+  const { data: playerContext, error } = await sb.from('portal_player_context').select('*').eq('id', playerId).single();
+  if (error || !playerContext) { console.error('[EDGE] fetch player detail error:', error); return; }
+  let p = playerContext;
+  if (playerContext.source_profile_id) {
+    const { data: legacyProfile } = await sb.from('profiles')
+      .select('plan,sharpenings_used,sharpenings_allowed,member_since,internal_notes')
+      .eq('id', playerContext.source_profile_id).single();
+    if (legacyProfile) p = { ...playerContext, ...legacyProfile };
+  }
   adminEditPlayerData = p;
 
   // Update header
@@ -3460,7 +3528,15 @@ async function saveAdminPlayerEdits() {
     if (btn) { btn.classList.remove('btn-loading'); btn.textContent = 'Save All Changes'; }
     if (okEl) { okEl.textContent = 'Save timed out — check your connection and try again.'; okEl.style.background = 'rgba(240,82,82,0.1)'; okEl.style.color = 'var(--red)'; okEl.classList.add('show'); }
   }, 15000);
-  const { error } = await _dbFetch(sb.from('profiles').update(payload).eq('id', adminEditPlayerId), 12000);
+  const legacyKeys = new Set(['plan', 'sharpenings_used', 'sharpenings_allowed', 'internal_notes']);
+  const playerPayload = Object.fromEntries(Object.entries(payload).filter(([key]) => !legacyKeys.has(key)));
+  const legacyPayload = Object.fromEntries(Object.entries(payload).filter(([key]) => legacyKeys.has(key)));
+  const writes = [_dbFetch(sb.from('players').update(playerPayload).eq('id', adminEditPlayerId), 12000)];
+  if (adminEditPlayerData?.source_profile_id && Object.keys(legacyPayload).length) {
+    writes.push(_dbFetch(sb.from('profiles').update(legacyPayload).eq('id', adminEditPlayerData.source_profile_id), 12000));
+  }
+  const writeResults = await Promise.all(writes);
+  const error = writeResults.find(result => result?.error)?.error || null;
   clearTimeout(_saveFail);
 
   if (btn) { btn.classList.remove('btn-loading'); btn.textContent = 'Save All Changes'; }
@@ -3488,9 +3564,9 @@ async function loadAdminDashboard() {
   // Fire all independent queries in parallel
   const [apptsRes, playersRes, sharpsRes, queueRes, badgeRes] = await Promise.allSettled([
     sb.from('appointments').select('id,status'),
-    sb.from('profiles').select('id,plan,fname,lname,email,organization,team,hollow,skate_model,steel_health_score,role').neq('role','admin').order('lname',{ascending:true}),
+    sb.from('portal_player_context').select('id,source_profile_id,plan,fname,lname,email,organization,team,hollow,skate_model,steel_health_score').order('lname',{ascending:true}),
     sb.from('sharpenings').select('player_id'),
-    sb.from('appointments').select('id,date,hollow,location,notes,player_id,profiles(fname,lname,team)').eq('status','pending').order('date',{ascending:true}),
+    sb.from('appointments').select('id,date,hollow,location,notes,player_id,players(fname,lname,team)').eq('status','pending').order('date',{ascending:true}),
     sb.from('blade_reports').select('id',{count:'exact',head:true}).eq('status','pending')
   ]);
 
@@ -3524,7 +3600,7 @@ async function loadAdminDashboard() {
         el.innerHTML = '<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">No pending items.</div></div>';
       } else {
         el.innerHTML = appts.map(a => {
-          const player   = a.profiles || {};
+          const player   = a.players || {};
           const initials = (player.fname||'?')[0] + (player.lname||'?')[0];
           return `<div class="queue-item">
             <div class="queue-avatar">${initials}</div>
@@ -3588,7 +3664,7 @@ function queueTab(tab) {
 
 async function renderQueue(status) {
   const { data: appts = [] } = await sb.from('appointments')
-    .select('*, profiles(*)')
+    .select('*, players(*)')
     .eq('status', status)
     .order('date', { ascending: true });
 
@@ -3599,7 +3675,7 @@ async function renderQueue(status) {
   }
 
   el.innerHTML = appts.map(a => {
-    const player   = a.profiles || {};
+    const player   = a.players || {};
     const initials = (player.fname || '?')[0] + (player.lname || '?')[0];
     const actions  = status === 'pending'
       ? `<button class="btn btn-chrome btn-sm" onclick="markComplete('${a.id}')">Mark Complete</button>`
@@ -3622,8 +3698,12 @@ async function renderQueue(status) {
 
 async function markComplete(apptId) {
   await _ensureFreshToken();
-  const { data: appt } = await _dbFetch(sb.from('appointments').select('*, profiles(*)').eq('id', apptId).single(), 10000);
+  const { data: appt } = await _dbFetch(sb.from('appointments').select('*').eq('id', apptId).single(), 10000);
   if (!appt) return;
+  const { data: playerContext } = await _dbFetch(
+    sb.from('portal_player_context').select('source_profile_id,plan,sharpenings_used').eq('id', appt.player_id).single(),
+    10000
+  );
 
   // Log sharpening + update counter + close appointment — all in parallel
   const writes = [
@@ -3637,9 +3717,9 @@ async function markComplete(apptId) {
     }), 10000),
     _dbFetch(sb.from('appointments').update({ status: 'completed' }).eq('id', apptId), 10000),
   ];
-  if (appt.profiles?.plan === 'member') {
-    const newCount = (appt.profiles.sharpenings_used || 0) + 1;
-    writes.push(_dbFetch(sb.from('profiles').update({ sharpenings_used: newCount }).eq('id', appt.player_id), 10000));
+  if (playerContext?.plan === 'member' && playerContext?.source_profile_id) {
+    const newCount = (playerContext.sharpenings_used || 0) + 1;
+    writes.push(_dbFetch(sb.from('profiles').update({ sharpenings_used: newCount }).eq('id', playerContext.source_profile_id), 10000));
   }
   await Promise.allSettled(writes);
   await loadAdminDashboard();
@@ -3736,7 +3816,7 @@ function clearApf() {
 
 async function renderAdminPlayers() {
   const [playersRes, sharpsRes] = await Promise.all([
-    sb.from('profiles').select('id,plan,fname,lname,email,organization,team,hollow,skate_model,steel_health_score,role').neq('role','admin').order('lname',{ascending:true}),
+    sb.from('portal_player_context').select('id,source_profile_id,plan,fname,lname,email,organization,team,hollow,skate_model,steel_health_score').order('lname',{ascending:true}),
     sb.from('sharpenings').select('player_id')
   ]);
   allPlayersCache     = playersRes.data  || [];
@@ -3903,6 +3983,28 @@ function onConditionPhotoChange(input) {
   }
 }
 
+
+async function resolveReportPhotoUrl(value) {
+  if (!value) return null;
+  const publicMarker = '/storage/v1/object/public/blade-reports/';
+  let objectPath = value;
+  if (/^https?:\/\//i.test(value)) {
+    const markerIndex = value.indexOf(publicMarker);
+    if (markerIndex < 0) return value;
+    objectPath = decodeURIComponent(value.slice(markerIndex + publicMarker.length));
+  }
+  const { data, error } = await sb.storage.from('blade-reports').createSignedUrl(objectPath, 3600);
+  if (error) { console.warn('[EDGE] signed photo URL failed:', error.message); return null; }
+  return data?.signedUrl || null;
+}
+
+async function hydrateReportPhotoUrls(reports) {
+  return Promise.all((reports || []).map(async report => ({
+    ...report,
+    _photoUrl: await resolveReportPhotoUrl(report.photo_url),
+  })));
+}
+
 async function submitConditionLog() {
   const okEl = document.getElementById('condition-ok');
   const showErr = (msg) => {
@@ -3955,8 +4057,7 @@ async function submitConditionLog() {
     const path = currentProfile.id + '/' + Date.now() + '.' + ext;
     const { error: uploadErr } = await sb.storage.from('blade-reports').upload(path, _conditionPhotoFile, { upsert: false });
     if (uploadErr) { showErr('Photo upload failed: ' + (uploadErr.message || 'Check storage settings')); return; }
-    const { data: urlData } = sb.storage.from('blade-reports').getPublicUrl(path);
-    photoUrl = urlData.publicUrl;
+    photoUrl = path;
   }
 
   await _ensureFreshToken();
@@ -3998,10 +4099,11 @@ async function loadConditionLog() {
   const listEl = document.getElementById('condition-log-list');
   if (!listEl) return;
 
-  const { data: reports = [], error } = await sb.from('blade_reports')
+  const { data: reportRows = [], error } = await sb.from('blade_reports')
     .select('*').eq('player_id', currentProfile.id).order('created_at', { ascending: false });
 
   if (error) { listEl.innerHTML = '<div style="padding:20px;color:var(--red);font-size:13px;">Error loading submissions.</div>'; return; }
+  const reports = await hydrateReportPhotoUrls(reportRows);
 
   if (!reports.length) {
     listEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;line-height:1.6;">
@@ -4014,8 +4116,8 @@ async function loadConditionLog() {
   const catLabel    = { sharpening: '⭐ Sharpening Feedback', preference: '🔧 Preference Change', condition: '📸 Blade Condition', general: '📝 General Note' };
 
   listEl.innerHTML = '<div class="report-list">' + reports.map(r => {
-    const thumbHtml = r.photo_url
-      ? `<img class="report-thumb" src="${r.photo_url}" alt="Blade photo" onclick="window.open('${r.photo_url}','_blank')"/>`
+    const thumbHtml = r._photoUrl
+      ? `<img class="report-thumb" src="${r._photoUrl}" alt="Blade photo" onclick="window.open('${r._photoUrl}','_blank')"/>`
       : `<div class="report-thumb-placeholder">${(catLabel[r.category] || '📝').split(' ')[0]}</div>`;
     const noteHtml = r.admin_note
       ? `<div class="report-sharpener-note"><div class="report-sharpener-label">Response from your sharpener</div>${r.admin_note}</div>`
@@ -4042,12 +4144,13 @@ async function loadAdminReports(status) {
   if (!listEl) return;
   listEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Loading…</div>';
 
-  const { data: reports = [], error } = await sb.from('blade_reports')
-    .select('*, profiles(fname, lname, organization, team)')
+  const { data: reportRows = [], error } = await sb.from('blade_reports')
+    .select('*, players(fname, lname, organization, team)')
     .eq('status', status || currentReportsTab)
     .order('created_at', { ascending: false });
 
   if (error) { listEl.innerHTML = '<div style="padding:20px;color:var(--red);font-size:13px;">Error: ' + error.message + '</div>'; return; }
+  const reports = await hydrateReportPhotoUrls(reportRows);
 
   // Update badge for pending count
   if (status === 'pending' || !status) {
@@ -4066,13 +4169,13 @@ async function loadAdminReports(status) {
   const statusLabel = { pending: 'Pending', reviewed: 'Reviewed', resolved: 'Resolved' };
 
   listEl.innerHTML = reports.map(r => {
-    const p = r.profiles || {};
+    const p = r.players || {};
     const playerName = ((p.fname || '') + ' ' + (p.lname || '')).trim() || 'Unknown player';
     const teamInfo   = [p.organization, p.team].filter(Boolean).join(' — ') || 'No team on file';
     const catLabel   = { sharpening: '⭐ Sharpening Feedback', preference: '🔧 Preference Change', condition: '📸 Blade Condition', general: '📝 General Note' };
     const catIcon    = r.category ? (catLabel[r.category] || '📝').split(' ')[0] : '📸';
-    const thumbHtml  = r.photo_url
-      ? `<img class="admin-report-thumb" src="${r.photo_url}" alt="Blade" onclick="window.open('${r.photo_url}','_blank')" title="Click to view full size"/>`
+    const thumbHtml  = r._photoUrl
+      ? `<img class="admin-report-thumb" src="${r._photoUrl}" alt="Blade" onclick="window.open('${r._photoUrl}','_blank')" title="Click to view full size"/>`
       : `<div class="admin-report-nophoto">${catIcon}</div>`;
     const catBadgeHtml = r.category
       ? `<span style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--silver);margin-right:6px;">${catLabel[r.category] || r.category}</span>`
@@ -4271,8 +4374,8 @@ function toggleAdminLogSteel() {
 async function loadAdminPlayerDropdown() {
   const sel = document.getElementById('admin-steel-player');
   if (!sel) return;
-  const { data: players = [] } = await sb.from('profiles')
-    .select('id, fname, lname, team').neq('role','admin').order('lname');
+  const { data: players = [] } = await sb.from('portal_player_context')
+    .select('id, fname, lname, team').order('lname');
   sel.innerHTML = '<option value="">Select player…</option>' +
     players.map(p => `<option value="${p.id}">${(p.fname||'')} ${(p.lname||'')}${p.team ? ' — ' + p.team : ''}</option>`).join('');
 }
@@ -4408,102 +4511,88 @@ async function routeToProfile(user) {
     console.log('[EDGE] routeToProfile debounced (' + (now - _routingStarted) + 'ms)');
     return;
   }
-  _routing        = true;
+  _routing = true;
   _routingStarted = now;
-  currentUser     = user;
-  console.log('[EDGE] routeToProfile START', user.id);
+  currentUser = user;
 
   try {
-    // Retry up to 3 times with backoff — handles Supabase cold starts and brief network hiccups.
-    // Each attempt has an 8 s individual timeout so a hung connection never blocks indefinitely.
-    let profile, fetchError;
-    const _delays = [0, 2000, 4000];
-    for (let _attempt = 0; _attempt < 3; _attempt++) {
-      if (_delays[_attempt]) await new Promise(r => setTimeout(r, _delays[_attempt]));
+    let staffResult, playersResult, fetchError;
+    const delays = [0, 2000, 4000];
+    for (let attempt = 0; attempt < delays.length; attempt++) {
+      if (delays[attempt]) await new Promise(resolve => setTimeout(resolve, delays[attempt]));
       try {
-        const { data: _p, error: _e } = await _dbFetch(
-          sb.from('profiles')
-            .select('id,role,fname,lname,email,organization,team,hollow,plan,sharpenings_used,sharpenings_allowed,birth_year,position,skate_model,member_since,steel_brand,steel_model,profile_preference,steel_health_score')
-            .eq('id', user.id).single(),
-          8000
-        );
-        profile = _p; fetchError = _e;
-      } catch(_te) { fetchError = _te; }
-      if (!fetchError) break; // success
-      console.warn('[EDGE] profile fetch attempt', _attempt + 1, 'failed:', fetchError.message);
-      // If auth is gone (JWT error), no point retrying
-      if (String(fetchError.message || '').toLowerCase().includes('jwt') ||
-          String(fetchError.message || '').toLowerCase().includes('not authenticated')) break;
+        [staffResult, playersResult] = await Promise.all([
+          _dbFetch(sb.rpc('is_portal_staff'), 8000),
+          _dbFetch(sb.from('portal_player_context').select('*').order('lname', { ascending: true }).order('fname', { ascending: true }), 8000),
+        ]);
+        fetchError = staffResult.error || playersResult.error;
+      } catch (error) { fetchError = error; }
+      if (!fetchError) break;
+      const message = String(fetchError.message || '').toLowerCase();
+      if (message.includes('jwt') || message.includes('not authenticated')) break;
     }
-    const error = fetchError;
 
-    if (error) {
-      console.error('[EDGE] Profile fetch failed after retries:', error);
-      // Only go to login if it's an auth error — otherwise stay put and show a soft warning
-      // Only kick to login on genuine auth errors (JWT gone / not authenticated).
-      // A slow network or timeout on the profile fetch does NOT mean the session
-      // is gone — keep the user where they are in that case.
-      const isAuthError = String(error.message || '').toLowerCase().includes('jwt') ||
-                          String(error.message || '').toLowerCase().includes('not authenticated');
+    if (fetchError) {
+      const message = String(fetchError.message || '').toLowerCase();
+      const isAuthError = message.includes('jwt') || message.includes('not authenticated');
       if (isAuthError) {
         showView('view-login');
         const errEl = document.getElementById('login-error');
         if (errEl) { errEl.textContent = 'Session expired — please sign in again.'; errEl.classList.add('show'); }
-        hideSessionLoader();
       } else {
-        // Slow network / timeout — session is likely still valid; stay put.
-        hideSessionLoader();
-        console.warn('[EDGE] Profile fetch failed (network) — staying on current view, session intact');
+        console.warn('[EDGE] Portal context fetch failed; session retained:', fetchError.message);
       }
-      return;
-    }
-
-    if (!profile || !profile.role) {
-      console.warn('[EDGE] Profile missing or role empty for', user.id);
-      showView('view-login');
-      const errEl = document.getElementById('login-error');
-      if (errEl) { errEl.textContent = 'Account setup incomplete — contact support.'; errEl.classList.add('show'); }
       hideSessionLoader();
       return;
     }
 
-    currentProfile = profile;
-    console.log('[EDGE] routeToProfile: role =', profile.role);
-
-    // Show view FIRST — dashboard data loads after
-    if (profile.role === 'admin') {
+    isPortalStaff = staffResult.data === true;
+    if (isPortalStaff) {
+      authorizedPlayers = [];
+      currentProfile = null;
+      renderPlayerContextSwitcher();
       showView('view-admin');
-      // Show admin mobile nav, hide player nav
       const pmn = document.getElementById('mobile-player-nav');
       const amn = document.getElementById('mobile-admin-nav');
       if (pmn) pmn.style.display = 'none';
       if (amn) amn.style.removeProperty('display');
-      loadAdminDashboard().catch(e => console.error('[EDGE] loadAdminDashboard (non-fatal):', e));
-    } else {
-      showView('view-player');
-      // Show player mobile nav, hide admin nav
-      const pmn2 = document.getElementById('mobile-player-nav');
-      const amn2 = document.getElementById('mobile-admin-nav');
-      if (pmn2) pmn2.style.removeProperty('display');
-      if (amn2) amn2.style.display = 'none';
-      loadPlayerDashboard().catch(e => console.error('[EDGE] loadPlayerDashboard (non-fatal):', e));
+      loadAdminDashboard().catch(error => console.error('[EDGE] loadAdminDashboard (non-fatal):', error));
+      return;
     }
 
-    console.log('[EDGE] routeToProfile END — routed to', profile.role);
+    authorizedPlayers = (playersResult.data || []).map(normalizePlayerContext);
+    if (!authorizedPlayers.length) {
+      showView('view-login');
+      const errEl = document.getElementById('login-error');
+      if (errEl) { errEl.textContent = 'Account setup incomplete — no player access is linked yet.'; errEl.classList.add('show'); }
+      hideSessionLoader();
+      return;
+    }
 
-  } catch (e) {
-    console.error('[EDGE] routeToProfile CATCH:', e);
-    showView('view-login');
+    let savedPlayerId = null;
+    try { savedPlayerId = localStorage.getItem('edge-current-player:' + user.id); } catch(e) {}
+    const selected = authorizedPlayers.find(player => player.id === savedPlayerId)
+      || authorizedPlayers.find(player => player.source_profile_id === user.id)
+      || authorizedPlayers[0];
+    currentProfile = normalizePlayerContext(selected);
+    renderPlayerContextSwitcher();
+
+    showView('view-player');
+    const pmn = document.getElementById('mobile-player-nav');
+    const amn = document.getElementById('mobile-admin-nav');
+    if (pmn) pmn.style.removeProperty('display');
+    if (amn) amn.style.display = 'none';
+    loadPlayerDashboard().catch(error => console.error('[EDGE] loadPlayerDashboard (non-fatal):', error));
+  } catch (error) {
+    console.error('[EDGE] routeToProfile failed:', error);
     hideSessionLoader();
     const errEl = document.getElementById('login-error');
-    if (errEl) { errEl.textContent = 'Login error: ' + (e.message || 'Please try again.'); errEl.classList.add('show'); }
+    if (errEl) { errEl.textContent = 'Login error: ' + (error.message || 'Please try again.'); errEl.classList.add('show'); }
   } finally {
     _routing = false;
-    console.log('[EDGE] routeToProfile: lock released');
   }
 }
 
-// Show/hide the initial session-check overlay
 function showSessionLoader() {
   const el = document.getElementById('session-loader');
   if (el) el.style.display = 'flex';
@@ -4556,7 +4645,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // If user clicked Sign Out intentionally, go straight to login — skip recovery.
       if (_intentionalLogout) {
         _intentionalLogout = false;
-        currentUser = null; currentProfile = null;
+        currentUser = null; currentProfile = null; authorizedPlayers = []; isPortalStaff = false;
         showView('view-login');
         return;
       }
@@ -4594,7 +4683,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Both recovery attempts failed — this is a genuine logout.
       console.log('[EDGE] SIGNED_OUT confirmed — showing login');
-      currentUser = null; currentProfile = null;
+      currentUser = null; currentProfile = null; authorizedPlayers = []; isPortalStaff = false;
       showView('view-login');
       return;
     }
