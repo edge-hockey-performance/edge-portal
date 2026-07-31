@@ -1,9 +1,19 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 type Json = Record<string, unknown>;
+type PaidPlan = {
+  productId: number;
+  variantId: number;
+  sellingPlanId: number;
+  priceCents: number;
+};
 
 const EXPECTED_SOURCE = "edge-performance-3.myshopify.com";
 const encoder = new TextEncoder();
+const PAID_PLANS = new Map<string, PaidPlan>([
+  ["EDGE-1SET-WK", { productId: 9212478029987, variantId: 47941773230243, sellingPlanId: 3369599139, priceCents: 1300 }],
+  ["EDGE-2SET-WK", { productId: 9212478980259, variantId: 47941775458467, sellingPlanId: 3369599139, priceCents: 1900 }],
+]);
 
 function json(status: number, body: Json): Response {
   return new Response(JSON.stringify(body), {
@@ -82,6 +92,10 @@ function optionalBigint(payload: Json, field: string): string | null {
   return normalized;
 }
 
+function normalizedName(first: unknown, last: unknown): string {
+  return `${String(first ?? "").trim()} ${String(last ?? "").trim()}`.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
 async function sha256Hex(rawBody: Uint8Array): Promise<string> {
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", rawBody));
   return Array.from(digest).map((byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -121,13 +135,13 @@ Deno.serve(async (req: Request) => {
   }
 
   const eventType = requiredText(payload, "event_type").toLowerCase();
-  if (!["billing_success", "billing_failure", "contract_update"].includes(eventType)) {
+  if (!["order_paid", "billing_success", "billing_failure", "contract_update"].includes(eventType)) {
     return json(400, { error: "unsupported_event_type" });
   }
 
   const externalEventId = requiredText(payload, "event_id");
   const eventId = `flow:${eventType}:${externalEventId}`;
-  const contractGid = typedGid("SubscriptionContract", payload.contract_gid) as string;
+  const contractGid = typedGid("SubscriptionContract", payload.contract_gid, eventType !== "order_paid");
   const topic = `flow/${eventType}`;
   const supabase = createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
@@ -155,7 +169,50 @@ Deno.serve(async (req: Request) => {
   };
 
   try {
-    if (eventType === "contract_update") {
+    if (eventType === "order_paid") {
+      const sku = requiredText(payload, "sku").toUpperCase();
+      const plan = PAID_PLANS.get(sku);
+      if (!plan) throw new Error("Unknown membership SKU");
+      const quantity = optionalInteger(payload, "quantity") ?? 1;
+      if (quantity !== 1) throw new Error("Membership quantity must equal one");
+
+      const orderGid = typedGid("Order", payload.order_gid) as string;
+      const customerGid = typedGid("Customer", payload.customer_gid, false);
+      const playerName = requiredText(payload, "player_name");
+      const playerEmail = requiredText(payload, "player_email").toLowerCase();
+      const playerTeam = requiredText(payload, "player_team");
+      const desiredName = playerName.toLowerCase().replace(/\s+/g, " ");
+
+      const { data: candidates, error: candidateError } = await supabase
+        .from("players")
+        .select("id,fname,lname,email")
+        .ilike("email", playerEmail);
+      if (candidateError) throw new Error(candidateError.message);
+      const exactPlayers = (candidates || []).filter((player) =>
+        normalizedName(player.fname, player.lname) === desiredName &&
+        String(player.email || "").trim().toLowerCase() === playerEmail
+      );
+      if (exactPlayers.length > 1) throw new Error("Player identity is ambiguous");
+      const verifiedPlayerId = exactPlayers.length === 1 ? exactPlayers[0].id : null;
+
+      const { error } = await supabase.rpc("process_shopify_paid_membership", {
+        event_id: eventId,
+        order_gid: orderGid,
+        customer_gid: customerGid,
+        subscription_contract_gid: typedGid("SubscriptionContract", payload.contract_gid, false),
+        product_id: plan.productId,
+        variant_id: plan.variantId,
+        selling_plan_id: plan.sellingPlanId,
+        order_buyer_email: optionalText(payload, "buyer_email"),
+        checkout_player_name: playerName,
+        checkout_player_email: playerEmail,
+        checkout_player_team: playerTeam,
+        paid_at: timestamp(payload, "occurred_at"),
+        paid_amount_cents: plan.priceCents,
+        verified_player_id: verifiedPlayerId,
+      });
+      if (error) throw new Error(error.message);
+    } else if (eventType === "contract_update") {
       const productId = optionalShopifyId(payload, "product_id", "Product");
       const variantId = optionalShopifyId(payload, "variant_id", "ProductVariant");
       const sellingPlanId = optionalShopifyId(payload, "selling_plan_id", "SellingPlan");
