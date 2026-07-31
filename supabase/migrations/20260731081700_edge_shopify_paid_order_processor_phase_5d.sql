@@ -32,8 +32,8 @@ DECLARE
   existing_membership uuid;
   conflicting_membership uuid;
   result_membership uuid;
-  normalized_name text := lower(trim(coalesce(checkout_player_name, ''));
-  normalized_email text := lower(trim(coalesce(checkout_player_email, ''));
+  normalized_name text := lower(trim(coalesce(checkout_player_name, '')));
+  normalized_email text := lower(trim(coalesce(checkout_player_email, '')));
   normalized_team text := trim(coalesce(checkout_player_team, ''));
   first_name text;
   last_name text;
