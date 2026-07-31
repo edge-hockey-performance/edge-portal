@@ -58,6 +58,17 @@ function optionalInteger(payload: Json, field: string): number | null {
   return parsed;
 }
 
+function optionalShopifyId(payload: Json, field: string, kind: string): number | null {
+  const value = String(payload[field] ?? "").trim();
+  if (!value) return null;
+  const prefix = `gid://shopify/${kind}/`;
+  const numeric = value.startsWith(prefix) ? value.slice(prefix.length) : value;
+  if (!/^\d+$/.test(numeric)) throw new Error(`Invalid ${field}`);
+  const parsed = Number(numeric);
+  if (!Number.isSafeInteger(parsed) || parsed < 1) throw new Error(`Invalid ${field}`);
+  return parsed;
+}
+
 function optionalBigint(payload: Json, field: string): string | null {
   const value = String(payload[field] ?? "").trim();
   if (!value) return null;
@@ -138,9 +149,9 @@ Deno.serve(async (req: Request) => {
 
   try {
     if (eventType === "contract_update") {
-      const productId = optionalInteger(payload, "product_id");
-      const variantId = optionalInteger(payload, "variant_id");
-      const sellingPlanId = optionalInteger(payload, "selling_plan_id");
+      const productId = optionalShopifyId(payload, "product_id", "Product");
+      const variantId = optionalShopifyId(payload, "variant_id", "ProductVariant");
+      const sellingPlanId = optionalShopifyId(payload, "selling_plan_id", "SellingPlan");
       const suppliedPlanIds = [productId, variantId, sellingPlanId].filter((value) => value !== null).length;
       if (suppliedPlanIds !== 0 && suppliedPlanIds !== 3) {
         throw new Error("Plan identifiers must be omitted or supplied together");
