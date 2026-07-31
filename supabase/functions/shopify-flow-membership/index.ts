@@ -58,6 +58,19 @@ function optionalInteger(payload: Json, field: string): number | null {
   return parsed;
 }
 
+function optionalBigint(payload: Json, field: string): string | null {
+  const value = String(payload[field] ?? "").trim();
+  if (!value) return null;
+  if (!/^\d+$/.test(value)) throw new Error(`Invalid ${field}`);
+  const normalized = value.replace(/^0+(?=\d)/, "");
+  const postgresMax = "9223372036854775807";
+  if (normalized.length > postgresMax.length ||
+      (normalized.length === postgresMax.length && normalized > postgresMax)) {
+    throw new Error(`${field} exceeds PostgreSQL bigint range`);
+  }
+  return normalized;
+}
+
 async function sha256Hex(rawBody: Uint8Array): Promise<string> {
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", rawBody));
   return Array.from(digest).map((byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -137,7 +150,7 @@ Deno.serve(async (req: Request) => {
         event_id: eventId,
         contract_gid: contractGid,
         origin_order_gid: typedGid("Order", payload.origin_order_gid, false),
-        revision_id: optionalInteger(payload, "revision_id"),
+        revision_id: optionalBigint(payload, "revision_id"),
         contract_status: requiredText(payload, "contract_status"),
         occurred_at: timestamp(payload, "occurred_at"),
         product_id: productId,
