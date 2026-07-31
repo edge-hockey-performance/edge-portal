@@ -28,9 +28,12 @@ function numericId(value: unknown): number | null {
   return null;
 }
 function gid(kind: string, value: unknown): string | null {
-  if (typeof value === "string" && value.startsWith("gid://")) return value;
+  const prefix = `gid://shopify/${kind}/`;
+  if (typeof value === "string" && value.startsWith("gid://")) {
+    return value.startsWith(prefix) && numericId(value) ? value : null;
+  }
   const id = numericId(value);
-  return id ? `gid://shopify/${kind}/${id}` : null;
+  return id ? `${prefix}${id}` : null;
 }
 function iso(value: unknown): string {
   const date = new Date(String(value || new Date().toISOString()));
