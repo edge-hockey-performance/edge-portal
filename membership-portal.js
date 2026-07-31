@@ -197,8 +197,60 @@
     }
   };
 
+  const installImmediateLogout = () => {
+    if (typeof window.logout !== 'function' || window.logout.__edgeImmediateLogout) return;
+
+    const immediateLogout = () => {
+      try { _intentionalLogout = true; } catch (error) {
+        console.warn('[EDGE] logout intent flag unavailable:', error?.message);
+      }
+
+      document.querySelectorAll('.nav-btn.logout').forEach((button) => {
+        button.disabled = true;
+        button.textContent = 'Signing Out…';
+      });
+
+      // Clear the browser token first so a reload cannot restore the signed-out session,
+      // then switch views immediately instead of waiting on a network response.
+      try {
+        localStorage.removeItem('sb-nklofasekcyvolptseii-auth-token');
+        sessionStorage.removeItem('sb-nklofasekcyvolptseii-auth-token');
+      } catch (error) {
+        console.warn('[EDGE] local auth cleanup failed:', error?.message);
+      }
+
+      try {
+        currentUser = null;
+        currentProfile = null;
+        authorizedPlayers = [];
+        isPortalStaff = false;
+        showView('view-login');
+      } catch (error) {
+        console.warn('[EDGE] immediate logout view switch failed:', error?.message);
+        window.location.reload();
+      }
+
+      // Finish Supabase sign-out in the background. The UI and local token no longer
+      // depend on this request returning quickly.
+      try {
+        Promise.resolve(sb.auth.signOut({ scope: 'local' }))
+          .catch((error) => console.warn('[EDGE] background sign out failed:', error?.message))
+          .finally(() => {
+            try { _intentionalLogout = false; } catch (_) { /* global flag unavailable */ }
+          });
+      } catch (error) {
+        console.warn('[EDGE] background sign out could not start:', error?.message);
+        try { _intentionalLogout = false; } catch (_) { /* global flag unavailable */ }
+      }
+    };
+
+    immediateLogout.__edgeImmediateLogout = true;
+    window.logout = immediateLogout;
+  };
+
   const install = () => {
     ensureStyle();
+    installImmediateLogout();
     if (typeof loadPlayerDashboard === 'function') {
       const originalLoadPlayerDashboard = loadPlayerDashboard;
       loadPlayerDashboard = async function (...args) {
