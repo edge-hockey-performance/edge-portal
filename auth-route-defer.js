@@ -37,4 +37,26 @@
 
     return Promise.resolve();
   };
+
+  const guardLogin = (functionName) => {
+    const original = window[functionName];
+    if (typeof original !== 'function' || original.__edgeLoginGuard) return;
+    let inFlight = false;
+
+    const guarded = async function guardedLogin(...args) {
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        return await original.apply(this, args);
+      } finally {
+        inFlight = false;
+      }
+    };
+
+    guarded.__edgeLoginGuard = true;
+    window[functionName] = guarded;
+  };
+
+  guardLogin('doPlayerLogin');
+  guardLogin('doAdminLogin');
 })();
