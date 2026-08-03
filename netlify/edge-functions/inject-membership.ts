@@ -1,6 +1,8 @@
 const PORTAL_SCRIPTS = '<script src="/membership-portal.js?v=20260801-membership-2" defer></script><script src="/logout-immediate.js?v=20260801-signout-2" defer></script><script src="/auth-route-defer.js?v=20260802-login-2" defer></script>';
-const MARKER = '</body>';
-const TAIL_LENGTH = MARKER.length - 1;
+const BODY_MARKER = '</body>';
+const SUPABASE_ALIAS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+const SUPABASE_PINNED = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0';
+const TAIL_LENGTH = Math.max(BODY_MARKER.length, SUPABASE_ALIAS.length) - 1;
 
 type EdgeContext = {
   next: () => Promise<Response>;
@@ -12,24 +14,27 @@ export default async (_request: Request, context: EdgeContext) => {
   if (!contentType.includes('text/html') || !response.body) return response;
 
   let tail = '';
-  let injected = false;
+  let scriptsInjected = false;
+  let supabasePinned = false;
 
   const injector = new TransformStream<string, string>({
     transform(chunk, controller) {
-      if (injected) {
-        controller.enqueue(chunk);
-        return;
+      let combined = tail + chunk;
+
+      if (!supabasePinned) {
+        const index = combined.indexOf(SUPABASE_ALIAS);
+        if (index >= 0) {
+          combined = combined.slice(0, index) + SUPABASE_PINNED + combined.slice(index + SUPABASE_ALIAS.length);
+          supabasePinned = true;
+        }
       }
 
-      const combined = tail + chunk;
-      const markerIndex = combined.indexOf(MARKER);
-      if (markerIndex >= 0) {
-        controller.enqueue(
-          combined.slice(0, markerIndex) + PORTAL_SCRIPTS + combined.slice(markerIndex),
-        );
-        tail = '';
-        injected = true;
-        return;
+      if (!scriptsInjected) {
+        const index = combined.indexOf(BODY_MARKER);
+        if (index >= 0) {
+          combined = combined.slice(0, index) + PORTAL_SCRIPTS + combined.slice(index);
+          scriptsInjected = true;
+        }
       }
 
       if (combined.length > TAIL_LENGTH) {
@@ -59,4 +64,4 @@ export default async (_request: Request, context: EdgeContext) => {
   });
 };
 
-export const config = { path: '/*' };
+export const config = { path: ['/', '/index.html'] };
