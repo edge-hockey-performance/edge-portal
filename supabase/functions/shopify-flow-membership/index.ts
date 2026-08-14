@@ -42,6 +42,22 @@ function optionalText(payload: Json, field: string): string | null {
   return value || null;
 }
 
+function optionalBoolean(payload: Json, field: string): boolean | null {
+  const value = payload[field];
+  if (value === null || value === undefined || String(value).trim() === "") return null;
+  if (typeof value === "boolean") return value;
+  const normalized = String(value).trim().toLowerCase();
+  if (["true", "1", "yes"].includes(normalized)) return true;
+  if (["false", "0", "no"].includes(normalized)) return false;
+  throw new Error(`Invalid ${field}`);
+}
+
+function normalizedTags(payload: Json): Set<string> {
+  const value = payload.order_tags ?? payload.tags;
+  const tags = Array.isArray(value) ? value : String(value ?? "").split(",");
+  return new Set(tags.map((tag) => String(tag).trim().toLowerCase()).filter(Boolean));
+}
+
 function typedGid(kind: string, value: unknown, required = true): string | null {
   const text = String(value ?? "").trim();
   if (!text) {
@@ -159,7 +175,7 @@ Deno.serve(async (req: Request) => {
     return json(200, { status: "duplicate_acknowledged" });
   }
 
-  const finish = async (status: "processed" | "failed", message: string | null = null) => {
+  const finish = async (status: "processed" | "ignored" | "failed", message: string | null = null) => {
     await supabase.rpc("finish_shopify_webhook_event", {
       event_webhook_id: eventId,
       event_status: status,
@@ -173,13 +189,45 @@ Deno.serve(async (req: Request) => {
       const sku = String(payload.sku ?? "").trim().toUpperCase();
       const plan = PAID_PLANS.get(sku);
       if (!plan) {
-        await finish("processed");
+        await finish("ignored");
         return json(200, { status: "non_membership_order_ignored" });
       }
+
+      const orderGid = typedGid("Order", payload.order_gid) as string;
+      const firstOrderFlag = optionalBoolean(payload, "is_first_subscription_order");
+      const tags = normalizedTags(payload);
+      const explicitlyRecurring = firstOrderFlag === false || tags.has("subscription recurring order");
+      if (explicitlyRecurring) {
+        await finish("ignored");
+        return json(200, { status: "recurring_subscription_order_ignored" });
+      }
+
+      const { data: orderMemberships, error: orderMembershipError } = await supabase
+        .from("membership_subscriptions")
+        .select("id")
+        .eq("shopify_order_gid", orderGid)
+        .limit(1);
+      if (orderMembershipError) throw new Error(orderMembershipError.message);
+      if ((orderMemberships || []).length > 0) {
+        await finish("ignored");
+        return json(200, { status: "existing_membership_order_ignored" });
+      }
+
+      const { data: renewalPayments, error: renewalPaymentError } = await supabase
+        .from("membership_payments")
+        .select("id")
+        .eq("shopify_order_gid", orderGid)
+        .like("shopify_event_id", "flow:billing_success:%")
+        .limit(1);
+      if (renewalPaymentError) throw new Error(renewalPaymentError.message);
+      if ((renewalPayments || []).length > 0) {
+        await finish("ignored");
+        return json(200, { status: "renewal_order_already_processed" });
+      }
+
       const quantity = optionalInteger(payload, "quantity") ?? 1;
       if (quantity !== 1) throw new Error("Membership quantity must equal one");
 
-      const orderGid = typedGid("Order", payload.order_gid) as string;
       const customerGid = typedGid("Customer", payload.customer_gid, false);
       const playerName = requiredText(payload, "player_name");
       const playerEmail = requiredText(payload, "player_email").toLowerCase();
@@ -197,6 +245,20 @@ Deno.serve(async (req: Request) => {
       );
       if (exactPlayers.length > 1) throw new Error("Player identity is ambiguous");
       const verifiedPlayerId = exactPlayers.length === 1 ? exactPlayers[0].id : null;
+
+      if (verifiedPlayerId) {
+        const { data: currentMemberships, error: currentMembershipError } = await supabase
+          .from("membership_subscriptions")
+          .select("id")
+          .eq("player_id", verifiedPlayerId)
+          .in("status", ["pending_activation", "active", "grace"])
+          .limit(1);
+        if (currentMembershipError) throw new Error(currentMembershipError.message);
+        if ((currentMemberships || []).length > 0) {
+          await finish("ignored");
+          return json(200, { status: "current_membership_order_ignored" });
+        }
+      }
 
       const { error } = await supabase.rpc("process_shopify_paid_membership", {
         event_id: eventId,
@@ -238,13 +300,38 @@ Deno.serve(async (req: Request) => {
       if (error) throw new Error(error.message);
     } else {
       const successful = eventType === "billing_success";
+      let amountCents = optionalInteger(payload, "amount_cents");
+      if (successful && amountCents === null) {
+        const { data: memberships, error: membershipError } = await supabase
+          .from("membership_subscriptions")
+          .select("plan_code")
+          .eq("shopify_subscription_contract_gid", contractGid)
+          .limit(1);
+        if (membershipError) throw new Error(membershipError.message);
+        const planCode = memberships?.[0]?.plan_code;
+        if (!planCode) throw new Error("Membership plan was not found for renewal amount");
+
+        const { data: plans, error: planError } = await supabase
+          .from("membership_plans")
+          .select("price_cents")
+          .eq("code", planCode)
+          .eq("is_active", true)
+          .limit(1);
+        if (planError) throw new Error(planError.message);
+        const fallbackAmount = Number(plans?.[0]?.price_cents);
+        if (!Number.isSafeInteger(fallbackAmount) || fallbackAmount < 0) {
+          throw new Error("Membership plan price was not found for renewal amount");
+        }
+        amountCents = fallbackAmount;
+      }
+
       const { error } = await supabase.rpc("process_shopify_billing_attempt", {
         event_id: eventId,
         contract_gid: contractGid,
         renewal_order_gid: successful ? typedGid("Order", payload.renewal_order_gid, false) : null,
         attempt_outcome: successful ? "success" : "failure",
         occurred_at: timestamp(payload, "occurred_at"),
-        amount_cents: optionalInteger(payload, "amount_cents"),
+        amount_cents: amountCents,
         error_code: successful ? null : optionalText(payload, "error_code"),
         error_message: successful ? null : optionalText(payload, "error_message"),
       });
