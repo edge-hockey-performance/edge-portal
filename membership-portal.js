@@ -249,6 +249,8 @@
   };
 
   const install = () => {
+    if (window.__edgeMembershipPortalInstalled) return;
+    window.__edgeMembershipPortalInstalled = true;
     ensureStyle();
     installImmediateLogout();
     if (typeof loadPlayerDashboard === 'function') {
@@ -269,6 +271,11 @@
     }
   };
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+  // The script is injected after the portal's inline application code, so its
+  // dashboard functions already exist. Install synchronously instead of waiting
+  // for DOMContentLoaded; restored Supabase sessions can begin routing before that
+  // event and would otherwise call the unwrapped dashboard loader.
+  if (typeof window.loadPlayerDashboard === 'function') install();
+  else if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
   else install();
 })();
