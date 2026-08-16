@@ -4,8 +4,8 @@
   const MAX_ATTEMPTS = 80;
   const RETRY_DELAY_MS = 250;
   let attempts = 0;
-  let completed = false;
   let timer = null;
+  let inFlight = false;
 
   const activeProfile = () => {
     try {
@@ -16,30 +16,26 @@
   };
 
   const reconcileMembership = async () => {
-    if (completed) return true;
-
     const profile = activeProfile();
     const dashboardAnchor = document.querySelector('#psub-dashboard .dash-status-grid');
-    if (!profile?.id || !dashboardAnchor) return false;
+    if (!profile?.id || !dashboardAnchor) return;
+    if (document.getElementById('player-membership-card')) return;
+    if (typeof loadPlayerDashboard !== 'function' || inFlight) return;
 
-    if (document.getElementById('player-membership-card')) {
-      completed = true;
-      return true;
+    inFlight = true;
+    try {
+      await loadPlayerDashboard();
+    } finally {
+      inFlight = false;
     }
-
-    if (typeof loadPlayerDashboard !== 'function') return false;
-
-    await loadPlayerDashboard();
-    completed = Boolean(document.getElementById('player-membership-card'));
-    return completed;
   };
 
   const tick = async () => {
-    if (completed || attempts >= MAX_ATTEMPTS) return;
+    if (attempts >= MAX_ATTEMPTS) return;
     attempts += 1;
 
     try {
-      if (await reconcileMembership()) return;
+      await reconcileMembership();
     } catch (error) {
       console.warn('[EDGE] restored-session membership reconciliation retry:', error?.message);
     }
@@ -50,7 +46,6 @@
   const start = () => {
     if (timer) window.clearTimeout(timer);
     attempts = 0;
-    completed = false;
     timer = window.setTimeout(tick, 0);
   };
 
