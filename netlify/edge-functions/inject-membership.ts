@@ -1,4 +1,4 @@
-const PORTAL_SCRIPTS = '<script src="/membership-portal.js?v=20260801-membership-2" defer></script><script src="/logout-immediate.js?v=20260801-signout-2" defer></script><script src="/auth-route-defer.js?v=20260802-login-2" defer></script>';
+const PORTAL_SCRIPTS = '<script src="/membership-portal.js?v=20260816-membership-3"></script><script src="/logout-immediate.js?v=20260801-signout-2" defer></script><script src="/auth-route-defer.js?v=20260802-login-2" defer></script>';
 const BODY_MARKER = '</body>';
 const SUPABASE_ALIAS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 const SUPABASE_PINNED = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0';
