@@ -210,8 +210,6 @@
         button.textContent = 'Signing Out…';
       });
 
-      // Clear the browser token first so a reload cannot restore the signed-out session,
-      // then switch views immediately instead of waiting on a network response.
       try {
         localStorage.removeItem('sb-nklofasekcyvolptseii-auth-token');
         sessionStorage.removeItem('sb-nklofasekcyvolptseii-auth-token');
@@ -230,8 +228,6 @@
         window.location.reload();
       }
 
-      // Finish Supabase sign-out in the background. The UI and local token no longer
-      // depend on this request returning quickly.
       try {
         Promise.resolve(sb.auth.signOut({ scope: 'local' }))
           .catch((error) => console.warn('[EDGE] background sign out failed:', error?.message))
@@ -248,9 +244,33 @@
     window.logout = immediateLogout;
   };
 
+  const installPlayerViewLifecycle = () => {
+    const playerView = document.getElementById('view-player');
+    if (!playerView || playerView.__edgeMembershipViewObserver) return;
+
+    const renderWhenActive = () => {
+      if (!playerView.classList.contains('active')) return;
+      Promise.resolve(renderPlayerMembership())
+        .catch((error) => console.error('[EDGE] active player membership render failed:', error));
+    };
+
+    const observer = new MutationObserver((mutations) => {
+      if (mutations.some((mutation) => mutation.attributeName === 'class')) renderWhenActive();
+    });
+    observer.observe(playerView, { attributes: true, attributeFilter: ['class'] });
+    playerView.__edgeMembershipViewObserver = observer;
+
+    // Covers INITIAL_SESSION when the base DOMContentLoaded handler completed
+    // routing before this extension installed.
+    renderWhenActive();
+  };
+
   const install = () => {
+    if (window.__edgeMembershipPortalInstalled) return;
+    window.__edgeMembershipPortalInstalled = true;
     ensureStyle();
     installImmediateLogout();
+    installPlayerViewLifecycle();
     if (typeof loadPlayerDashboard === 'function') {
       const originalLoadPlayerDashboard = loadPlayerDashboard;
       loadPlayerDashboard = async function (...args) {
