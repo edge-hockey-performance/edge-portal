@@ -64,4 +64,4 @@ export default async (_request: Request, context: EdgeContext) => {
   });
 };
 
-export const config = { path: ['/', '/index.html'] };
+export const config = { path: ['/', '/index.html', '/dashboard', '/register'] };
