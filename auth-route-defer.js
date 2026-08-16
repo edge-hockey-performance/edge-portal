@@ -11,6 +11,23 @@
   const originalRouteToProfile = window.routeToProfile;
   let pendingUserId = null;
 
+  const finalizePlayerDashboard = async () => {
+    let profile = null;
+    try {
+      profile = typeof currentProfile !== 'undefined' ? currentProfile : null;
+    } catch (_) {
+      profile = null;
+    }
+
+    const dashboardAnchor = document.querySelector('#psub-dashboard .dash-status-grid');
+    if (!profile?.id || !dashboardAnchor || typeof loadPlayerDashboard !== 'function') return;
+
+    // membership-portal.js wraps loadPlayerDashboard. Invoking the wrapped loader
+    // after routeToProfile settles guarantees membership renders after the base
+    // dashboard has completed its final DOM replacement on sign-in and refresh.
+    await loadPlayerDashboard();
+  };
+
   window.routeToProfile = function deferRouteToProfile(user, ...args) {
     const userId = user?.id || 'unknown';
     if (pendingUserId === userId) return Promise.resolve();
@@ -20,6 +37,7 @@
     // Defer portal context loading to the next task so signInWithPassword can settle.
     setTimeout(() => {
       Promise.resolve(originalRouteToProfile.call(this, user, ...args))
+        .then(() => finalizePlayerDashboard())
         .catch((error) => {
           console.error('[EDGE] deferred profile routing failed:', error);
           try {
