@@ -2,7 +2,23 @@ const PORTAL_SCRIPTS = '<script src="/membership-portal.js?v=20260801-membership
 const BODY_MARKER = '</body>';
 const SUPABASE_ALIAS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 const SUPABASE_PINNED = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0';
-const TAIL_LENGTH = Math.max(BODY_MARKER.length, SUPABASE_ALIAS.length) - 1;
+const VISIBLE_COPY_REPLACEMENTS = [
+  [
+    "You're part of a small group helping us build a more consistent, reliable sharpening experience.",
+    'Create your player profile to manage skate setup, service history, and membership information in one place.',
+  ],
+  [
+    'No scheduling needed during the Founding Team Pilot.',
+    'No scheduling is required. EDGE coordinates blade pickup through your team.',
+  ],
+  ['Founding Team Pilot', 'EDGE Portal Access'],
+  ['Founding Pilot', 'EDGE Portal Access'],
+] as const;
+const TAIL_LENGTH = Math.max(
+  BODY_MARKER.length,
+  SUPABASE_ALIAS.length,
+  ...VISIBLE_COPY_REPLACEMENTS.map(([search]) => search.length),
+) - 1;
 
 type EdgeContext = {
   next: () => Promise<Response>;
@@ -27,6 +43,10 @@ export default async (_request: Request, context: EdgeContext) => {
           combined = combined.slice(0, index) + SUPABASE_PINNED + combined.slice(index + SUPABASE_ALIAS.length);
           supabasePinned = true;
         }
+      }
+
+      for (const [search, replacement] of VISIBLE_COPY_REPLACEMENTS) {
+        combined = combined.split(search).join(replacement);
       }
 
       if (!scriptsInjected) {
