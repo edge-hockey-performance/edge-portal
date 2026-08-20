@@ -99,6 +99,9 @@ function optionalBigint(payload: Json, field: string): string | null {
 function normalizedName(first: unknown, last: unknown): string {
   return `${String(first ?? "").trim()} ${String(last ?? "").trim()}`.trim().toLowerCase().replace(/\s+/g, " ");
 }
+function normalizedSellingPlanName(value: string): string {
+  return value.replace(/,\s*\$\d+(?:\.\d{2})?$/, "").trim().toLowerCase();
+}
 async function sha256Hex(rawBody: Uint8Array): Promise<string> {
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", rawBody));
   return Array.from(digest).map((byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -201,7 +204,7 @@ Deno.serve(async (req: Request) => {
           throw new Error("Weekly membership must include a selling plan identity");
         if (suppliedSellingPlanId !== null && suppliedSellingPlanId !== plan.weeklySellingPlanId)
           throw new Error("Weekly membership selling plan ID does not match the configured plan");
-        if (suppliedSellingPlanName !== null && suppliedSellingPlanName.toLowerCase() !== plan.weeklySellingPlanName.toLowerCase())
+        if (suppliedSellingPlanName !== null && normalizedSellingPlanName(suppliedSellingPlanName) !== plan.weeklySellingPlanName.toLowerCase())
           throw new Error("Weekly membership selling plan name does not match the configured plan");
       }
 

@@ -37,7 +37,9 @@ Deno.serve(async (req: Request) => {
   const brevoApiKey = Deno.env.get("BREVO_API_KEY");
   if (!url || !serviceRoleKey || !brevoApiKey) return json(503, { error: "invitation_service_not_configured" });
   const authorization = (req.headers.get("authorization") || "").trim();
-  if (!authorization.startsWith("Bearer ") || !safeEqual(authorization.slice(7).trim(), serviceRoleKey)) {
+  const bearerToken = authorization.startsWith("Bearer ") ? authorization.slice(7).trim() : "";
+  const apiKey = (req.headers.get("apikey") || "").trim();
+  if (!safeEqual(bearerToken, serviceRoleKey) && !safeEqual(apiKey, serviceRoleKey)) {
     return json(401, { error: "service_role_required" });
   }
 
