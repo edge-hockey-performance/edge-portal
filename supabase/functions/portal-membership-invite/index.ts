@@ -3,6 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 type Json = Record<string, unknown>;
 const PORTAL_URL = "https://portal.edgehockeyperformance.com/";
 const SENDER = { name: "EDGE Hockey Performance", email: "jordan@edgehockeyperformance.com" };
+const TEST_RECIPIENT_EMAIL = "jordan@edgehockeyperformance.com";
 const encoder = new TextEncoder();
 
 function json(status: number, body: Json) {
@@ -59,6 +60,9 @@ Deno.serve(async (req: Request) => {
 
   const recipientEmail = String(membership.buyer_email || membership.player_email || "").trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail)) return json(409, { error: "valid_buyer_email_required" });
+  if (recipientEmail !== TEST_RECIPIENT_EMAIL) {
+    return json(200, { status: "test_gate_blocked", recipient: recipientEmail });
+  }
 
   const { data: existingInvite, error: inviteReadError } = await supabase
     .from("membership_portal_invitations")
