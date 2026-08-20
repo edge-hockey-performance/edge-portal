@@ -19,6 +19,21 @@
 
 Never commit or paste secret values.
 
+## Verified paid-order Shopify Flow contract
+
+The live products use the same SKU for both purchase options. Price plus nullable selling-plan name distinguishes the purchase type:
+
+- `EDGE-1SET-WK`: `$13.00` with selling plan `Deliver every week`, or `$300.00` with no selling plan.
+- `EDGE-2SET-WK`: `$19.00` with selling plan `Deliver every week`, or `$440.00` with no selling plan.
+
+Use this Body for the `EDGE – Order Paid → Supabase` Send HTTP request action after the matching Supabase processor has been deployed:
+
+```liquid
+{% assign membership_line = nil %}{% for line in order.lineItems %}{% if line.sku == "EDGE-1SET-WK" or line.sku == "EDGE-2SET-WK" %}{% assign membership_line = line %}{% endif %}{% endfor %}{% assign player_name = "" %}{% assign player_email = "" %}{% assign player_team = "" %}{% for attribute in membership_line.customAttributes %}{% if attribute.key == "Player name" %}{% assign player_name = attribute.value %}{% endif %}{% if attribute.key == "Player email" %}{% assign player_email = attribute.value %}{% endif %}{% if attribute.key == "Team" %}{% assign player_team = attribute.value %}{% endif %}{% endfor %}{"event_type":"order_paid","event_id":{{ order.id | json }},"order_gid":{{ order.id | json }},"customer_gid":{{ order.customer.id | json }},"buyer_email":{{ order.email | json }},"occurred_at":{{ order.processedAt | json }},"sku":{{ membership_line.sku | json }},"quantity":{{ membership_line.quantity | default: 1 | json }},"amount":{{ membership_line.originalUnitPriceSet.shopMoney.amount | json }},"selling_plan_name":{{ membership_line.sellingPlan.name | json }},"player_name":{{ player_name | json }},"player_email":{{ player_email | json }},"player_team":{{ player_team | json }}}
+```
+
+The processor converts the decimal money value to cents without floating-point arithmetic. It accepts a verified selling-plan ID for compatible callers, but the live Flow uses the verified line-item selling-plan name because that is the available `order/lineItems` field.
+
 ## Marketing campaign copy
 
 Subject: Chicago Reapers: choose your EDGE membership
@@ -64,6 +79,7 @@ EDGE Performance
 - Deploy `portal-membership-invite` with service-role-only invocation.
 - Update the paid-order processor to call it only after `process_shopify_paid_membership` returns a paid matched membership.
 - Correct both paid-order code paths to selling plan `3387031715` for 2-Set.
+- Update the Shopify Flow Body only after the compatible processor is deployed.
 - Test weekly and upfront purchases for 1-Set and 2-Set.
 - Confirm one auth user, one player link, one membership, one payment, one invitation log, and one Brevo message ID per initial order.
 - Confirm recurring charges and duplicate Shopify events do not send another invitation.

@@ -5,6 +5,7 @@ type PaidPlan = {
   productId: number;
   variantId: number;
   weeklySellingPlanId: number;
+  weeklySellingPlanName: string;
   weeklyCents: number;
   upfrontCents: number;
 };
@@ -12,8 +13,8 @@ type PaidPlan = {
 const EXPECTED_SOURCE = "edge-performance-3.myshopify.com";
 const encoder = new TextEncoder();
 const PAID_PLANS = new Map<string, PaidPlan>([
-  ["EDGE-1SET-WK", { productId: 9212478029987, variantId: 47941773230243, weeklySellingPlanId: 3369599139, weeklyCents: 1300, upfrontCents: 30000 }],
-  ["EDGE-2SET-WK", { productId: 9212478980259, variantId: 47941775458467, weeklySellingPlanId: 3387031715, weeklyCents: 1900, upfrontCents: 44000 }],
+  ["EDGE-1SET-WK", { productId: 9212478029987, variantId: 47941773230243, weeklySellingPlanId: 3369599139, weeklySellingPlanName: "Deliver every week", weeklyCents: 1300, upfrontCents: 30000 }],
+  ["EDGE-2SET-WK", { productId: 9212478980259, variantId: 47941775458467, weeklySellingPlanId: 3387031715, weeklySellingPlanName: "Deliver every week", weeklyCents: 1900, upfrontCents: 44000 }],
 ]);
 
 function json(status: number, body: Json): Response {
@@ -65,6 +66,16 @@ function optionalInteger(payload: Json, field: string): number | null {
   const parsed = Number(value);
   if (!Number.isSafeInteger(parsed) || parsed < 0) throw new Error(`Invalid ${field}`);
   return parsed;
+}
+function optionalMoneyCents(payload: Json, field: string): number | null {
+  const value = payload[field];
+  if (value === null || value === undefined || String(value).trim() === "") return null;
+  const normalized = String(value).trim();
+  if (!/^\d+(?:\.\d{1,2})?$/.test(normalized)) throw new Error(`Invalid ${field}`);
+  const [whole, fraction = ""] = normalized.split(".");
+  const cents = (Number(whole) * 100) + Number((fraction + "00").slice(0, 2));
+  if (!Number.isSafeInteger(cents) || cents < 0) throw new Error(`Invalid ${field}`);
+  return cents;
 }
 function optionalShopifyId(payload: Json, field: string, kind: string): number | null {
   const value = String(payload[field] ?? "").trim();
@@ -174,16 +185,25 @@ Deno.serve(async (req: Request) => {
 
       const quantity = optionalInteger(payload, "quantity") ?? 1;
       if (quantity !== 1) throw new Error("Membership quantity must equal one");
-      const paidAmountCents = optionalInteger(payload, "amount_cents");
-      if (paidAmountCents === null) throw new Error("Missing amount_cents for paid membership line");
+      let paidAmountCents = optionalInteger(payload, "amount_cents");
+      if (paidAmountCents === null) paidAmountCents = optionalMoneyCents(payload, "amount");
+      if (paidAmountCents === null) throw new Error("Missing amount or amount_cents for paid membership line");
       const suppliedSellingPlanId = optionalShopifyId(payload, "selling_plan_id", "SellingPlan");
+      const suppliedSellingPlanName = optionalText(payload, "selling_plan_name");
       const purchaseType = paidAmountCents === plan.upfrontCents ? "season_upfront"
         : paidAmountCents === plan.weeklyCents ? "weekly_subscription" : null;
       if (!purchaseType) throw new Error("Paid amount is not an allowed weekly or upfront membership price");
-      if (purchaseType === "season_upfront" && (suppliedSellingPlanId !== null || contractGid !== null))
-        throw new Error("Upfront membership must not include a selling plan or subscription contract");
-      if (purchaseType === "weekly_subscription" && suppliedSellingPlanId !== plan.weeklySellingPlanId)
-        throw new Error("Weekly membership selling plan does not match the configured plan");
+      if (purchaseType === "season_upfront") {
+        if (suppliedSellingPlanId !== null || suppliedSellingPlanName !== null || contractGid !== null)
+          throw new Error("Upfront membership must not include a selling plan or subscription contract");
+      } else {
+        if (suppliedSellingPlanId === null && suppliedSellingPlanName === null)
+          throw new Error("Weekly membership must include a selling plan identity");
+        if (suppliedSellingPlanId !== null && suppliedSellingPlanId !== plan.weeklySellingPlanId)
+          throw new Error("Weekly membership selling plan ID does not match the configured plan");
+        if (suppliedSellingPlanName !== null && suppliedSellingPlanName.toLowerCase() !== plan.weeklySellingPlanName.toLowerCase())
+          throw new Error("Weekly membership selling plan name does not match the configured plan");
+      }
 
       const playerName = requiredText(payload, "player_name");
       const playerEmail = requiredText(payload, "player_email").toLowerCase();
@@ -209,7 +229,7 @@ Deno.serve(async (req: Request) => {
         subscription_contract_gid: contractGid,
         product_id: plan.productId,
         variant_id: plan.variantId,
-        selling_plan_id: suppliedSellingPlanId,
+        selling_plan_id: purchaseType === "weekly_subscription" ? plan.weeklySellingPlanId : null,
         order_buyer_email: optionalText(payload, "buyer_email"),
         checkout_player_name: playerName,
         checkout_player_email: playerEmail,
