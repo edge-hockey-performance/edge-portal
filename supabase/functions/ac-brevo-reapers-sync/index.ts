@@ -15,10 +15,16 @@ Deno.serve(async (req: Request) => {
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const brevoApiKey = Deno.env.get("BREVO_API_KEY");
   if (!supabaseUrl || !serviceRoleKey || !brevoApiKey) return json(503, { error: "sync_not_configured" });
-  const authorization = (req.headers.get("authorization") || "").trim();
-  if (!authorization.startsWith("Bearer ") || !safeEqual(authorization.slice(7).trim(), serviceRoleKey)) return json(401, { error: "service_role_required" });
 
   const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
+  const { data: storedSyncToken } = await supabase.rpc("get_secret", { secret_name: "brevo_sync_invocation_token" });
+  const authorization = (req.headers.get("authorization") || "").trim();
+  const bearerToken = authorization.startsWith("Bearer ") ? authorization.slice(7).trim() : "";
+  const suppliedSyncToken = (req.headers.get("x-edge-sync-token") || "").trim();
+  const serviceRoleAuthorized = safeEqual(bearerToken, serviceRoleKey);
+  const dedicatedTokenAuthorized = typeof storedSyncToken === "string" && storedSyncToken.length >= 32 && safeEqual(suppliedSyncToken, storedSyncToken);
+  if (!serviceRoleAuthorized && !dedicatedTokenAuthorized) return json(401, { error: "sync_authorization_required" });
+
   const [{ data: acUrl }, { data: acKey }] = await Promise.all([
     supabase.rpc("get_secret", { secret_name: "ac_api_url" }),
     supabase.rpc("get_secret", { secret_name: "ac_api_key" }),
@@ -108,13 +114,9 @@ Deno.serve(async (req: Request) => {
       body: JSON.stringify({
         email: contact.email,
         attributes: {
-          FNAME: contact.firstName || "",
-          LNAME: contact.lastName || "",
-          PLAYER_NAME: contact.playerName || "",
-          TEAM_LEVEL: contact.teamLevel || "",
-          SET_INTEREST: contact.setInterest || "",
-          PROFILING_INTEREST: contact.profilingInterest || "",
-          SOURCE_SYSTEM: Array.from(contact.source).sort().join("; "),
+          FNAME: contact.firstName || "", LNAME: contact.lastName || "", PLAYER_NAME: contact.playerName || "",
+          TEAM_LEVEL: contact.teamLevel || "", SET_INTEREST: contact.setInterest || "",
+          PROFILING_INTEREST: contact.profilingInterest || "", SOURCE_SYSTEM: Array.from(contact.source).sort().join("; "),
           RECOMMENDED_OPTION: recommended,
         },
         listIds: [listId], updateEnabled: true,
