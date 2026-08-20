@@ -27,6 +27,18 @@ function gid(kind: string, value: unknown): string | null {
 }
 function iso(value: unknown): string { const date = new Date(String(value || new Date().toISOString())); if (Number.isNaN(date.getTime())) throw new Error("Invalid Shopify timestamp"); return date.toISOString(); }
 function cents(value: unknown, quantity = 1): number | null { const amount = Number(value); return Number.isFinite(amount) && amount >= 0 ? Math.round(amount * 100 * quantity) : null; }
+function allocatedDiscountCents(line: Json): number | null {
+  const allocations = Array.isArray(line.discount_allocations) ? line.discount_allocations.map(record) : [];
+  let total = 0;
+  for (const allocation of allocations) {
+    const amountSet = record(allocation.amount_set);
+    const shopMoney = record(amountSet.shop_money);
+    const amount = cents(shopMoney.amount ?? allocation.amount);
+    if (amount === null) return null;
+    total += amount;
+  }
+  return total;
+}
 function toBase64(bytes: Uint8Array): string { let binary = ""; for (const byte of bytes) binary += String.fromCharCode(byte); return btoa(binary); }
 function safeEqual(left: string, right: string): boolean { const a = encoder.encode(left); const b = encoder.encode(right); if (a.length !== b.length) return false; let mismatch = 0; for (let i = 0; i < a.length; i++) mismatch |= a[i] ^ b[i]; return mismatch === 0; }
 async function validHmac(body: Uint8Array, secret: string, received: string) { const key = await crypto.subtle.importKey("raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]); return safeEqual(toBase64(new Uint8Array(await crypto.subtle.sign("HMAC", key, body))), received.trim()); }
@@ -96,12 +108,15 @@ Deno.serve(async (req: Request) => {
       const line = membershipLines[0]; const triple = planTriple(line);
       const configured = triple.variantId ? PLANS.get(triple.variantId) : undefined;
       const quantity = Number(line.quantity ?? 1);
-      const paidAmountCents = cents(line.price, quantity);
       if (!configured || triple.productId !== configured.productId) throw new Error("Membership product and variant do not match a configured plan");
       if (quantity !== 1) throw new Error("Membership line quantity must equal one");
+      const grossAmountCents = cents(line.price, quantity);
+      const discountAmountCents = allocatedDiscountCents(line);
+      if (grossAmountCents === null || discountAmountCents === null || discountAmountCents > grossAmountCents) throw new Error("Membership line paid amount is invalid");
+      const paidAmountCents = grossAmountCents - discountAmountCents;
       const purchaseType = paidAmountCents === configured.upfrontCents ? "season_upfront"
         : paidAmountCents === configured.weeklyCents ? "weekly_subscription" : null;
-      if (!purchaseType) throw new Error("Paid amount is not an allowed weekly or upfront membership price");
+      if (!purchaseType) throw new Error("Paid amount after discounts is not an allowed weekly or upfront membership price");
       if (purchaseType === "season_upfront" && (triple.sellingPlanId !== null || contract !== null)) throw new Error("Upfront membership must not include a selling plan or subscription contract");
       if (purchaseType === "weekly_subscription" && triple.sellingPlanId !== configured.weeklySellingPlanId) throw new Error("Weekly membership selling plan does not match the configured plan");
 
