@@ -86,10 +86,6 @@ Deno.serve(async (req: Request) => {
   }
 
   const userId = authUser.id;
-  if (userId !== membership.player_id) {
-    await supabase.from("player_access").update({ is_primary: false, revoked_at: new Date().toISOString() })
-      .eq("player_id", userId).eq("user_id", userId).eq("relationship", "self").is("revoked_at", null);
-  }
   await supabase.from("player_access").update({ is_primary: false })
     .eq("player_id", membership.player_id).eq("is_primary", true).is("revoked_at", null).neq("user_id", userId);
   const relationship = recipientEmail === String(membership.player_email || "").trim().toLowerCase() ? "self" : "parent";
