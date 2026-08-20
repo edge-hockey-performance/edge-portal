@@ -10,8 +10,43 @@
   window.__edgeDeferredAuthRoutingInstalled = true;
   const originalRouteToProfile = window.routeToProfile;
   let pendingUserId = null;
+  let passwordRecoveryPending = window.location.hash.includes('type=recovery') ||
+    window.location.search.includes('type=recovery');
+
+  const showPasswordRecovery = () => {
+    try {
+      if (typeof window.showView === 'function') window.showView('view-login');
+      if (typeof window.hideSessionLoader === 'function') window.hideSessionLoader();
+      ['player-login-panel', 'admin-login-panel'].forEach((id) => {
+        const element = document.getElementById(id);
+        if (element) element.style.display = 'none';
+      });
+      const resetPanel = document.getElementById('reset-password-panel');
+      if (resetPanel) resetPanel.style.display = '';
+    } catch (error) {
+      console.error('[EDGE] password recovery view failed:', error);
+    }
+  };
+
+  if (passwordRecoveryPending) setTimeout(showPasswordRecovery, 0);
+
+  if (window.sb?.auth?.onAuthStateChange) {
+    window.sb.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        passwordRecoveryPending = true;
+        showPasswordRecovery();
+      } else if (event === 'USER_UPDATED' && passwordRecoveryPending) {
+        passwordRecoveryPending = false;
+      }
+    });
+  }
 
   window.routeToProfile = function deferRouteToProfile(user, ...args) {
+    if (passwordRecoveryPending) {
+      showPasswordRecovery();
+      return Promise.resolve();
+    }
+
     const userId = user?.id || 'unknown';
     if (pendingUserId === userId) return Promise.resolve();
     pendingUserId = userId;
