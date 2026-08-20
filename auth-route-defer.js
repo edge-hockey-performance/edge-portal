@@ -73,6 +73,20 @@
     return Promise.resolve();
   };
 
+  const originalDoResetPassword = window.doResetPassword;
+  if (typeof originalDoResetPassword === 'function' && !originalDoResetPassword.__edgeRecoveryRelease) {
+    const resetAndRelease = async function resetAndRelease(...args) {
+      const result = await originalDoResetPassword.apply(this, args);
+      const success = document.getElementById('reset-success');
+      if (success?.classList.contains('show') && /password updated/i.test(success.textContent || '')) {
+        passwordRecoveryPending = false;
+      }
+      return result;
+    };
+    resetAndRelease.__edgeRecoveryRelease = true;
+    window.doResetPassword = resetAndRelease;
+  }
+
   const guardLogin = (functionName) => {
     const original = window[functionName];
     if (typeof original !== 'function' || original.__edgeLoginGuard) return;
