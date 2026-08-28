@@ -1,8 +1,12 @@
 /membership-portal.js
   Cache-Control: public, max-age=31536000, immutable
-
 /logout-immediate.js
   Cache-Control: public, max-age=31536000, immutable
-
 /auth-route-defer.js
+  Cache-Control: public, max-age=31536000, immutable
+/membership-management.js
+  Cache-Control: public, max-age=31536000, immutable
+/mobile-ux.js
+  Cache-Control: public, max-age=31536000, immutable
+/staff-operations.js
   Cache-Control: public, max-age=31536000, immutable
