@@ -1,8 +1,10 @@
+import { getCatalogReplacements } from "./lib/portal-catalog.ts";
 const PORTAL_SCRIPTS = '<script src="/membership-portal.js?v=20260801-membership-2" defer></script><script src="/logout-immediate.js?v=20260801-signout-2" defer></script><script src="/auth-route-defer.js?v=20260820-recovery-2" defer></script><script src="/membership-management.js?v=20260816-account-1" defer></script><script src="/mobile-ux.js?v=20260816-mobile-1" defer></script>';
 const BODY_MARKER = '</body>';
 const SUPABASE_ALIAS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 const SUPABASE_PINNED = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0';
 const VISIBLE_COPY_REPLACEMENTS = [
+  ...getCatalogReplacements(),
   [
     "You're part of a small group helping us build a more consistent, reliable sharpening experience.",
     'Create your player profile to manage skate setup, service history, and membership information in one place.',
